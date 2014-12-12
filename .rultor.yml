@@ -1,0 +1,9 @@
+decrypt:
+  rubygems.yml: "repo/rubygems.yml.asc"
+release:
+  script: |
+    rm -rf *.gem
+    sed -i "s/1.0.snapshot/${tag}/g" debug_me.gemspec
+    gem build debug_me.gemspec
+    chmod 0600 /home/r/rubygems.yml
+    gem push *.gem --config-file /home/r/rubygems.yml

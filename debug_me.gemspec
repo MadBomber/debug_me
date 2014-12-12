@@ -5,7 +5,7 @@ require 'debug_me/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'debug_me'
-  spec.version       = DebugMe::VERSION
+  spec.version       = '1.0.snapshot'  # replaced by rultor
   spec.authors       = ['Dewayne VanHoozer']
   spec.email         = ['dvanhoozer@gmail.com']
   spec.summary       = 'A tool to print the labeled value of variables.'
