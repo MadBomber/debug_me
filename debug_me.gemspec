@@ -23,4 +23,6 @@ time after time.  I guess that marks me as a geezer.'
 
   spec.add_development_dependency 'bundler', '~> 1.7'
   spec.add_development_dependency 'rake', '~> 10.0'
+
+  spec.add_dependency 'version_info', '~> 1.9.0'
 end

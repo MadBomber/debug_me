@@ -1,5 +1,5 @@
 require 'pp'
-require 'debug_me/version'
+require_relative 'debug_me/version'
 
 module DebugMe
   def debug_me(options = {}, &block)
@@ -42,7 +42,7 @@ module DebugMe
 
       block_value.each do |v|
         ev = eval(v, block.binding)
-        f.puts "#{s} #{v} -=> #{pp ev}"  # .pretty_inspect}"
+        f.puts "#{s} #{v} -=> #{ev.pretty_inspect}"
       end
 
     end ## if block_given?
