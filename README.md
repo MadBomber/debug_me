@@ -59,6 +59,46 @@ debug_me(:ivar => false, :cvar => false) {} # print only the local variables wit
 
 ```
 
+## Default Options
+
+The default options are maintained in a global constant `DebugMeDefaultOptions` that is outside of the `DebugMe` name space.  I did that so that if you do `include DebugMe` to make access to the method eaier you could still have the constant with a function specific name that would be outside of anything that you may have already coded in you program.
+
+```
+DebugMeDefaultOptions = {
+  tag: 'DEBUG:',   # A tag to prepend to each output line
+  time: true,      # Include a time-stamp in front of the tag
+  header: true,    # Print a header string before printing the variables
+  lvar: true,      # Include local variables
+  ivar: true,      # Include instance variables in the output
+  cvar: true,      # Include class variables in the output
+  cconst: true,    # Include class constants
+  file: $stdout    # The output file
+}
+```
+
+If you want the output of the method to always got to STDERR then do this:
+
+```
+require 'debug_me'
+DebugMeDefaultOptions[:file] = $stderr
+```
+If you want the `debug_me` output to go to a real file:
+
+```
+DebugMeDefaultOptions[:file] = File.open('debug_me.log', 'w')
+
+```
+
+The rest of the default options are obvious.
+
+You can always over-ride the default options on a case by case basis like this:
+
+```
+debug_me {...}
+...
+debug_me(header: false){...}
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/debug_me/fork )

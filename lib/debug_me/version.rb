@@ -1,3 +1,3 @@
 module DebugMe
-  VERSION = '1.0.snapshot'
+  VERSION = '1.0.3'
 end

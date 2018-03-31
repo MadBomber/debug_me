@@ -1,24 +1,24 @@
 require 'pp'
 require_relative 'debug_me/version'
 
+DebugMeDefaultOptions = {
+  tag: 'DEBUG:',   # A tag to prepend to each output line
+  time: true,      # Include a time-stamp in front of the tag
+  header: true,    # Print a header string before printing the variables
+  lvar: true,      # Include local variables
+  ivar: true,      # Include instance variables in the output
+  cvar: true,      # Include class variables in the output
+  cconst: true,    # Include class constants
+  file: $stdout    # The output file
+}
+
 module DebugMe
   def debug_me(options = {}, &block)
-    default_options = {
-      tag: 'DEBUG:',   # A tag to prepend to each output line
-      time: true,      # Include a time-stamp in front of the tag
-      header: true,    # Print a header string before printing the variables
-      lvar: true,      # Include local variables
-      ivar: true,      # Include instance variables in the output
-      cvar: true,      # Include class variables in the output
-      cconst: true,    # Include class constants
-      file: $stdout    # The output file
-    }
-
 
     if 'Hash' == options.class.to_s
-      options = default_options.merge(options)
+      options = DebugMeDefaultOptions.merge(options)
     else
-      options = default_options.merge(tag: options)
+      options = DebugMeDefaultOptions.merge(tag: options)
     end
 
     out_string = ''
