@@ -63,16 +63,18 @@ debug_me(:ivar => false, :cvar => false) {} # print only the local variables wit
 
 The default options are maintained in a global constant `DebugMeDefaultOptions` that is outside of the `DebugMe` name space.  I did that so that if you do `include DebugMe` to make access to the method eaier you could still have the constant with a function specific name that would be outside of anything that you may have already coded in you program.
 
+Notice that this constant is outside of the DebugMe's module namespace.
+
 ```
 DebugMeDefaultOptions = {
-  tag: 'DEBUG:',   # A tag to prepend to each output line
-  time: true,      # Include a time-stamp in front of the tag
-  header: true,    # Print a header string before printing the variables
-  lvar: true,      # Include local variables
-  ivar: true,      # Include instance variables in the output
-  cvar: true,      # Include class variables in the output
-  cconst: true,    # Include class constants
-  file: $stdout    # The output file
+  tag: 	  'DEBUG:', # A tag to prepend to each output line
+  time:   true,     # Include a time-stamp in front of the tag
+  header: true,     # Print a header string before printing the variables
+  lvar:   true,     # Include local variables
+  ivar:   true,     # Include instance variables in the output
+  cvar:   true,     # Include class variables in the output
+  cconst: true,     # Include class constants
+  file:   $stdout   # The output file
 }
 ```
 
