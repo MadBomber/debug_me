@@ -2,14 +2,15 @@ require 'pp'
 require_relative 'debug_me/version'
 
 DebugMeDefaultOptions = {
-  tag: 'DEBUG:',   # A tag to prepend to each output line
-  time: true,      # Include a time-stamp in front of the tag
-  header: true,    # Print a header string before printing the variables
-  lvar: true,      # Include local variables
-  ivar: true,      # Include instance variables in the output
-  cvar: true,      # Include class variables in the output
-  cconst: true,    # Include class constants
-  file: $stdout    # The output file
+  tag:    'DEBUG',  # A tag to prepend to each output line
+  time:   true,     # Include a time-stamp in front of the tag
+  strftime:  '%Y-%m-%d %H:%M:%S.%6N', # timestamp format
+  header: true,     # Print a header string before printing the variables
+  lvar:   true,     # Include local variables
+  ivar:   true,     # Include instance variables in the output
+  cvar:   true,     # Include class variables in the output
+  cconst: true,     # Include class constants
+  file:   $stdout   # The output file
 }
 
 module DebugMe
@@ -25,8 +26,8 @@ module DebugMe
 
     f = options[:file]
     s = ''
-    s += "#{sprintf('%010.6f', Time.now.to_f)} " if options[:time]
-    s += " #{options[:tag]}"
+    s += Time.now.strftime(options[:strftime])+' ' if options[:time]
+    s += "#{options[:tag]}"
     wf = caller # where_from under 1.8.6 its a stack trace array under 1.8.7 is a string
     wf = wf[0] if 'Array' == wf.class.to_s
 
