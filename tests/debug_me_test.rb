@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+require 'awesome_print'
+require 'logger'
+require 'pathname'
+
 require_relative '../lib/debug_me'
 include DebugMe
 
@@ -224,6 +228,45 @@ describe DebugMe do
 
   end # describe "works with class CONSTANTS" do
 
+  describe "works with a Logger class" do
 
+    it 'default logger class is nil' do
+      DebugMeDefaultOptions[:logger].must_equal nil
+    end
+
+    it 'works with standard ruby Logger class' do
+      logger_output_path = Pathname.pwd + 'logger_class_output.txt'
+      logger_output_path.exist?.must_equal false
+
+      logger        = Logger.new(logger_output_path)
+      logger.level  = Logger::DEBUG
+
+      out_string    = debug_me(
+                                logger: logger,         # Use instance of Ruby's Logger
+                                time:   false,          # turn off debug_me's timestamp
+                                file:   nil,            # don't write to STDOUT the default
+                                tag:    'Hello World'   # say hello
+                              )
+      # Generates an entry like this:
+=begin
+      # Logfile created on 2020-04-27 16:16:38 -0500 by logger.rb/v1.4.2
+      D, [2020-04-27T16:16:38.580889 #54662] DEBUG -- : Hello World Source: debug_me_test.rb:244:in `block (3 levels) in <main>'
+=end
+
+      lines   = logger_output_path.read.split("\n")
+
+      lines.size.must_equal 2
+
+      lines[0].start_with?('# Logfile created on').must_equal   true
+      lines[1].start_with?('D, [').must_equal                   true
+      lines[1].include?('DEBUG').must_equal                     true
+      lines[1].include?('Hello World').must_equal               true
+      lines[1].include?('debug_me_test.rb').must_equal          true
+      lines[1].include?(out_string.chomp).must_equal            true
+
+      logger_output_path.delete
+    end
+
+  end
 
 end # describe DebugMe do

@@ -10,6 +10,8 @@ DebugMeDefaultOptions = {
   ivar:   true,     # Include instance variables in the output
   cvar:   true,     # Include class variables in the output
   cconst: true,     # Include class constants
+  logger: nil,      # Pass in an instance of logger class like Rails.logger
+                    # must respond_to? :debug
   file:   $stdout   # The output file
 }
 
@@ -25,6 +27,7 @@ module DebugMe
     out_string = ''
 
     f = options[:file]
+    l = options[:logger]
     s = ''
     s += Time.now.strftime(options[:strftime])+' ' if options[:time]
     s += "#{options[:tag]}"
@@ -60,10 +63,14 @@ module DebugMe
       f.flush
     end
 
+    unless l.nil?
+      l.debug(out_string) if l.respond_to? :debug
+    end
+
     return out_string
   end ## def debug_me( options={}, &block )
 
   # def log_me(msg, opts={})
-  #   debug_me({:tag => msg, :header => false}.merge(opts))
+  #   debug_me({tag: msg, header: false}.merge(opts))
   # end
 end # module DebugMe

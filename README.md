@@ -2,10 +2,10 @@
 
 A tool to print the labeled value of variables.
 
-This thing is pretty old;but, so am I.  For the gray
-in our hair we still to the job.
+This thing is pretty old; but, so am I.  Even with the gray
+in our hair we still do the job.
 
-There are much complex/comprehensive
+There are much more complex/comprehensive
 ways of debugging in a complex application.  But,
 you know, I keep returning to this little method
 time after time.  I guess that marks me as a geezer.
@@ -15,7 +15,8 @@ DebugMe::debug_me(){} works with local, instance and class variables.
 
 ## Recent Changes
 
-* 1.0.4 Added :strftime to the options; changed the default format from decimal seconds since epic to something that os more easy comprehend on a clock.
+* 1.0.5 Added support for an instance of a Logger class.
+* 1.0.4 Added :strftime to the options; changed the default format from decimal seconds since epic to something that is more easy comprehend on a clock.
 
 ## Installation
 
@@ -94,7 +95,7 @@ The default options is a global constant `DebugMeDefaultOptions` that is outside
 
 Notice that this constant is outside of the DebugMe's module namespace.
 
-```
+```ruby
 DebugMeDefaultOptions = {
   tag:    'DEBUG',  # A tag to prepend to each output line
   time:   true,     # Include a time-stamp in front of the tag
@@ -104,22 +105,87 @@ DebugMeDefaultOptions = {
   ivar:   true,     # Include instance variables in the output
   cvar:   true,     # Include class variables in the output
   cconst: true,     # Include class constants
+  logger: nil,      # Pass in a logger class instance like Rails.logger
   file:   $stdout   # The output file
 }
 ```
 
 If you want the output of the method to always go to STDERR then do this:
 
-```
+```ruby
 require 'debug_me'
-DebugMeDefaultOptions[:file] = $stderr
+DebugMeDefaultOptions[:file] = $stderr  # or STDERR
 ```
 If you want the `debug_me` output to go to a real file:
 
-```
+```ruby
 DebugMeDefaultOptions[:file] = File.open('debug_me.log', 'w')
 
 ```
+
+## Using a Logger class instance
+
+If you are working in Rails and want all the `debug_me` output to go to the Rails.logger its as easy as:
+```ruby
+DebugMeDefaultOptions[:logger] = Rails.logger
+
+```
+
+Or while working in rails you only want to add a marker to the Rails.logger do this:
+```ruby
+debug_me(logger: Rails.logger, tag: 'Hello World')
+```
+
+If you are working in Rails and want to use both the standard `debug_me` functions and occassionally put stuff into the Rails.logger but do not want to always remember the option settings then do something line this in a `config/initializers/aaaaa_debug_me.rb` file:
+
+```ruby
+# config/initializers/aaaaa_debug_me.rb
+
+require 'debug_me'
+
+module DebugMe
+  def log_me(message, options={}, &block)
+    options = {logger: Rails.logger, time: false, header: false, tag: message}
+    block_given? ? debug_me(options, block) : debug_me(options)
+  end
+end
+
+include DebugMe
+
+# Just setup the base name.  The parent path will be added below ...
+debug_me_file_name  = 'debug_me'
+
+# NOTE: you could add a timestamp to the filename
+# debug_me_file_name += '_' + Time.now.strftime('%Y%m%d%H%M%S')
+
+debug_me_file_name += '_' + Process.argv0.gsub('/',' ').split(' ').last
+# NOTE: by using the Process.argv0 ... you get multiple log files for
+#       rails, rake, sidekiq etc.
+
+debug_me_file_name += '.log'
+
+debug_me_filepath = Rails.root + 'log' + debug_me_file_name
+
+debug_me_file = File.open(debug_me_filepath, 'w')
+
+debug_me_file.puts <<~RULER
+
+  ==================== Starting New Test Run --------->>>>>>
+
+RULER
+
+# Set application wide options in the DebugMeDefaultOptions hash
+DebugMeDefaultOptions[:file] = debug_me_file
+
+debug_me{['ENV']}
+
+```
+
+What that does for your Rails application is dump all of your system environment variables and their values to a debug_me log file in the log directory of the application.
+
+It also adds a new method `log_me` which you can use to send stuff to the `Rails.logger` instance.  The method used by `debug_me` for the `logger` instance is always the `debug` method.
+
+## Conclusion
 
 The rest of the default options are obvious.
 
