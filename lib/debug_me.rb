@@ -6,6 +6,7 @@ DebugMeDefaultOptions = {
   time:   true,     # Include a time-stamp in front of the tag
   strftime:  '%Y-%m-%d %H:%M:%S.%6N', # timestamp format
   header: true,     # Print a header string before printing the variables
+  levels: 0,        # Number of additional backtrack entries to display
   lvar:   true,     # Include local variables
   ivar:   true,     # Include instance variables in the output
   cvar:   true,     # Include class variables in the output
@@ -31,10 +32,18 @@ module DebugMe
     s = ''
     s += Time.now.strftime(options[:strftime])+' ' if options[:time]
     s += "#{options[:tag]}"
-    wf = caller # where_from under 1.8.6 its a stack trace array under 1.8.7 is a string
-    wf = wf[0] if 'Array' == wf.class.to_s
+    bt = caller # where_from under 1.8.6 its a stack trace array under 1.8.7+ as a string
 
-    out_string = sprintf("%s Source: %s\n",s,wf) if options[:header]
+    if options[:header]
+      cf = bt.is_a?(Array) ? bt[0] : bt
+      out_string = sprintf("%s Source:  %s\n", s, cf)
+      if options[:levels] > 0
+        levels = options[:levels].to_i
+        bt[1..levels].each_with_index do |cff, level|
+          out_string += sprintf("%s Source: FROM (%02d) : %s\n", s, level, cff)
+        end
+      end
+    end
 
     if block_given?
 

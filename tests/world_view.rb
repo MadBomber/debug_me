@@ -30,4 +30,14 @@ class WorldView
       cconst: true
     ){}
   end
+
+  def one;    two;    end
+  def two;    three;  end
+  def three;  four;   end
+  def four;   five;   end
+  def five;   six;    end
+
+  def six
+    debug_me(tag:'How did I get here?', levels: 5)
+  end
 end # class WorldView

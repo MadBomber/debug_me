@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'awesome_print'
+require 'amazing_print'
 require 'logger'
 require 'pathname'
 
@@ -37,6 +37,27 @@ describe DebugMe do
     end
 
   end # describe "source header included" do
+
+
+
+  describe "Add more from the call stack" do
+
+    before do
+      @my_world_view = WorldView.new
+    end
+
+    it 'supports multiple levels from the call stack' do
+      result = @my_world_view.one
+      # debug_me returns everything as one big long string
+      # with embedded new lines.  In the WorldView class
+      # method six is called from five, which is called from four, three, two, one.
+      # The ":levels" options is set to 5 so expect the
+      # normal source header followed by 5 additional
+      # entries from the call stack.
+      assert_equal(result.split("\n").size, 6)
+    end
+  end
+
 
   describe "source header excluded" do
 

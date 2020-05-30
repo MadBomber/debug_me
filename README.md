@@ -15,6 +15,7 @@ DebugMe::debug_me(){} works with local, instance and class variables.
 
 ## Recent Changes
 
+* 1.0.6 Added support for variable backtrack length via the :levels option
 * 1.0.5 Added support for an instance of a Logger class.
 * 1.0.4 Added :strftime to the options; changed the default format from decimal seconds since epic to something that is more easy comprehend on a clock.
 
@@ -43,6 +44,8 @@ include DebugMe
 debug_me # Prints only the header banner consisting of tag, method name, file name and line number
 
 debug_me('INFO') # Also prints only the header but with a different tag
+
+debug_me(levels: 5) # Along with the header, show the call stack back this many levels
 
 debug_me {} # prints the default header and __ALL__ variables
 
@@ -101,6 +104,7 @@ DebugMeDefaultOptions = {
   time:   true,     # Include a time-stamp in front of the tag
   strftime:  '%Y-%m-%d %H:%M:%S.%6N', # timestamp format
   header: true,     # Print a header string before printing the variables
+  levels: 0,        # Number of additional backtrack entries to display
   lvar:   true,     # Include local variables
   ivar:   true,     # Include instance variables in the output
   cvar:   true,     # Include class variables in the output
