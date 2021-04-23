@@ -4,5 +4,5 @@ module DebugMe
   # to get direct access to the debug_me method without
   # poluting your code with an object name that is so
   # common.
-  DEBUG_ME_VERSION = '1.0.6'
+  DEBUG_ME_VERSION = '1.1.0'
 end

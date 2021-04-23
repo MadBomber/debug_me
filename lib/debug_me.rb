@@ -7,6 +7,8 @@ DebugMeDefaultOptions = {
   strftime:  '%Y-%m-%d %H:%M:%S.%6N', # timestamp format
   header: true,     # Print a header string before printing the variables
   levels: 0,        # Number of additional backtrack entries to display
+  skip1:  false,    # skip 1 lines between different outputs
+  skip2:  false,    # skip 2 lines between different outputs
   lvar:   true,     # Include local variables
   ivar:   true,     # Include instance variables in the output
   cvar:   true,     # Include class variables in the output
@@ -25,7 +27,10 @@ module DebugMe
       options = DebugMeDefaultOptions.merge(tag: options)
     end
 
-    out_string = ''
+    skip        = ''
+    skip        = "\n"    if options[:skip1]
+    skip        = "\n\n"  if options[:skip2]
+    out_string  = ''
 
     f = options[:file]
     l = options[:logger]
@@ -33,24 +38,29 @@ module DebugMe
     s += Time.now.strftime(options[:strftime])+' ' if options[:time]
     s += "#{options[:tag]}"
     bt = caller # where_from under 1.8.6 its a stack trace array under 1.8.7+ as a string
+    bt_out = []
 
     if options[:header]
       cf = bt.is_a?(Array) ? bt[0] : bt
-      out_string = sprintf("%s Source:  %s\n", s, cf)
+      out_string = sprintf("%s Source:  %s\n", skip+s, cf)
       if options[:levels] > 0
         levels = options[:levels].to_i
-        bt[1..levels].each_with_index do |cff, level|
-          out_string += sprintf("%s Source: FROM (%02d) : %s\n", s, level, cff)
+        bt[1..levels].each_with_index do |cff, level |
+          bt_out << [level, cff]
         end
       end
     end
 
-    if block_given?
-
-      block_value = [block.call].flatten.compact
+    if block_given? || bt_out.size > 0
+      block_value = []
+      block_value << 'backtrace' if bt_out.size > 0
+      if block_given?
+        [block.call].flatten.compact.each do |v|
+          block_value << v
+        end
+      end
 
       if block_value.empty?
-        block_value = []
         block_value += [eval('local_variables', block.binding)] if options[:lvar]
         block_value += [eval('instance_variables', block.binding)] if options[:ivar]
         block_value += [self.class.send('class_variables')] if options[:cvar]
@@ -61,7 +71,12 @@ module DebugMe
       block_value.map!(&:to_s)
 
       block_value.each do |v|
-        ev = eval("defined?(#{v})",block.binding).nil? ? '<undefined>' : eval(v, block.binding)
+
+        ev  = if 'backtrace' == v
+                bt_out.size > 0 ? bt_out : bt[1..10000]
+              else
+                eval("defined?(#{v})",block.binding).nil? ? '<undefined>' : eval(v, block.binding)
+              end
         out_string += sprintf( "%s %s -=> %s", s,v,ev.pretty_inspect)
       end
 
