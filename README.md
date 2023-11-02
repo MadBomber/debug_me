@@ -15,6 +15,7 @@ DebugMe::debug_me(){} works with local, instance and class variables.
 
 ## Recent Changes
 
+* 1.1.1 Added global constant $DEBUG_ME as a boolean; default is true. when false the debug_me method does nothing.
 * 1.1.0 Changes the output formatting w/r/t the use of levels option; add :backtrace option for full backtrace
 * 1.0.6 Added support for variable backtrack length via the :levels option
 * 1.0.5 Added support for an instance of a Logger class.

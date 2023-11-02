@@ -1,6 +1,8 @@
 require 'pp'
 require_relative 'debug_me/version'
 
+$DEBUG_ME = true
+
 DebugMeDefaultOptions = {
   tag:    'DEBUG',  # A tag to prepend to each output line
   time:   true,     # Include a time-stamp in front of the tag
@@ -20,6 +22,7 @@ DebugMeDefaultOptions = {
 
 module DebugMe
   def debug_me(options = {}, &block)
+    return unless $DEBUG_ME
 
     if 'Hash' == options.class.to_s
       options = DebugMeDefaultOptions.merge(options)
