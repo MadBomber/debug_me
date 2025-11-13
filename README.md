@@ -114,7 +114,29 @@ For production environments, consider using a proper logging framework with stru
 
 The `$DEBUG_ME` global variable provides a convenient way to enable or disable all `debug_me` output throughout your application without removing the code. This is particularly useful for production environments.
 
-### Basic Usage
+### Environment Variable Control (Recommended)
+
+The `DEBUG_ME` environment variable is automatically detected when the gem is loaded. This is the **recommended approach** for controlling debug output across environments without code changes.
+
+```bash
+# Disable debug output (production)
+export DEBUG_ME=false
+
+# Enable debug output (development)
+export DEBUG_ME=true
+
+# Or set inline when running your app
+DEBUG_ME=false bundle exec rails server
+```
+
+**Supported values:**
+- **Truthy** (enables output): `true`, `yes`, `1`, `on`, or any other value
+- **Falsy** (disables output): `false`, `no`, `0`, `off`, or empty string
+- **Not set**: Defaults to `true` (enabled)
+
+### Runtime Control
+
+You can also control `$DEBUG_ME` programmatically at runtime:
 
 ```ruby
 # Enable debug output (default)
@@ -129,24 +151,33 @@ When `$DEBUG_ME` is set to `false`:
 - No output is produced (even with custom file or logger options)
 - **The block is not evaluated**, so there's zero performance overhead
 
-### Production Setup
+### Production Setup Examples
 
-For Rails applications, add this to an initializer (e.g., `config/initializers/debug_me.rb`):
-
-```ruby
-require 'debug_me'
-
-# Only enable in development and test environments
-$DEBUG_ME = Rails.env.development? || Rails.env.test?
+**Docker/Container deployment:**
+```dockerfile
+# Dockerfile
+ENV DEBUG_ME=false
 ```
 
-For non-Rails applications:
+**Systemd service:**
+```ini
+[Service]
+Environment="DEBUG_ME=false"
+```
+
+**Heroku:**
+```bash
+heroku config:set DEBUG_ME=false
+```
+
+**For Rails with fallback** (only if ENV not set):
 
 ```ruby
+# config/initializers/debug_me.rb
 require 'debug_me'
 
-# Only enable when DEBUG environment variable is set
-$DEBUG_ME = ENV['DEBUG'] == 'true'
+# Override only if not already set by environment
+$DEBUG_ME = Rails.env.development? || Rails.env.test? unless ENV.key?('DEBUG_ME')
 ```
 
 ### Benefits

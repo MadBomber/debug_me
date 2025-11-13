@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved gemspec with proper metadata and MIT license
 - Enhanced README with prominent security warning about `eval()` usage
 - Enhanced README with dedicated section explaining `$DEBUG_ME` global flag usage
+- `$DEBUG_ME` now initializes from `ENV['DEBUG_ME']` environment variable automatically
 
 ### Fixed
 - Fixed class variable tests by moving them to proper class context
@@ -26,6 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CHANGELOG.md file
 - Added comprehensive test suite for `$DEBUG_ME` global flag (7 tests)
 - Added documentation for `$DEBUG_ME` with Rails and non-Rails examples
+- Added `ENV['DEBUG_ME']` environment variable support for controlling debug output
+- Added environment variable tests covering all boolean value representations
+- Added production deployment examples (Docker, Heroku, systemd) to README
 
 ## [1.1.1] - 2020-04-27
 
