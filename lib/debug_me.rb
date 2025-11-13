@@ -1,7 +1,14 @@
 require 'pp'
 require_relative 'debug_me/version'
 
-$DEBUG_ME = true
+# Initialize $DEBUG_ME from environment variable or default to true
+# Supports common boolean representations: true/false, yes/no, 1/0, on/off
+if ENV.key?('DEBUG_ME')
+  env_value = ENV['DEBUG_ME'].to_s.downcase
+  $DEBUG_ME = !['false', 'no', '0', 'off', ''].include?(env_value)
+else
+  $DEBUG_ME = true
+end
 
 DebugMeDefaultOptions = {
   tag:    'DEBUG',  # A tag to prepend to each output line
@@ -20,11 +27,14 @@ DebugMeDefaultOptions = {
   file:   $stdout   # The output file
 }
 
+# Maximum number of backtrace entries to show
+DEBUG_ME_MAX_BACKTRACE = 10000
+
 module DebugMe
   def debug_me(options = {}, &block)
     return unless $DEBUG_ME
 
-    if 'Hash' == options.class.to_s
+    if options.is_a?(Hash)
       options = DebugMeDefaultOptions.merge(options)
     else
       options = DebugMeDefaultOptions.merge(tag: options)
@@ -76,7 +86,7 @@ module DebugMe
       block_value.each do |v|
 
         ev  = if 'backtrace' == v
-                bt_out.size > 0 ? bt_out : bt[1..10000]
+                bt_out.size > 0 ? bt_out : bt[1..DEBUG_ME_MAX_BACKTRACE]
               else
                 eval("defined?(#{v})",block.binding).nil? ? '<undefined>' : eval(v, block.binding)
               end
@@ -96,8 +106,4 @@ module DebugMe
 
     return out_string
   end ## def debug_me( options={}, &block )
-
-  # def log_me(msg, opts={})
-  #   debug_me({tag: msg, header: false}.merge(opts))
-  # end
 end # module DebugMe

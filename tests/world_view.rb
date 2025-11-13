@@ -40,4 +40,23 @@ class WorldView
   def six
     debug_me(tag:'How did I get here?', levels: 5)
   end
+
+  def test_single_class_var
+    debug_me(file:nil, header:false){:@@d}
+  end
+
+  def test_multiple_class_vars
+    debug_me(file:nil, header:false){[:@@d, :@@e, :@@f]}
+  end
+
+  def test_all_class_vars
+    debug_me(
+      file:nil,
+      header:false,
+      lvar: false,
+      ivar: false,
+      cvar: true,
+      cconst: false
+    ){}
+  end
 end # class WorldView

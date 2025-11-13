@@ -97,6 +97,118 @@ debug_me {[
 
 ```
 
+## Security Warning
+
+**IMPORTANT:** `debug_me` uses `eval()` to evaluate the symbols and strings you pass to it in the context of the caller. This provides powerful flexibility but comes with significant security implications:
+
+- **Never** pass untrusted input to `debug_me`
+- **Never** use `debug_me` with user-supplied data or parameters
+- Only use `debug_me` during development and testing
+- Remove or disable `debug_me` calls in production code (use `$DEBUG_ME = false`)
+
+The ability to execute arbitrary code is by design for debugging flexibility, but it means any string passed to `debug_me` will be evaluated as Ruby code. Treat this tool with the same caution you would any `eval()` statement.
+
+For production environments, consider using a proper logging framework with structured logging instead of `debug_me`.
+
+## Disabling Debug Output with $DEBUG_ME
+
+The `$DEBUG_ME` global variable provides a convenient way to enable or disable all `debug_me` output throughout your application without removing the code. This is particularly useful for production environments.
+
+### Environment Variable Control (Recommended)
+
+The `DEBUG_ME` environment variable is automatically detected when the gem is loaded. This is the **recommended approach** for controlling debug output across environments without code changes.
+
+```bash
+# Disable debug output (production)
+export DEBUG_ME=false
+
+# Enable debug output (development)
+export DEBUG_ME=true
+
+# Or set inline when running your app
+DEBUG_ME=false bundle exec rails server
+```
+
+**Supported values:**
+- **Truthy** (enables output): `true`, `yes`, `1`, `on`, or any other value
+- **Falsy** (disables output): `false`, `no`, `0`, `off`, or empty string
+- **Not set**: Defaults to `true` (enabled)
+
+### Runtime Control
+
+You can also control `$DEBUG_ME` programmatically at runtime:
+
+```ruby
+# Enable debug output (default)
+$DEBUG_ME = true
+
+# Disable all debug_me output
+$DEBUG_ME = false
+```
+
+When `$DEBUG_ME` is set to `false`:
+- All `debug_me` calls return `nil` immediately
+- No output is produced (even with custom file or logger options)
+- **The block is not evaluated**, so there's zero performance overhead
+
+### Production Setup Examples
+
+**Docker/Container deployment:**
+```dockerfile
+# Dockerfile
+ENV DEBUG_ME=false
+```
+
+**Systemd service:**
+```ini
+[Service]
+Environment="DEBUG_ME=false"
+```
+
+**Heroku:**
+```bash
+heroku config:set DEBUG_ME=false
+```
+
+**For Rails with fallback** (only if ENV not set):
+
+```ruby
+# config/initializers/debug_me.rb
+require 'debug_me'
+
+# Override only if not already set by environment
+$DEBUG_ME = Rails.env.development? || Rails.env.test? unless ENV.key?('DEBUG_ME')
+```
+
+### Benefits
+
+- **Leave debug code in place**: No need to remove `debug_me` calls before deployment
+- **Zero overhead**: When disabled, blocks aren't evaluated, so no performance impact
+- **Easy toggling**: Can enable debugging in production temporarily if needed
+- **Security**: Prevents accidental debug output exposure in production
+
+### Example
+
+```ruby
+# Your code with debug_me calls
+def process_data(items)
+  debug_me { :items }  # Only outputs in development/test
+
+  result = items.map do |item|
+    debug_me { :item }  # Only outputs in development/test
+    transform(item)
+  end
+
+  debug_me { :result }  # Only outputs in development/test
+  result
+end
+
+# In production with $DEBUG_ME = false:
+# - No output produced
+# - No performance overhead
+# - Code works normally
+```
+
 ## Default Options
 
 The default options is a global constant `DebugMeDefaultOptions` that is outside of the `DebugMe` name space.  I did that so that if you do `include DebugMe` to make access to the method easier you could still have the constant with a function specific name that would be outside of anything that you may have already coded in you program.
