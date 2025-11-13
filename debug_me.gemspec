@@ -14,7 +14,16 @@ ways of debugging in a complex application.  But,
 you know, I keep returning to this little method
 time after time.  I guess that marks me as a geezer.'
   spec.homepage      = 'http://github.com/MadBomber/debug_me'
-  spec.license       = 'You want it, its yours'
+  spec.license       = 'MIT'
+
+  spec.required_ruby_version = '>= 2.3.0'
+
+  spec.metadata = {
+    'homepage_uri'      => 'https://github.com/MadBomber/debug_me',
+    'source_code_uri'   => 'https://github.com/MadBomber/debug_me',
+    'bug_tracker_uri'   => 'https://github.com/MadBomber/debug_me/issues',
+    'changelog_uri'     => 'https://github.com/MadBomber/debug_me/blob/master/CHANGELOG.md'
+  }
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
@@ -23,4 +32,6 @@ time after time.  I guess that marks me as a geezer.'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'amazing_print'
+  spec.add_development_dependency 'minitest', '~> 5.0'
 end

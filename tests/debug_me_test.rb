@@ -77,16 +77,16 @@ describe DebugMe do
       a,b,c = 1,2,3
       out_string = debug_me(file:nil,header:false){:a}
       assert out_string.include? "a -=> #{a}"
-      out_string.split("\n").size.must_equal 1
+      _(out_string.split("\n").size).must_equal 1
     end
 
-    it "supports multible variables" do
+    it "supports multiple variables" do
       a,b,c = 1,2,3
       out_string = debug_me(file:nil,header:false){[:a, :b, :c]}
       assert out_string.include? "a -=> #{a}"
       assert out_string.include? "b -=> #{b}"
       assert out_string.include? "c -=> #{c}"
-      out_string.split("\n").size.must_equal 3
+      _(out_string.split("\n").size).must_equal 3
     end
 
     it "shows all local variables" do
@@ -104,7 +104,7 @@ describe DebugMe do
       assert out_string.include? "c -=> #{c}"
       assert out_string.include? "out_string -=> "
 
-      out_string.split("\n").size.must_equal 4
+      _(out_string.split("\n").size).must_equal 4
     end
 
   end # describe "works with local variable" do
@@ -115,16 +115,16 @@ describe DebugMe do
       @a,@b,@c = 1,2,3
       out_string = debug_me(file:nil,header:false){:@a}
       assert out_string.include? "@a -=> #{@a}"
-      out_string.split("\n").size.must_equal 1
+      _(out_string.split("\n").size).must_equal 1
     end
 
-    it "supports multible variables" do
+    it "supports multiple variables" do
       @a,@b,@c = 1,2,3
       out_string = debug_me(file:nil,header:false){[:@a, :@b, :@c]}
       assert out_string.include? "@a -=> #{@a}"
       assert out_string.include? "@b -=> #{@b}"
       assert out_string.include? "@c -=> #{@c}"
-      out_string.split("\n").size.must_equal 3
+      _(out_string.split("\n").size).must_equal 3
     end
 
     it "shows all instance variables" do
@@ -141,8 +141,8 @@ describe DebugMe do
       assert out_string.include? "@b -=> #{@b}"
       assert out_string.include? "@c -=> #{@c}"
 
-      out_string.include?("out_string -=> ").must_equal false
-      out_string.split("\n").size.must_equal instance_variables.size
+      _(out_string.include?("out_string -=> ")).must_equal false
+      _(out_string.split("\n").size).must_equal instance_variables.size
     end
 
   end # describe "works with instance variable" do
@@ -151,41 +151,33 @@ describe DebugMe do
   describe "works with class variable" do
 
     it "supports a single variable" do
-      @@a,@@b,@@c = 1,2,3
-      out_string = debug_me(file:nil,header:false){:@@a}
-      assert out_string.include? "@@a -=> #{@@a}"
-      out_string.split("\n").size.must_equal 1
+      my_world_view = WorldView.new
+      out_string = my_world_view.test_single_class_var
+      assert out_string.include? "@@d -=> 4"
+      _(out_string.split("\n").size).must_equal 1
     end
 
-    it "supports multible variables" do
-      @@a,@@b,@@c = 1,2,3
-      out_string = debug_me(file:nil,header:false){[:@@a, :@@b, :@@c]}
-      assert out_string.include? "@@a -=> #{@@a}"
-      assert out_string.include? "@@b -=> #{@@b}"
-      assert out_string.include? "@@c -=> #{@@c}"
-      out_string.split("\n").size.must_equal 3
+    it "supports multiple variables" do
+      my_world_view = WorldView.new
+      out_string = my_world_view.test_multiple_class_vars
+      assert out_string.include? "@@d -=> 4"
+      assert out_string.include? "@@e -=> 5"
+      assert out_string.include? "@@f -=> 6"
+      _(out_string.split("\n").size).must_equal 3
     end
 
     it "shows all class variables" do
-      @@a,@@b,@@c = 1,2,3
-      @d = 4
-      out_string = debug_me(
-        file:nil,
-        header:false,
-        lvar: false,
-        ivar: false,
-        cvar: true,
-        cconst: false
-        ){}
+      my_world_view = WorldView.new
+      out_string = my_world_view.test_all_class_vars
 
-      assert out_string.include? "@@a -=> #{@@a}"
-      assert out_string.include? "@@b -=> #{@@b}"
-      assert out_string.include? "@@c -=> #{@@c}"
+      assert out_string.include? "@@d -=> 4"
+      assert out_string.include? "@@e -=> 5"
+      assert out_string.include? "@@f -=> 6"
 
-      out_string.include?("out_string -=> ").must_equal false
-      out_string.include?("@d -=> ").must_equal false
+      _(out_string.include?("out_string -=> ")).must_equal false
+      _(out_string.include?("@a -=> ")).must_equal false
 
-      out_string.split("\n").size.must_equal self.class.class_variables.size
+      _(out_string.split("\n").size).must_equal WorldView.class_variables.size
     end
 
   end # describe "works with class variable" do
@@ -197,16 +189,16 @@ describe DebugMe do
       A,B,C = 1,2,3
       out_string = debug_me(file:nil,header:false){:A}
       assert out_string.include? "A -=> #{A}"
-      out_string.split("\n").size.must_equal 1
+      _(out_string.split("\n").size).must_equal 1
     end
 
-    it "supports multible CONSTANTS" do
+    it "supports multiple CONSTANTS" do
       A,B,C = 1,2,3
       out_string = debug_me(file:nil,header:false){[:A, :B, :C]}
       assert out_string.include? "A -=> #{A}"
       assert out_string.include? "B -=> #{B}"
       assert out_string.include? "C -=> #{C}"
-      out_string.split("\n").size.must_equal 3
+      _(out_string.split("\n").size).must_equal 3
     end
 
   end # describe "works with CONSTANTS" do
@@ -221,16 +213,16 @@ describe DebugMe do
     it "supports a single class CONSTANT" do
       out_string = debug_me(file:nil,header:false){'WorldView::A'}
       assert out_string.include? "WorldView::A -=> #{WorldView::A}"
-      out_string.split("\n").size.must_equal 1
+      _(out_string.split("\n").size).must_equal 1
     end
 
-    it "supports multible class CONSTANTS" do
+    it "supports multiple class CONSTANTS" do
       out_string = debug_me(file:nil,header:false){[
         'WorldView::A', 'WorldView::B', 'WorldView::C']}
       assert out_string.include? "WorldView::A -=> #{WorldView::A}"
       assert out_string.include? "WorldView::B -=> #{WorldView::B}"
       assert out_string.include? "WorldView::C -=> #{WorldView::C}"
-      out_string.split("\n").size.must_equal 3
+      _(out_string.split("\n").size).must_equal 3
     end
 
     it "shows all class CONSTANTS" do
@@ -241,10 +233,10 @@ describe DebugMe do
       assert out_string.include? "C -=> #{WorldView::C}"
       assert out_string.include? 'MY_CONSTANT -=> "Jesus"'
 
-      out_string.include?("out_string -=> ").must_equal false
-      out_string.include?("@d -=> ").must_equal false
+      _(out_string.include?("out_string -=> ")).must_equal false
+      _(out_string.include?("@d -=> ")).must_equal false
 
-      out_string.split("\n").size.must_equal WorldView.constants.size
+      _(out_string.split("\n").size).must_equal WorldView.constants.size
     end
 
   end # describe "works with class CONSTANTS" do
@@ -252,12 +244,12 @@ describe DebugMe do
   describe "works with a Logger class" do
 
     it 'default logger class is nil' do
-      DebugMeDefaultOptions[:logger].must_equal nil
+      _(DebugMeDefaultOptions[:logger]).must_be_nil
     end
 
     it 'works with standard ruby Logger class' do
       logger_output_path = Pathname.pwd + 'logger_class_output.txt'
-      logger_output_path.exist?.must_equal false
+      _(logger_output_path.exist?).must_equal false
 
       logger        = Logger.new(logger_output_path)
       logger.level  = Logger::DEBUG
@@ -276,14 +268,14 @@ describe DebugMe do
 
       lines   = logger_output_path.read.split("\n")
 
-      lines.size.must_equal 2
+      _(lines.size).must_equal 2
 
-      lines[0].start_with?('# Logfile created on').must_equal   true
-      lines[1].start_with?('D, [').must_equal                   true
-      lines[1].include?('DEBUG').must_equal                     true
-      lines[1].include?('Hello World').must_equal               true
-      lines[1].include?('debug_me_test.rb').must_equal          true
-      lines[1].include?(out_string.chomp).must_equal            true
+      _(lines[0].start_with?('# Logfile created on')).must_equal   true
+      _(lines[1].start_with?('D, [')).must_equal                   true
+      _(lines[1].include?('DEBUG')).must_equal                     true
+      _(lines[1].include?('Hello World')).must_equal               true
+      _(lines[1].include?('debug_me_test.rb')).must_equal          true
+      _(lines[1].include?(out_string.chomp)).must_equal            true
 
       logger_output_path.delete
     end

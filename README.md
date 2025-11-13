@@ -97,6 +97,19 @@ debug_me {[
 
 ```
 
+## Security Warning
+
+**IMPORTANT:** `debug_me` uses `eval()` to evaluate the symbols and strings you pass to it in the context of the caller. This provides powerful flexibility but comes with significant security implications:
+
+- **Never** pass untrusted input to `debug_me`
+- **Never** use `debug_me` with user-supplied data or parameters
+- Only use `debug_me` during development and testing
+- Remove or disable `debug_me` calls in production code (use `$DEBUG_ME = false`)
+
+The ability to execute arbitrary code is by design for debugging flexibility, but it means any string passed to `debug_me` will be evaluated as Ruby code. Treat this tool with the same caution you would any `eval()` statement.
+
+For production environments, consider using a proper logging framework with structured logging instead of `debug_me`.
+
 ## Default Options
 
 The default options is a global constant `DebugMeDefaultOptions` that is outside of the `DebugMe` name space.  I did that so that if you do `include DebugMe` to make access to the method easier you could still have the constant with a function specific name that would be outside of anything that you may have already coded in you program.
