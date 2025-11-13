@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated test syntax for Minitest 6 compatibility
 - Improved gemspec with proper metadata and MIT license
 - Enhanced README with prominent security warning about `eval()` usage
+- Enhanced README with dedicated section explaining `$DEBUG_ME` global flag usage
 
 ### Fixed
 - Fixed class variable tests by moving them to proper class context
@@ -23,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added missing development dependencies (`amazing_print`, `minitest`)
 - Added `required_ruby_version` to gemspec
 - Added CHANGELOG.md file
+- Added comprehensive test suite for `$DEBUG_ME` global flag (7 tests)
+- Added documentation for `$DEBUG_ME` with Rails and non-Rails examples
 
 ## [1.1.1] - 2020-04-27
 

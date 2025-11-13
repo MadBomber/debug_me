@@ -110,6 +110,74 @@ The ability to execute arbitrary code is by design for debugging flexibility, bu
 
 For production environments, consider using a proper logging framework with structured logging instead of `debug_me`.
 
+## Disabling Debug Output with $DEBUG_ME
+
+The `$DEBUG_ME` global variable provides a convenient way to enable or disable all `debug_me` output throughout your application without removing the code. This is particularly useful for production environments.
+
+### Basic Usage
+
+```ruby
+# Enable debug output (default)
+$DEBUG_ME = true
+
+# Disable all debug_me output
+$DEBUG_ME = false
+```
+
+When `$DEBUG_ME` is set to `false`:
+- All `debug_me` calls return `nil` immediately
+- No output is produced (even with custom file or logger options)
+- **The block is not evaluated**, so there's zero performance overhead
+
+### Production Setup
+
+For Rails applications, add this to an initializer (e.g., `config/initializers/debug_me.rb`):
+
+```ruby
+require 'debug_me'
+
+# Only enable in development and test environments
+$DEBUG_ME = Rails.env.development? || Rails.env.test?
+```
+
+For non-Rails applications:
+
+```ruby
+require 'debug_me'
+
+# Only enable when DEBUG environment variable is set
+$DEBUG_ME = ENV['DEBUG'] == 'true'
+```
+
+### Benefits
+
+- **Leave debug code in place**: No need to remove `debug_me` calls before deployment
+- **Zero overhead**: When disabled, blocks aren't evaluated, so no performance impact
+- **Easy toggling**: Can enable debugging in production temporarily if needed
+- **Security**: Prevents accidental debug output exposure in production
+
+### Example
+
+```ruby
+# Your code with debug_me calls
+def process_data(items)
+  debug_me { :items }  # Only outputs in development/test
+
+  result = items.map do |item|
+    debug_me { :item }  # Only outputs in development/test
+    transform(item)
+  end
+
+  debug_me { :result }  # Only outputs in development/test
+  result
+end
+
+# In production with $DEBUG_ME = false:
+# - No output produced
+# - No performance overhead
+# - Code works normally
+```
+
 ## Default Options
 
 The default options is a global constant `DebugMeDefaultOptions` that is outside of the `DebugMe` name space.  I did that so that if you do `include DebugMe` to make access to the method easier you could still have the constant with a function specific name that would be outside of anything that you may have already coded in you program.
