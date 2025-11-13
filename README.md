@@ -2,10 +2,10 @@
 
 <table>
 <tr>
-<td width="200">
-<img src="debug_me.jpg" alt="DebugMe Logo" width="180"/>
+<td width="30%">
+<img src="debug_me.jpg" alt="DebugMe Logo"/>
 </td>
-<td>
+<td width="70%">
 
 ## A Classic Debugging Technique That Never Gets Old
 
@@ -19,33 +19,38 @@ Printing labeled variable values to STDOUT is one of the oldest and most fundame
 
 ---
 
-**Quick Start:** `debug_me { :my_variable }` — that's all you need to get started.
+## Quick Start
+
+```ruby
+gem install debug_me
+
+require 'debug_me'
+include DebugMe
+
+my_variable = 42
+
+debug_me { :my_variable } # Use a Symbol for the variable name
+
+# or if you have several variables you want to see ...
+debug_me { %i[ var1 var2 var3 var4 ]}
+```
 
 DebugMe::debug_me(){} works with local, instance and class variables.
 
-## Recent Changes
-
-* 1.1.1 Added global constant $DEBUG_ME as a boolean; default is true. when false the debug_me method does nothing.
-* 1.1.0 Changes the output formatting w/r/t the use of levels option; add :backtrace option for full backtrace
-* 1.0.6 Added support for variable backtrack length via the :levels option
-* 1.0.5 Added support for an instance of a Logger class.
-* 1.0.4 Added :strftime to the options; changed the default format from decimal seconds since epic to something that is more easy comprehend on a clock.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'debug_me'
+bundle add 'debug_me'
 ```
 
-And then execute:
+Or install it yourself:
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install debug_me
+```ruby
+gem install debug_me
+```
 
 ## Examples Usage
 
@@ -66,7 +71,7 @@ debug_me {} # prints the default header and __ALL__ variables
 
 debug_me {:just_this_variable} # prints the default header and the value of only one specific variable
 
-debug_me { [:this_one, :that_one, :that_other_one] } # prints default header and three specific variables
+debug_me { %i[ this_one that_one that_other_one ]} # prints default header and three specific variables
 
 # Use an array of symbols and strings to pass multiple variables for output
 # Each element of the array is 'eval'ed with the context binding of the caller
@@ -122,14 +127,14 @@ For production environments, consider using a proper logging framework with stru
 
 ## Disabling Debug Output with $DEBUG_ME
 
-The `$DEBUG_ME` global variable provides a convenient way to enable or disable all `debug_me` output throughout your application without removing the code. This is particularly useful for production environments.
+The `$DEBUG_ME` global variable provides a convenient way to enable or disable all `debug_me` output throughout your application without removing the code. This is particularly useful for QA environments.
 
 ### Environment Variable Control (Recommended)
 
 The `DEBUG_ME` environment variable is automatically detected when the gem is loaded. This is the **recommended approach** for controlling debug output across environments without code changes.
 
 ```bash
-# Disable debug output (production)
+# Disable debug output (QA)
 export DEBUG_ME=false
 
 # Enable debug output (development)
@@ -253,7 +258,6 @@ If you want the `debug_me` output to go to a real file:
 
 ```ruby
 DebugMeDefaultOptions[:file] = File.open('debug_me.log', 'w')
-
 ```
 
 ## Using a Logger class instance
@@ -261,7 +265,6 @@ DebugMeDefaultOptions[:file] = File.open('debug_me.log', 'w')
 If you are working in Rails and want all the `debug_me` output to go to the Rails.logger its as easy as:
 ```ruby
 DebugMeDefaultOptions[:logger] = Rails.logger
-
 ```
 
 Or while working in rails you only want to add a marker to the Rails.logger do this:
@@ -269,7 +272,7 @@ Or while working in rails you only want to add a marker to the Rails.logger do t
 debug_me(logger: Rails.logger, tag: 'Hello World')
 ```
 
-If you are working in Rails and want to use both the standard `debug_me` functions and occassionally put stuff into the Rails.logger but do not want to always remember the option settings then do something line this in a `config/initializers/aaaaa_debug_me.rb` file:
+If you are working in Rails and want to use both the standard `debug_me` functions and put stuff into the Rails.logger but do not want to always remember the option settings then do something line this in a `config/initializers/aaaaa_debug_me.rb` file:
 
 ```ruby
 # config/initializers/aaaaa_debug_me.rb
@@ -324,9 +327,9 @@ The rest of the default options are obvious.
 
 You can always over-ride the default options on a case by case basis like this:
 
-```
+```ruby
 debug_me {...}
-...
+# ...
 debug_me(header: false){...}
 ```
 

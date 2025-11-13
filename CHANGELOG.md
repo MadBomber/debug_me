@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2] - 2025-01-13
+
 ### Changed
 - Updated test syntax for Minitest 6 compatibility
 - Improved gemspec with proper metadata and MIT license
 - Enhanced README with prominent security warning about `eval()` usage
 - Enhanced README with dedicated section explaining `$DEBUG_ME` global flag usage
+- Enhanced README with visual header image and classic debugging technique description
 - `$DEBUG_ME` now initializes from `ENV['DEBUG_ME']` environment variable automatically
 
 ### Fixed
@@ -21,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed commented-out dead code
 
 ### Added
+- Added visual header image (debug_me.jpg) to README
 - Added `DEBUG_ME_MAX_BACKTRACE` constant for magic number
 - Added missing development dependencies (`amazing_print`, `minitest`)
 - Added `required_ruby_version` to gemspec
@@ -67,7 +71,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 See git history for changes in versions prior to 1.0.4.
 
-[Unreleased]: https://github.com/MadBomber/debug_me/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/MadBomber/debug_me/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/MadBomber/debug_me/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/MadBomber/debug_me/releases/tag/v1.1.1
 [1.1.0]: https://github.com/MadBomber/debug_me/releases/tag/v1.1.0
 [1.0.6]: https://github.com/MadBomber/debug_me/releases/tag/v1.0.6
