@@ -282,4 +282,89 @@ describe DebugMe do
 
   end
 
+  describe "$DEBUG_ME global flag" do
+
+    before do
+      # Save the original state
+      @original_debug_me = $DEBUG_ME
+    end
+
+    after do
+      # Restore the original state after each test
+      $DEBUG_ME = @original_debug_me
+    end
+
+    it 'is true by default' do
+      _($DEBUG_ME).must_equal true
+    end
+
+    it 'returns nil when $DEBUG_ME is false' do
+      $DEBUG_ME = false
+      a = 42
+      result = debug_me(file: nil, header: false) { :a }
+      _(result).must_be_nil
+    end
+
+    it 'produces no output when $DEBUG_ME is false' do
+      $DEBUG_ME = false
+      a = 42
+      result = debug_me(file: nil) { :a }
+      _(result).must_be_nil
+    end
+
+    it 'works normally when $DEBUG_ME is true' do
+      $DEBUG_ME = true
+      a = 42
+      result = debug_me(file: nil, header: false) { :a }
+      _(result).wont_be_nil
+      assert result.include?("a -=> 42")
+    end
+
+    it 'can be toggled on and off' do
+      # Start with it on
+      $DEBUG_ME = true
+      a = 42
+      result1 = debug_me(file: nil, header: false) { :a }
+      _(result1).wont_be_nil
+      assert result1.include?("a -=> 42")
+
+      # Turn it off
+      $DEBUG_ME = false
+      result2 = debug_me(file: nil, header: false) { :a }
+      _(result2).must_be_nil
+
+      # Turn it back on
+      $DEBUG_ME = true
+      result3 = debug_me(file: nil, header: false) { :a }
+      _(result3).wont_be_nil
+      assert result3.include?("a -=> 42")
+    end
+
+    it 'does not evaluate the block when disabled' do
+      $DEBUG_ME = false
+      side_effect = false
+
+      result = debug_me(file: nil) do
+        side_effect = true  # This should not execute
+        :dummy
+      end
+
+      _(result).must_be_nil
+      _(side_effect).must_equal false
+    end
+
+    it 'works with all debug_me features when enabled' do
+      $DEBUG_ME = true
+      @instance_var = 'test'
+      local_var = 'local'
+
+      result = debug_me(file: nil, header: false) { [:@instance_var, :local_var] }
+
+      _(result).wont_be_nil
+      assert result.include?('@instance_var')
+      assert result.include?('local_var')
+    end
+
+  end # describe "$DEBUG_ME global flag" do
+
 end # describe DebugMe do
