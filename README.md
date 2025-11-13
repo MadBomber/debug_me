@@ -1,15 +1,25 @@
 # DebugMe
 
-A tool to print the labeled value of variables.
+<table>
+<tr>
+<td width="200">
+<img src="debug_me.jpg" alt="DebugMe Logo" width="180"/>
+</td>
+<td>
 
-This thing is pretty old; but, so am I.  Even with the gray
-in our hair we still do the job.
+## A Classic Debugging Technique That Never Gets Old
 
-There are much more complex/comprehensive
-ways of debugging in a complex application.  But,
-you know, I keep returning to this little method
-time after time.  I guess that marks me as a geezer.
+Printing labeled variable values to STDOUT is one of the oldest and most fundamental debugging techniques in computer science. From the earliest days of programming, developers have relied on simple output statements to understand what their code is doing. While modern debuggers offer sophisticated features like breakpoints and step-through execution, there's something elegantly simple and universally effective about printing variables to see their values in real-time.
 
+**DebugMe** embraces this time-tested approach, making it effortless to inspect local, instance, and class variables with clearly labeled output. Sometimes the old ways are the best ways.
+
+</td>
+</tr>
+</table>
+
+---
+
+**Quick Start:** `debug_me { :my_variable }` — that's all you need to get started.
 
 DebugMe::debug_me(){} works with local, instance and class variables.
 
