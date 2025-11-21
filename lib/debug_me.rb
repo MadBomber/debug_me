@@ -7,7 +7,7 @@ if ENV.key?('DEBUG_ME')
   env_value = ENV['DEBUG_ME'].to_s.downcase
   $DEBUG_ME = !['false', 'no', '0', 'off', ''].include?(env_value)
 else
-  $DEBUG_ME = true
+  $DEBUG_ME = true if $DEBUG_ME.nil?
 end
 
 DebugMeDefaultOptions = {
