@@ -3,7 +3,7 @@
 <table>
 <tr>
 <td width="30%">
-<img src="debug_me.jpg" alt="DebugMe Logo"/>
+<img src="docs/assets/debug_me.jpg" alt="DebugMe Logo"/>
 </td>
 <td width="70%">
 
