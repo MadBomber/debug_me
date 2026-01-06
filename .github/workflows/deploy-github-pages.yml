@@ -2,8 +2,7 @@ name: Deploy Documentation to GitHub Pages
 on:
   push:
     branches:
-      - main
-      - develop
+      - master
     paths:
       - "docs/**"
       - "mkdocs.yml"
