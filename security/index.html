@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -33,10 +33,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -1398,10 +1398,10 @@
 <p>DebugMe uses <code>eval()</code> to evaluate the string in the caller's binding. If <code>user_input</code> contains malicious code, it will be executed.</p>
 <h3 id="attack-example">Attack Example<a class="headerlink" href="#attack-example" title="Permanent link">&para;</a></h3>
 <div class="language-ruby highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># If user_input contains:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">user_input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;system(&#39;rm -rf /&#39;)&quot;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">user_input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"system('rm -rf /')"</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># This would execute the system command:</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">user_input</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1"># Executes: system(&#39;rm -rf /&#39;)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">user_input</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1"># Executes: system('rm -rf /')</span>
 </span></code></pre></div>
 <h2 id="safe-usage-guidelines">Safe Usage Guidelines<a class="headerlink" href="#safe-usage-guidelines" title="Permanent link">&para;</a></h2>
 <h3 id="do">Do<a class="headerlink" href="#do" title="Permanent link">&para;</a></h3>
@@ -1416,7 +1416,7 @@
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">[</span><span class="ss">:var1</span><span class="p">,</span><span class="w"> </span><span class="ss">:var2</span><span class="o">]</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Safe: hardcoded strings</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">&#39;object.method&#39;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'object.method'</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="dont">Don't<a class="headerlink" href="#dont" title="Permanent link">&para;</a></h3>
 <ul>
@@ -1427,7 +1427,7 @@
 <div class="language-ruby highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># DANGEROUS: user-controlled input</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">params</span><span class="o">[</span><span class="ss">:field</span><span class="o">]</span><span class="w"> </span><span class="p">}</span><span class="w">          </span><span class="c1"># Never do this!</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">user</span><span class="o">.</span><span class="n">selected_field</span><span class="w"> </span><span class="p">}</span><span class="w">     </span><span class="c1"># Never do this!</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">[</span><span class="s1">&#39;X-Debug-Field&#39;</span><span class="o">]</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1"># Never do this!</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">[</span><span class="s1">'X-Debug-Field'</span><span class="o">]</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1"># Never do this!</span>
 </span></code></pre></div>
 <h2 id="production-deployment">Production Deployment<a class="headerlink" href="#production-deployment" title="Permanent link">&para;</a></h2>
 <h3 id="disable-debug-output">Disable Debug Output<a class="headerlink" href="#disable-debug-output" title="Permanent link">&para;</a></h3>
@@ -1447,7 +1447,7 @@
 </span></code></pre></div>
 <h3 id="systemd-service">Systemd Service<a class="headerlink" href="#systemd-service" title="Permanent link">&para;</a></h3>
 <div class="language-ini highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">[Service]</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="na">Environment</span><span class="o">=</span><span class="s">&quot;DEBUG_ME=false&quot;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="na">Environment</span><span class="o">=</span><span class="s">"DEBUG_ME=false"</span>
 </span></code></pre></div>
 <h2 id="code-review-checklist">Code Review Checklist<a class="headerlink" href="#code-review-checklist" title="Permanent link">&para;</a></h2>
 <p>When reviewing code that uses DebugMe, check for:</p>
@@ -1473,15 +1473,15 @@
 <h3 id="3-audit-regular-expressions">3. Audit Regular Expressions<a class="headerlink" href="#3-audit-regular-expressions" title="Permanent link">&para;</a></h3>
 <p>Search your codebase for potentially unsafe patterns:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Find debug_me calls with variables (potential risks)</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;debug_me.*{.*[^:]&quot;</span><span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;*.rb&quot;</span><span class="w"> </span>.
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">"debug_me.*{.*[^:]"</span><span class="w"> </span>--include<span class="o">=</span><span class="s2">"*.rb"</span><span class="w"> </span>.
 </span></code></pre></div>
 <h3 id="4-remove-before-deployment">4. Remove Before Deployment<a class="headerlink" href="#4-remove-before-deployment" title="Permanent link">&para;</a></h3>
 <p>Consider using a pre-commit hook or CI check to warn about <code>debug_me</code> calls:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="ch">#!/bin/bash</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># .git/hooks/pre-commit</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">if</span><span class="w"> </span>git<span class="w"> </span>diff<span class="w"> </span>--cached<span class="w"> </span>--name-only<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>grep<span class="w"> </span>-l<span class="w"> </span><span class="s2">&quot;debug_me&quot;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="p">;</span><span class="w"> </span><span class="k">then</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Warning: debug_me calls found in staged files&quot;</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Consider removing before production deployment&quot;</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">if</span><span class="w"> </span>git<span class="w"> </span>diff<span class="w"> </span>--cached<span class="w"> </span>--name-only<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>grep<span class="w"> </span>-l<span class="w"> </span><span class="s2">"debug_me"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Warning: debug_me calls found in staged files"</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Consider removing before production deployment"</span>
 </span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="k">fi</span>
 </span></code></pre></div>
 <h2 id="comparison-with-alternatives">Comparison with Alternatives<a class="headerlink" href="#comparison-with-alternatives" title="Permanent link">&para;</a></h2>
@@ -1611,10 +1611,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.path", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "1.1.4"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.path", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "1.1.4"}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>

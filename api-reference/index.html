@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -33,10 +33,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -1521,7 +1521,7 @@
 <h2 id="module-debugme">Module: DebugMe<a class="headerlink" href="#module-debugme" title="Permanent link">&para;</a></h2>
 <p>The main module providing debugging functionality.</p>
 <h3 id="including-the-module">Including the Module<a class="headerlink" href="#including-the-module" title="Permanent link">&para;</a></h3>
-<div class="language-ruby highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">require</span><span class="w"> </span><span class="s1">&#39;debug_me&#39;</span>
+<div class="language-ruby highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">require</span><span class="w"> </span><span class="s1">'debug_me'</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kp">include</span><span class="w"> </span><span class="no">DebugMe</span>
 </span></code></pre></div>
 <p>After including, the <code>debug_me</code> method becomes available in the current scope.</p>
@@ -1561,13 +1561,13 @@
 <h3 id="shorthand-syntax">Shorthand Syntax<a class="headerlink" href="#shorthand-syntax" title="Permanent link">&para;</a></h3>
 <p>When the first argument is a string, it's used as the <code>tag</code> option:</p>
 <div class="language-ruby highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># These calls are equivalent:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">debug_me</span><span class="p">(</span><span class="ss">tag</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:status</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">debug_me</span><span class="p">(</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:status</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">debug_me</span><span class="p">(</span><span class="ss">tag</span><span class="p">:</span><span class="w"> </span><span class="s1">'INFO'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:status</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">debug_me</span><span class="p">(</span><span class="s1">'INFO'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:status</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Shorthand with additional options:</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">debug_me</span><span class="p">(</span><span class="s1">&#39;TRACE&#39;</span><span class="p">,</span><span class="w"> </span><span class="ss">levels</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="ss">time</span><span class="p">:</span><span class="w"> </span><span class="kp">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:data</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">debug_me</span><span class="p">(</span><span class="s1">'TRACE'</span><span class="p">,</span><span class="w"> </span><span class="ss">levels</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="ss">time</span><span class="p">:</span><span class="w"> </span><span class="kp">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:data</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Same as:</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">debug_me</span><span class="p">(</span><span class="ss">tag</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;TRACE&#39;</span><span class="p">,</span><span class="w"> </span><span class="ss">levels</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="ss">time</span><span class="p">:</span><span class="w"> </span><span class="kp">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:data</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">debug_me</span><span class="p">(</span><span class="ss">tag</span><span class="p">:</span><span class="w"> </span><span class="s1">'TRACE'</span><span class="p">,</span><span class="w"> </span><span class="ss">levels</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="ss">time</span><span class="p">:</span><span class="w"> </span><span class="kp">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:data</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="options-hash">Options Hash<a class="headerlink" href="#options-hash" title="Permanent link">&para;</a></h3>
 <table>
@@ -1702,7 +1702,7 @@
 <p>Returns the output string if <code>$DEBUG_ME</code> is <code>true</code>, otherwise returns <code>nil</code>.</p>
 <h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
 <div class="language-ruby highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Single variable</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Alice&quot;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Alice"</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:name</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Multiple variables</span>
@@ -1716,14 +1716,14 @@
 </span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">[</span><span class="ss">:@@counter</span><span class="o">]</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
 </span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c1"># Expressions</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">&#39;array.size&#39;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">[</span><span class="s1">&#39;hash.keys&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;hash.values&#39;</span><span class="o">]</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'array.size'</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">[</span><span class="s1">'hash.keys'</span><span class="p">,</span><span class="w"> </span><span class="s1">'hash.values'</span><span class="o">]</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
 </span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="c1"># All local variables</span>
 </span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{}</span>
 </span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
 </span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="c1"># With options</span>
-</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="n">debug_me</span><span class="p">(</span><span class="ss">tag</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;INFO&#39;</span><span class="p">,</span><span class="w"> </span><span class="ss">levels</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:data</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="n">debug_me</span><span class="p">(</span><span class="ss">tag</span><span class="p">:</span><span class="w"> </span><span class="s1">'INFO'</span><span class="p">,</span><span class="w"> </span><span class="ss">levels</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:data</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
 <hr />
 <h2 id="global-variable-debug_me">Global Variable: $DEBUG_ME<a class="headerlink" href="#global-variable-debug_me" title="Permanent link">&para;</a></h2>
@@ -1808,9 +1808,9 @@
 <p>The default options hash used when options are not specified.</p>
 <h3 id="default-values">Default Values<a class="headerlink" href="#default-values" title="Permanent link">&para;</a></h3>
 <div class="language-ruby highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="no">DebugMeDefaultOptions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="ss">tag</span><span class="p">:</span><span class="w">       </span><span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="ss">tag</span><span class="p">:</span><span class="w">       </span><span class="s1">'DEBUG'</span><span class="p">,</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="ss">time</span><span class="p">:</span><span class="w">      </span><span class="kp">true</span><span class="p">,</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="ss">strftime</span><span class="p">:</span><span class="w">  </span><span class="s1">&#39;%Y-%m-%d %H:%M:%S.%6N&#39;</span><span class="p">,</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="ss">strftime</span><span class="p">:</span><span class="w">  </span><span class="s1">'%Y-%m-%d %H:%M:%S.%6N'</span><span class="p">,</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="ss">header</span><span class="p">:</span><span class="w">    </span><span class="kp">true</span><span class="p">,</span>
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="ss">levels</span><span class="p">:</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span>
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span><span class="ss">skip1</span><span class="p">:</span><span class="w">     </span><span class="kp">false</span><span class="p">,</span>
@@ -1825,7 +1825,7 @@
 </span></code></pre></div>
 <h3 id="modifying-defaults">Modifying Defaults<a class="headerlink" href="#modifying-defaults" title="Permanent link">&para;</a></h3>
 <div class="language-ruby highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Change default tag</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="no">DebugMeDefaultOptions</span><span class="o">[</span><span class="ss">:tag</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;TRACE&#39;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="no">DebugMeDefaultOptions</span><span class="o">[</span><span class="ss">:tag</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'TRACE'</span>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Disable timestamps by default</span>
 </span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="no">DebugMeDefaultOptions</span><span class="o">[</span><span class="ss">:time</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kp">false</span>
@@ -1844,8 +1844,8 @@
 <h3 id="with-backtrace">With Backtrace<a class="headerlink" href="#with-backtrace" title="Permanent link">&para;</a></h3>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>   caller(0) -=&gt;
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>      file1.rb:10:in `method_a&#39;
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>      file2.rb:20:in `method_b&#39;
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>      file1.rb:10:in `method_a'
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>      file2.rb:20:in `method_b'
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>   variable_name -=&gt; value
 </span></code></pre></div>
 <h3 id="multiple-variables">Multiple Variables<a class="headerlink" href="#multiple-variables" title="Permanent link">&para;</a></h3>
@@ -1856,8 +1856,8 @@
 </span></code></pre></div>
 <hr />
 <h2 id="version-information">Version Information<a class="headerlink" href="#version-information" title="Permanent link">&para;</a></h2>
-<div class="language-ruby highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">require</span><span class="w"> </span><span class="s1">&#39;debug_me/version&#39;</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="no">DebugMe</span><span class="o">::</span><span class="no">VERSION</span><span class="w">  </span><span class="c1"># =&gt; &quot;1.1.4&quot;</span>
+<div class="language-ruby highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">require</span><span class="w"> </span><span class="s1">'debug_me/version'</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="no">DebugMe</span><span class="o">::</span><span class="no">VERSION</span><span class="w">  </span><span class="c1"># =&gt; "1.1.4"</span>
 </span></code></pre></div>
 
 
@@ -1928,10 +1928,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.path", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "1.1.4"}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.path", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "1.1.4"}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>
