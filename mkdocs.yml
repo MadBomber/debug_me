@@ -5,7 +5,7 @@ site_url: "https://madbomber.github.io/debug_me/"
 
 repo_name: "MadBomber/debug_me"
 repo_url: "https://github.com/MadBomber/debug_me"
-edit_uri: "edit/master/docs/"
+edit_uri: "edit/main/docs/"
 
 theme:
   name: material

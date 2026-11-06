@@ -22,7 +22,7 @@ time after time.  I guess that marks me as a geezer.'
     'homepage_uri'      => 'https://github.com/MadBomber/debug_me',
     'source_code_uri'   => 'https://github.com/MadBomber/debug_me',
     'bug_tracker_uri'   => 'https://github.com/MadBomber/debug_me/issues',
-    'changelog_uri'     => 'https://github.com/MadBomber/debug_me/blob/master/CHANGELOG.md'
+    'changelog_uri'     => 'https://github.com/MadBomber/debug_me/blob/main/CHANGELOG.md'
   }
 
   spec.files         = `git ls-files -z`.split("\x0")
