@@ -4,7 +4,7 @@ DebugMe provides extensive configuration options through the `DebugMeDefaultOpti
 
 ## Including the Module
 
-The `debug_me` method is an instance method of the `DebugMe` module, so it is only available to objects that include or `extend` the module. There is no module-level `DebugMe.debug_me`: unless a top-level `include DebugMe` has run, calling it raises `NoMethodError`.
+The `debug_me` method is an instance method of the `DebugMe` module, so it is only available inside classes that include the module (or objects that `extend` it). There is no module-level `DebugMe.debug_me`: unless a top-level `include DebugMe` has run, calling it raises `NoMethodError`.
 
 ### Include at Kernel Level (Global)
 
