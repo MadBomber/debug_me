@@ -78,6 +78,24 @@ describe DebugMe do
 
   end # describe "source header excluded" do
 
+
+  describe "String tag shorthand" do
+
+    it "accepts other options after the String tag" do
+      answer = 42
+      out_string = debug_me('MYTAG', file: nil, time: false, header: false) { :answer }
+      _(out_string).must_equal "MYTAG answer -=> 42\n"
+    end
+
+    it "lets keyword options supplement a positional options Hash" do
+      answer = 42
+      out_string = debug_me({ tag: 'MYTAG', file: nil }, time: false, header: false) { :answer }
+      _(out_string).must_equal "MYTAG answer -=> 42\n"
+    end
+
+  end # describe "String tag shorthand" do
+
+
   describe "works with local variable" do
 
     it "supports a single variable" do
