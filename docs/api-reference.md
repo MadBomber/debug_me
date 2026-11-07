@@ -218,7 +218,7 @@ DebugMeDefaultOptions[:time] = false
 DEBUG_ME_MAX_BACKTRACE → Integer
 ```
 
-Maximum number of backtrace levels that can be displayed. Default: `15`
+Maximum number of backtrace levels that can be displayed. Value: `10000`
 
 ---
 
@@ -256,5 +256,5 @@ TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
 
 ```ruby
 require 'debug_me/version'
-DebugMe::VERSION  # => "1.1.4"
+DebugMe::DEBUG_ME_VERSION  # => "1.1.4"
 ```

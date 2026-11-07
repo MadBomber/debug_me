@@ -74,7 +74,6 @@ DebugMeDefaultOptions.merge!(
     - **Controllers only**: Include in `ApplicationController`
     - **Models only**: Include in `ApplicationRecord`
     - **Specific classes**: Include only where needed
-    - **No include**: Use `DebugMe.debug_me { :var }` anywhere
 
     See [Configuration](configuration.md#including-the-module) for detailed examples.
 

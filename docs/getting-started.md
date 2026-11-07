@@ -37,7 +37,6 @@ The `include DebugMe` statement makes the `debug_me` method available in your cu
     - **Top level** (global): Available everywhere in your application
     - **In a base class**: Available in that class and subclasses
     - **In specific classes**: Available only where included
-    - **Not at all**: Use `DebugMe.debug_me { :var }` instead
 
     For Rails apps, set up an initializer to configure defaults once. See [Configuration](configuration.md#including-the-module) for details.
 
