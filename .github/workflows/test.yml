@@ -9,10 +9,10 @@ on:
 permissions:
   contents: read
 
-# A newer push to a PR cancels its older run; each push to main/develop has
-# its own group (head_ref is empty there), so every commit gets a result.
+# A newer push to a PR cancels that PR's older run; each push to main/develop has
+# its own group (there is no PR number), so every commit gets a result.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
 jobs:
