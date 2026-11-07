@@ -218,7 +218,7 @@ DebugMeDefaultOptions[:time] = false
 DEBUG_ME_MAX_BACKTRACE → Integer
 ```
 
-Maximum number of backtrace levels that can be displayed. Value: `10000`
+Maximum number of backtrace entries printed when the block returns `'backtrace'` and `levels` is 0. It does not cap the `levels` option. Value: `10000`
 
 ---
 
