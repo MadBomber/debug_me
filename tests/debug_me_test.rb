@@ -71,6 +71,14 @@ describe DebugMe do
       # the levels-limited form ([[level, frame]]) is the one kept
       assert_includes result, ' backtrace -=> [[0,'
       assert_includes result, ' answer -=> 42'
+      # it stays where the block listed it
+      assert_operator result.index(' answer -=> '), :<, result.index(' backtrace -=> ')
+    end
+
+    it 'prints the full backtrace once when levels is not set' do
+      result = debug_me(file: nil) { :backtrace }
+      assert_equal 1, result.scan(' backtrace -=> ').size
+      refute_includes result, ' backtrace -=> [[0,'
     end
   end
 

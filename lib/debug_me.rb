@@ -63,13 +63,14 @@ module DebugMe
 
     if block_given? || bt_out.size > 0
       block_value = []
-      block_value << 'backtrace' if bt_out.size > 0
       if block_given?
         [block.call].flatten.compact.each do |v|
-          # levels already added the backtrace; don't print it twice
-          next if bt_out.size > 0 && 'backtrace' == v.to_s
           block_value << v
         end
+      end
+      # levels adds the backtrace first, unless the block already lists it
+      if bt_out.size > 0 && !block_value.map(&:to_s).include?('backtrace')
+        block_value.unshift('backtrace')
       end
 
       if block_value.empty?
