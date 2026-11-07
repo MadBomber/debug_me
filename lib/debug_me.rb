@@ -69,7 +69,7 @@ module DebugMe
         end
       end
       # levels adds the backtrace first, unless the block already lists it
-      if bt_out.size > 0 && !block_value.map(&:to_s).include?('backtrace')
+      if bt_out.size > 0 && block_value.none? { |v| v.to_s == 'backtrace' }
         block_value.unshift('backtrace')
       end
 
