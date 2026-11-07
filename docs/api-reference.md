@@ -19,7 +19,7 @@ After including, the `debug_me` method becomes available in the current scope.
 
 ```ruby
 debug_me(options = {}, &block) → String | nil
-debug_me(tag, options = {}, &block) → String | nil
+debug_me(tag, **options, &block) → String | nil
 ```
 
 The primary debugging method. Outputs labeled variable values to the configured destination.
@@ -29,7 +29,7 @@ The primary debugging method. Outputs labeled variable values to the configured 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `tag` | String | (Optional) Shorthand for `tag:` option |
-| `options` | Hash | Configuration options (see below) |
+| `options` | Hash | Configuration options (see below). After a `tag`, pass them as keywords, or splat a Hash with `**` |
 | `&block` | Block | Block yielding variable names to inspect |
 
 ### Shorthand Syntax

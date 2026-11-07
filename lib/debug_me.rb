@@ -35,7 +35,7 @@ module DebugMe
     return unless $DEBUG_ME
 
     options = { tag: options } unless options.is_a?(Hash)
-    options = DebugMeDefaultOptions.merge(options, keyword_options)
+    options = DebugMeDefaultOptions.merge(options).merge(keyword_options)
 
     skip        = ''
     skip        = "\n"    if options[:skip1]
