@@ -31,14 +31,11 @@ DebugMeDefaultOptions = {
 DEBUG_ME_MAX_BACKTRACE = 10000
 
 module DebugMe
-  def debug_me(options = {}, &block)
+  def debug_me(options = {}, **keyword_options, &block)
     return unless $DEBUG_ME
 
-    if options.is_a?(Hash)
-      options = DebugMeDefaultOptions.merge(options)
-    else
-      options = DebugMeDefaultOptions.merge(tag: options)
-    end
+    options = { tag: options } unless options.is_a?(Hash)
+    options = DebugMeDefaultOptions.merge(options, keyword_options)
 
     skip        = ''
     skip        = "\n"    if options[:skip1]

@@ -61,6 +61,7 @@ include DebugMe
 debug_me # Prints only the header banner consisting of tag, method name, file name and line number
 
 debug_me('INFO') # Also prints only the header but with a different tag
+debug_me('INFO', levels: 2) # A String tag can be followed by other options
 
 debug_me(levels: 5) # Along with the header, show the call stack back this many levels
 debug_me{:backtrace}          # show the entire call stack
