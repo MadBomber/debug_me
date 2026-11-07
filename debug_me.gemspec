@@ -33,5 +33,6 @@ time after time.  I guess that marks me as a geezer.'
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'amazing_print'
+  spec.add_development_dependency 'logger'
   spec.add_development_dependency 'minitest', '~> 5.0'
 end
