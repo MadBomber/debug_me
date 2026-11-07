@@ -66,6 +66,8 @@ module DebugMe
       block_value << 'backtrace' if bt_out.size > 0
       if block_given?
         [block.call].flatten.compact.each do |v|
+          # levels already added the backtrace; don't print it twice
+          next if bt_out.size > 0 && 'backtrace' == v.to_s
           block_value << v
         end
       end

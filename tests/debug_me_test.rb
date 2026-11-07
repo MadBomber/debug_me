@@ -63,6 +63,11 @@ describe DebugMe do
       assert result.include?("two")
       assert result.include?("one")
     end
+
+    it 'prints the backtrace once when levels is set and the block asks for :backtrace' do
+      result = debug_me(file: nil, levels: 1) { :backtrace }
+      assert_equal 1, result.scan(' backtrace -=> ').size
+    end
   end
 
 
