@@ -4,18 +4,7 @@ DebugMe provides extensive configuration options through the `DebugMeDefaultOpti
 
 ## Including the Module
 
-The `debug_me` method is defined in the `DebugMe` module. How you include it determines the method's availability:
-
-### Without Including
-
-Without including the module, use the fully-qualified method name:
-
-```ruby
-require 'debug_me'
-
-DebugMe.debug_me { :my_variable }
-DebugMe.debug_me('INFO', levels: 2) { :data }
-```
+The `debug_me` method is an instance method of the `DebugMe` module, so it is only available inside classes that include the module (or objects that `extend` it). There is no module-level `DebugMe.debug_me`: unless a top-level `include DebugMe` has run, calling it raises `NoMethodError`.
 
 ### Include at Kernel Level (Global)
 
@@ -61,7 +50,7 @@ class PaymentProcessor
 end
 
 class OtherClass
-  # debug_me not available here unless using DebugMe.debug_me
+  # debug_me is not available here
 end
 ```
 
