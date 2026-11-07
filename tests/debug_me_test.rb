@@ -65,8 +65,12 @@ describe DebugMe do
     end
 
     it 'prints the backtrace once when levels is set and the block asks for :backtrace' do
-      result = debug_me(file: nil, levels: 1) { :backtrace }
+      answer = 42
+      result = debug_me(file: nil, levels: 1) { [:answer, :backtrace] }
       assert_equal 1, result.scan(' backtrace -=> ').size
+      # the levels-limited form ([[level, frame]]) is the one kept
+      assert_includes result, ' backtrace -=> [[0,'
+      assert_includes result, ' answer -=> 42'
     end
   end
 
