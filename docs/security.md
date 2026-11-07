@@ -121,9 +121,9 @@ debug_me { variable_from_user }
 ### 2. Wrap in Development Check
 
 ```ruby
-def safe_debug(...)
+def safe_debug(options = {}, **keyword_options, &block)
   return unless Rails.env.development?
-  debug_me(...)
+  debug_me(options, **keyword_options, &block)
 end
 ```
 

@@ -88,8 +88,9 @@ describe DebugMe do
     end
 
     it "lets keyword options supplement a positional options Hash" do
-      out_string = debug_me({ tag: 'MYTAG', file: nil }, time: false)
-      assert out_string.start_with?("MYTAG Source:")
+      answer = 42
+      out_string = debug_me({ tag: 'MYTAG', file: nil }, time: false, header: false) { :answer }
+      _(out_string).must_equal "MYTAG answer -=> 42\n"
     end
 
   end # describe "String tag shorthand" do
