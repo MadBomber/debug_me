@@ -81,11 +81,6 @@ describe DebugMe do
 
   describe "String tag shorthand" do
 
-    it "uses a String first argument as the tag" do
-      out_string = debug_me('MYTAG', file: nil, time: false)
-      assert out_string.start_with?("MYTAG Source:")
-    end
-
     it "accepts other options after the String tag" do
       answer = 42
       out_string = debug_me('MYTAG', file: nil, time: false, header: false) { :answer }

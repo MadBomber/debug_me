@@ -102,5 +102,5 @@ module DebugMe
     end
 
     return out_string
-  end ## def debug_me( options={}, &block )
+  end ## def debug_me( options={}, **keyword_options, &block )
 end # module DebugMe
