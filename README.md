@@ -65,7 +65,7 @@ debug_me('INFO', levels: 2) # A String tag can be followed by other options
 
 debug_me(levels: 5) # Along with the header, show the call stack back this many levels
 debug_me{:backtrace}          # show the entire call stack
-debug_me{[ :backtrace ]} will # show the entire call stack
+debug_me{[ :backtrace ]} # will show the entire call stack
 debug_me(levels: 5){[ :backtrace ]} # will only show the first 5 levels of the backtrace - ie. the levels parameter supersedes :backtrace
 
 debug_me {} # prints the default header and __ALL__ variables
@@ -103,7 +103,7 @@ debug_me {[ 'some_array.size', 'SomeDatabaseModel.count' ]}
 
 debug_me {[
   :my_variable,
-  'some_hash.keys.reject{|k| k.to_s.start_with?('A')}',
+  'some_hash.keys.reject{|k| k.to_s.start_with?("A")}',
   'caller' ]}  # yes, caller is a kernel method that will give a backtrace
 
 # You can also get into trouble so be careful.  The symbols and strings
@@ -291,8 +291,8 @@ require 'debug_me'
 
 module DebugMe
   def log_me(message, options={}, &block)
-    options = {logger: Rails.logger, time: false, header: false, tag: message}
-    block_given? ? debug_me(options, block) : debug_me(options)
+    options = {logger: Rails.logger, time: false, header: false, tag: message}.merge(options)
+    debug_me(options, &block)
   end
 end
 
