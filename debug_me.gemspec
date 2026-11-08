@@ -16,7 +16,7 @@ time after time.  I guess that marks me as a geezer.'
   spec.homepage      = 'http://github.com/MadBomber/debug_me'
   spec.license       = 'MIT'
 
-  spec.required_ruby_version = '>= 2.3.0'
+  spec.required_ruby_version = '>= 3.2.0'
 
   spec.metadata = {
     'homepage_uri'      => 'https://github.com/MadBomber/debug_me',

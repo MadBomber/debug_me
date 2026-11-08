@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Ruby >= 2.3.0
+- Ruby >= 3.2.0
 - No external dependencies
 
 ## Installing via RubyGems

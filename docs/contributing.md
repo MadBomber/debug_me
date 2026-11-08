@@ -6,7 +6,7 @@ Thank you for your interest in contributing to DebugMe! This guide will help you
 
 ### Prerequisites
 
-- Ruby >= 2.3.0
+- Ruby >= 3.2.0
 - Git
 - Bundler
 
