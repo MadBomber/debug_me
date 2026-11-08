@@ -9,17 +9,6 @@ class WorldView
     @@d, @@e, @@f   = 4,5,6
   end
 
-  def everything
-    debug_me(
-      file:   nil,
-      header: true,
-      lvar:   true,
-      ivar:   true,
-      cvar:   true,
-      cconst: true
-    ){}
-  end
-
   def my_constants
     debug_me(
       file:nil,
