@@ -68,4 +68,25 @@ describe "DEBUG_ME environment variable initialization" do
     _(result.strip).must_equal "true"
   end
 
+  describe "requiring with warnings enabled" do
+    LIB_DIR = File.expand_path('../lib', __dir__)
+
+    def require_debug_me_with_warnings(code = 'require "debug_me"')
+      require 'open3'
+      require 'rbconfig'
+      env = { 'DEBUG_ME' => nil }
+      Open3.capture3(env, RbConfig.ruby, '-w', "-I#{LIB_DIR}", '-e', code)
+    end
+
+    it "does not warn about an uninitialized $DEBUG_ME" do
+      _stdout, stderr, _status = require_debug_me_with_warnings
+      _(stderr).wont_match(/\$DEBUG_ME/)
+    end
+
+    it "keeps a $DEBUG_ME set to false before require" do
+      stdout, _stderr, _status = require_debug_me_with_warnings('$DEBUG_ME = false; require "debug_me"; p $DEBUG_ME')
+      _(stdout.strip).must_equal "false"
+    end
+  end
+
 end
