@@ -58,8 +58,8 @@ module DebugMe
     if options[:header]
       cf = bt.is_a?(Array) ? bt[0] : bt
       out_string = sprintf("%s Source:  %s\n", skip+s, cf)
-      if options[:levels] > 0
-        levels = options[:levels].to_i
+      levels = options[:levels].to_i
+      if levels > 0
         bt[1..levels].each_with_index do |cff, level |
           bt_out << [level, cff]
         end

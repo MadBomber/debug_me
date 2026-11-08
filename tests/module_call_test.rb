@@ -45,6 +45,27 @@ describe "module-level debug_me" do
     _(output).must_include "#{__FILE__}:#{line}:"
   end
 
+  it "accepts string and integer backtrace levels" do
+    [2, "2"].each do |levels|
+      output = DebugMe.debug_me(file: nil, time: false, levels: levels)
+
+      _(output).must_include 'Source:'
+      _(output).must_include 'backtrace -=>'
+      assert_match(/\[0,\s/, output)
+      assert_match(/\[1,\s/, output)
+      refute_match(/\[2,\s/, output)
+    end
+  end
+
+  it "omits backtrace entries for nonpositive string levels" do
+    ["0", "-1"].each do |levels|
+      output = DebugMe.debug_me(file: nil, time: false, levels: levels)
+
+      _(output).must_include 'Source:'
+      _(output).wont_include 'backtrace'
+    end
+  end
+
   it "preserves the public included method" do
     object = Object.new.extend(DebugMe)
     value = 42
