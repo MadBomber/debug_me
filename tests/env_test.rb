@@ -72,7 +72,8 @@ describe "DEBUG_ME environment variable initialization" do
   describe "requiring with warnings enabled" do
     def require_debug_me_with_warnings(code = 'require "debug_me"')
       lib = File.expand_path('../lib', __dir__)
-      Open3.capture3({ 'DEBUG_ME' => nil }, RbConfig.ruby, '-w', "-I#{lib}", '-e', code)
+      env = { 'DEBUG_ME' => nil, 'RUBYOPT' => nil, 'RUBYLIB' => nil }
+      Open3.capture3(env, RbConfig.ruby, '-w', "-I#{lib}", '-e', code)
     end
 
     it "requires cleanly, with no warnings" do
@@ -82,14 +83,16 @@ describe "DEBUG_ME environment variable initialization" do
     end
 
     it "keeps a $DEBUG_ME set to false before require" do
-      stdout, stderr, _status = require_debug_me_with_warnings('$DEBUG_ME = false; require "debug_me"; p $DEBUG_ME')
+      stdout, stderr, status = require_debug_me_with_warnings('$DEBUG_ME = false; require "debug_me"; p $DEBUG_ME')
       _(stderr).must_be_empty
+      _(status.success?).must_equal true
       _(stdout.strip).must_equal "false"
     end
 
     it "treats a $DEBUG_ME set to nil before require as unset" do
-      stdout, stderr, _status = require_debug_me_with_warnings('$DEBUG_ME = nil; require "debug_me"; p $DEBUG_ME')
+      stdout, stderr, status = require_debug_me_with_warnings('$DEBUG_ME = nil; require "debug_me"; p $DEBUG_ME')
       _(stderr).must_be_empty
+      _(status.success?).must_equal true
       _(stdout.strip).must_equal "true"
     end
   end
