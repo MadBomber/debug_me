@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -549,10 +549,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#include-at-kernel-level-global" class="md-nav__link">
+  <a href="#include-at-the-top-level-object" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Include at Kernel Level (Global)
+        Include at the Top Level (Object)
       
     </span>
   </a>
@@ -1262,10 +1262,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#include-at-kernel-level-global" class="md-nav__link">
+  <a href="#include-at-the-top-level-object" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Include at Kernel Level (Global)
+        Include at the Top Level (Object)
       
     </span>
   </a>
@@ -1728,10 +1728,10 @@
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="no">DebugMe</span><span class="o">.</span><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:my_variable</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="no">DebugMe</span><span class="o">.</span><span class="n">debug_me</span><span class="p">(</span><span class="s1">'INFO'</span><span class="p">,</span><span class="w"> </span><span class="ss">levels</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:data</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
-<h3 id="include-at-kernel-level-global">Include at Kernel Level (Global)<a class="headerlink" href="#include-at-kernel-level-global" title="Permanent link">&para;</a></h3>
-<p>Include in <code>Kernel</code> to make <code>debug_me</code> available everywhere in your application:</p>
+<h3 id="include-at-the-top-level-object">Include at the Top Level (Object)<a class="headerlink" href="#include-at-the-top-level-object" title="Permanent link">&para;</a></h3>
+<p>Include at the top level to add <code>DebugMe</code> to <code>Object</code>, making <code>debug_me</code> available throughout your application:</p>
 <div class="language-ruby highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">require</span><span class="w"> </span><span class="s1">'debug_me'</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kp">include</span><span class="w"> </span><span class="no">DebugMe</span><span class="w">  </span><span class="c1"># At top level, this includes into Object/Kernel</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kp">include</span><span class="w"> </span><span class="no">DebugMe</span><span class="w">  </span><span class="c1"># At top level, this includes DebugMe into Object</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Now available globally</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:anywhere</span><span class="w"> </span><span class="p">}</span>
@@ -2090,7 +2090,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.path", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "1.1.4"}</script>
     
     
-      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
