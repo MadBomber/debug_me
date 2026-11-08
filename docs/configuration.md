@@ -17,13 +17,13 @@ DebugMe.debug_me { :my_variable }
 DebugMe.debug_me('INFO', levels: 2) { :data }
 ```
 
-### Include at Kernel Level (Global)
+### Include at the Top Level (Object)
 
-Include in `Kernel` to make `debug_me` available everywhere in your application:
+Include at the top level to add `DebugMe` to `Object`, making `debug_me` available throughout your application:
 
 ```ruby
 require 'debug_me'
-include DebugMe  # At top level, this includes into Object/Kernel
+include DebugMe  # At top level, this includes DebugMe into Object
 
 # Now available globally
 debug_me { :anywhere }
