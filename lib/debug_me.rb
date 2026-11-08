@@ -49,14 +49,14 @@ module DebugMe
     s = ''
     s += Time.now.strftime(options[:strftime])+' ' if options[:time]
     s += "#{options[:tag]}"
-    bt = caller
     bt_out = []
 
     if options[:header]
-      cf = bt[0]
+      cf = caller(1, 1).first
       out_string = sprintf("%s Source:  %s\n", skip+s, cf)
       levels = options[:levels].to_i
       if levels > 0
+        bt = caller(1, levels + 1)
         bt[1..levels].each_with_index do |cff, level |
           bt_out << [level, cff]
         end
@@ -87,6 +87,10 @@ module DebugMe
         block_value = block_value.flatten.compact
       end
 
+      if bt_out.empty? && block_value.any? { |v| v.to_s == 'backtrace' }
+        backtrace = caller(1, DEBUG_ME_MAX_BACKTRACE + 1)[1..DEBUG_ME_MAX_BACKTRACE]
+      end
+
       block_value.each do |v|
 
         # Only Symbols and Strings name something to evaluate;
@@ -100,7 +104,7 @@ module DebugMe
 
         v   = v.to_s
         ev  = if 'backtrace' == v
-                bt_out.size > 0 ? bt_out : bt[1..DEBUG_ME_MAX_BACKTRACE]
+                bt_out.size > 0 ? bt_out : backtrace
               else
                 eval("defined?(#{v})",block.binding).nil? ? '<undefined>' : eval(v, block.binding)
               end
