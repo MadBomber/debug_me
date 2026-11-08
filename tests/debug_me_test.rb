@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'logger'
-require 'pathname'
+require 'tmpdir'
 
 require_relative '../lib/debug_me'
 include DebugMe
@@ -13,6 +13,15 @@ require_relative './world_view'
 require 'minitest/autorun'
 
 describe DebugMe do
+
+  # These tests exercise debug_me's output, so turn it on even when the
+  # shell has DEBUG_ME=false (which turns it off at require time).
+  before do
+    @saved_debug_me = $DEBUG_ME
+    $DEBUG_ME = true
+  end
+
+  after { $DEBUG_ME = @saved_debug_me }
 
   describe "source header included" do
 
@@ -332,55 +341,41 @@ it 'prints the full backtrace once when levels is not set' do
     end
 
     it 'works with standard ruby Logger class' do
-      logger_output_path = Pathname.pwd + 'logger_class_output.txt'
-      _(logger_output_path.exist?).must_equal false
+      Dir.mktmpdir do |dir|
+        logger_output_path = File.join(dir, 'logger_class_output.txt')
 
-      logger        = Logger.new(logger_output_path)
-      logger.level  = Logger::DEBUG
+        logger        = Logger.new(logger_output_path)
+        logger.level  = Logger::DEBUG
 
-      out_string    = debug_me(
-                                logger: logger,         # Use instance of Ruby's Logger
-                                time:   false,          # turn off debug_me's timestamp
-                                file:   nil,            # don't write to STDOUT the default
-                                tag:    'Hello World'   # say hello
-                              )
-      # Generates an entry like this:
+        out_string    = debug_me(
+                                  logger: logger,         # Use instance of Ruby's Logger
+                                  time:   false,          # turn off debug_me's timestamp
+                                  file:   nil,            # don't write to STDOUT the default
+                                  tag:    'Hello World'   # say hello
+                                )
+        logger.close
+        # Generates an entry like this:
 =begin
-      # Logfile created on 2020-04-27 16:16:38 -0500 by logger.rb/v1.4.2
-      D, [2020-04-27T16:16:38.580889 #54662] DEBUG -- : Hello World Source: debug_me_test.rb:244:in `block (3 levels) in <main>'
+        # Logfile created on 2020-04-27 16:16:38 -0500 by logger.rb/v1.4.2
+        D, [2020-04-27T16:16:38.580889 #54662] DEBUG -- : Hello World Source: debug_me_test.rb:244:in `block (3 levels) in <main>'
 =end
 
-      lines   = logger_output_path.read.split("\n")
+        lines   = File.read(logger_output_path).split("\n")
 
-      _(lines.size).must_equal 2
+        _(lines.size).must_equal 2
 
-      _(lines[0].start_with?('# Logfile created on')).must_equal   true
-      _(lines[1].start_with?('D, [')).must_equal                   true
-      _(lines[1].include?('DEBUG')).must_equal                     true
-      _(lines[1].include?('Hello World')).must_equal               true
-      _(lines[1].include?('debug_me_test.rb')).must_equal          true
-      _(lines[1].include?(out_string.chomp)).must_equal            true
-
-      logger_output_path.delete
+        _(lines[0].start_with?('# Logfile created on')).must_equal   true
+        _(lines[1].start_with?('D, [')).must_equal                   true
+        _(lines[1].include?('DEBUG')).must_equal                     true
+        _(lines[1].include?('Hello World')).must_equal               true
+        _(lines[1].include?('debug_me_test.rb')).must_equal          true
+        _(lines[1].include?(out_string.chomp)).must_equal            true
+      end
     end
 
   end
 
   describe "$DEBUG_ME global flag" do
-
-    before do
-      # Save the original state
-      @original_debug_me = $DEBUG_ME
-    end
-
-    after do
-      # Restore the original state after each test
-      $DEBUG_ME = @original_debug_me
-    end
-
-    it 'is true by default' do
-      _($DEBUG_ME).must_equal true
-    end
 
     it 'returns nil when $DEBUG_ME is false' do
       $DEBUG_ME = false
