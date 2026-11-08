@@ -76,7 +76,8 @@ module DebugMe
       end
 
       if block_value.empty?
-        context_class = eval('self.class', block.binding)
+        context = eval('self', block.binding)
+        context_class = context.is_a?(Module) ? context : context.class
         block_value += [eval('local_variables', block.binding)] if options[:lvar]
         block_value += [eval('instance_variables', block.binding)] if options[:ivar]
         block_value += [context_class.send('class_variables')] if options[:cvar]
