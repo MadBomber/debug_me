@@ -81,6 +81,13 @@ it 'puts the levels backtrace first when the block does not list it' do
   assert_operator result.index(' backtrace -=> [[0,'), :<, result.index(' @answer -=> ')
 end
 
+    it 'accepts a String levels value' do
+      result = debug_me(file: nil, levels: '2') { :x }
+      assert_includes result, ' backtrace -=> [[0,'
+      assert_includes result, ' [1,'
+      refute_includes result, ' [2,'
+    end
+
 it 'prints the full backtrace once when levels is not set' do
       result = debug_me(file: nil) { :backtrace }
       assert_equal 1, result.scan(' backtrace -=> ').size
