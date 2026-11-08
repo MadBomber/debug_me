@@ -1,7 +1,4 @@
-# coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'debug_me/version'
+require_relative 'lib/debug_me/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'debug_me'
@@ -16,7 +13,7 @@ time after time.  I guess that marks me as a geezer.'
   spec.homepage      = 'http://github.com/MadBomber/debug_me'
   spec.license       = 'MIT'
 
-  spec.required_ruby_version = '>= 2.3.0'
+  spec.required_ruby_version = '>= 3.2.0'
 
   spec.metadata = {
     'homepage_uri'      => 'https://github.com/MadBomber/debug_me',

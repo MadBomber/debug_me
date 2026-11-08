@@ -2,8 +2,10 @@
 
 ## Requirements
 
-- Ruby >= 2.3.0
+- Ruby >= 3.2.0
 - No external dependencies
+
+On Ruby older than 3.2, use 1.1.3: `gem install debug_me -v 1.1.3`, or `gem 'debug_me', '1.1.3'` in a Gemfile.
 
 ## Installing via RubyGems
 
