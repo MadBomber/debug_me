@@ -84,9 +84,11 @@ module DebugMe
       block_value.each do |v|
 
         # Only Symbols and Strings name something to evaluate;
-        # any other value is printed as it is, labeled by its class.
+        # any other value is printed as it is, labeled by its class
+        # (or by its own name when it is a Class or Module).
         unless v.is_a?(Symbol) || v.is_a?(String)
-          out_string += "#{s} #{v.class} -=> #{v.pretty_inspect}"
+          label = v.is_a?(Module) ? v : v.class
+          out_string += "#{s} #{label} -=> #{v.pretty_inspect}"
           next
         end
 

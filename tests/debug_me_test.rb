@@ -314,6 +314,11 @@ it 'prints the full backtrace once when levels is not set' do
       _(out_string).must_equal "DEBUG @b -=> 2\nDEBUG @b + 1 -=> 3\nDEBUG Float -=> 3.5\n"
     end
 
+    it 'labels a Class or Module by its name' do
+      out_string = debug_me(file: nil, time: false, header: false) { [Pathname, Comparable] }
+      _(out_string).must_equal "DEBUG Pathname -=> Pathname\nDEBUG Comparable -=> Comparable\n"
+    end
+
     it 'still reports an undefined Symbol or String name' do
       out_string = debug_me(file: nil, time: false, header: false) { [:no_such_var, 'no_such_var'] }
       _(out_string).must_equal "DEBUG no_such_var -=> \"<undefined>\"\n" * 2

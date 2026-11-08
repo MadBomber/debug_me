@@ -76,9 +76,9 @@ The block should yield one of:
 | String | `{ 'expression' }` | Expression to evaluate |
 | Array of Strings | `{ ['expr1', 'expr2'] }` | Multiple expressions |
 | Empty | `{}` | All variables in scope |
-| Any other value | `{ obj }` | Printed as it is, labeled by its class name |
+| Any other value | `{ obj }` | Printed as it is, labeled by its class name (a Class or Module by its own name) |
 
-Arrays may mix them: `debug_me { [:name, Pathname.pwd] }` prints `name -=> "Alice"` and `Pathname -=> #<Pathname:...>`.
+Arrays are flattened and `nil` values are skipped. Arrays may mix value types: `debug_me { [:name, Pathname.pwd] }` prints `name -=> "Alice"` and `Pathname -=> #<Pathname:...>`.
 
 ### Return Value
 
