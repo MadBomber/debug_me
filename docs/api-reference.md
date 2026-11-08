@@ -78,7 +78,7 @@ The block should yield one of:
 | Empty | `{}` | All variables in scope |
 | Any other value | `{ obj }` | Printed as it is, labeled by its class name |
 
-Symbols and Strings are evaluated in the caller's binding. Any other value, alone or in an array, is not evaluated: `debug_me { [:name, Pathname.pwd] }` prints `name -=> "Alice"` and `Pathname -=> #<Pathname:...>`.
+Arrays may mix them: `debug_me { [:name, Pathname.pwd] }` prints `name -=> "Alice"` and `Pathname -=> #<Pathname:...>`.
 
 ### Return Value
 

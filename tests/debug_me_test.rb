@@ -299,7 +299,7 @@ it 'prints the full backtrace once when levels is not set' do
     it 'prints a plain Object labeled by its class' do
       obj = Object.new
       out_string = debug_me(file: nil, time: false, header: false) { obj }
-      _(out_string).must_equal "DEBUG Object -=> #{obj.inspect}\n"
+      _(out_string).must_equal "DEBUG Object -=> #{obj.pretty_inspect}"
     end
 
     it 'prints a value whose to_s is not a variable name' do
