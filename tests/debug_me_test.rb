@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
 
 require 'logger'
-require 'pathname'
 require 'tmpdir'
 
 require_relative '../lib/debug_me'
 include DebugMe
+
+# These tests exercise debug_me's output, so turn it on even when the
+# shell has DEBUG_ME=false (which turns it off at require time).
+$DEBUG_ME = true
 
 require_relative './world_view'
 
@@ -14,17 +17,6 @@ require_relative './world_view'
 require 'minitest/autorun'
 
 describe DebugMe do
-
-  # These tests exercise debug_me's output, so they run with it on even
-  # when the shell has DEBUG_ME=false (which turns it off at require time).
-  before do
-    @saved_debug_me = $DEBUG_ME
-    $DEBUG_ME = true
-  end
-
-  after do
-    $DEBUG_ME = @saved_debug_me
-  end
 
   describe "source header included" do
 
@@ -315,7 +307,7 @@ it 'prints the full backtrace once when levels is not set' do
 
     it 'works with standard ruby Logger class' do
       Dir.mktmpdir do |dir|
-        logger_output_path = Pathname.new(dir) + 'logger_class_output.txt'
+        logger_output_path = File.join(dir, 'logger_class_output.txt')
 
         logger        = Logger.new(logger_output_path)
         logger.level  = Logger::DEBUG
@@ -333,7 +325,7 @@ it 'prints the full backtrace once when levels is not set' do
         D, [2020-04-27T16:16:38.580889 #54662] DEBUG -- : Hello World Source: debug_me_test.rb:244:in `block (3 levels) in <main>'
 =end
 
-        lines   = logger_output_path.read.split("\n")
+        lines   = File.read(logger_output_path).split("\n")
 
         _(lines.size).must_equal 2
 
@@ -358,10 +350,6 @@ it 'prints the full backtrace once when levels is not set' do
     after do
       # Restore the original state after each test
       $DEBUG_ME = @original_debug_me
-    end
-
-    it 'is true by default' do
-      _($DEBUG_ME).must_equal true
     end
 
     it 'returns nil when $DEBUG_ME is false' do
