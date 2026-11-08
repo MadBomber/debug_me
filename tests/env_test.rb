@@ -3,6 +3,7 @@
 # This must be run as a separate process to test initialization
 
 require 'minitest/autorun'
+require 'open3'
 
 describe "DEBUG_ME environment variable initialization" do
 
@@ -69,13 +70,9 @@ describe "DEBUG_ME environment variable initialization" do
   end
 
   describe "requiring with warnings enabled" do
-    LIB_DIR = File.expand_path('../lib', __dir__)
-
     def require_debug_me_with_warnings(code = 'require "debug_me"')
-      require 'open3'
-      require 'rbconfig'
-      env = { 'DEBUG_ME' => nil }
-      Open3.capture3(env, RbConfig.ruby, '-w', "-I#{LIB_DIR}", '-e', code)
+      lib = File.expand_path('../lib', __dir__)
+      Open3.capture3({ 'DEBUG_ME' => nil }, RbConfig.ruby, '-w', "-I#{lib}", '-e', code)
     end
 
     it "does not warn about an uninitialized $DEBUG_ME" do
