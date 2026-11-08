@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'amazing_print'
 require 'logger'
 require 'pathname'
 

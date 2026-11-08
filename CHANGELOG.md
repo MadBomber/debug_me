@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A String `levels:` value is now accepted: `debug_me(levels: "2") { :x }` no longer raises `ArgumentError`
 - Requiring `debug_me` with warnings on (`ruby -w`, `rake test`) no longer prints `warning: global variable '$DEBUG_ME' not initialized`
 
+### Removed
+- The unused `amazing_print` development dependency, and a Ruby 1.8.6 branch for `caller` returning a String (Fixes #17)
+
 ## [1.1.2] - 2025-01-13
 
 ### Changed
