@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Minimum Ruby is now 3.2 (was 2.3); CI tests Ruby 3.2, 3.3, 3.4, and 4.0. Older Rubies keep resolving to debug_me 1.1.3 (issue #17)
+- Minimum Ruby is now 3.2 (was 2.3); older Rubies resolve to debug_me 1.1.3 (issue #17)
 
 ### Fixed
 - A String tag can now be followed by other options, as the docs describe: `debug_me('INFO', levels: 2) { :data }` no longer raises `ArgumentError`. Keyword options can also follow a positional options Hash, and win when both set the same key
