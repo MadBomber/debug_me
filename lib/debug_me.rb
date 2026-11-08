@@ -31,6 +31,8 @@ DebugMeDefaultOptions = {
 DEBUG_ME_MAX_BACKTRACE = 10000
 
 module DebugMe
+  extend self
+
   def debug_me(options = {}, **keyword_options, &block)
     return unless $DEBUG_ME
 
@@ -74,10 +76,13 @@ module DebugMe
       end
 
       if block_value.empty?
+        context_class = eval('self.class', block.binding)
         block_value += [eval('local_variables', block.binding)] if options[:lvar]
         block_value += [eval('instance_variables', block.binding)] if options[:ivar]
-        block_value += [self.class.send('class_variables')] if options[:cvar]
-        block_value += [self.class.constants] if options[:cconst]
+        block_value += [context_class.send('class_variables')] if options[:cvar]
+        if options[:cconst]
+          block_value += [context_class.constants.reject { |name| context_class.autoload?(name) }]
+        end
         block_value = block_value.flatten.compact
       end
 
