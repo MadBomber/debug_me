@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A String tag can now be followed by other options, as the docs describe: `debug_me('INFO', levels: 2) { :data }` no longer raises `ArgumentError`. Keyword options can also follow a positional options Hash, and win when both set the same key
 - Docs: removed the `DebugMe.debug_me` (no `include`) examples, which raise `NoMethodError`; the API reference now names `DebugMe::DEBUG_ME_VERSION` and gives `DEBUG_ME_MAX_BACKTRACE` as 10000
 - `debug_me(levels: N) { :backtrace }` printed the backtrace twice; it now prints once, where the block lists it
+- Requiring `debug_me` with warnings on (`ruby -w`, `rake test`) no longer prints `warning: global variable '$DEBUG_ME' not initialized`
 
 ## [1.1.2] - 2025-01-13
 

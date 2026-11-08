@@ -3,6 +3,7 @@
 # This must be run as a separate process to test initialization
 
 require 'minitest/autorun'
+require 'open3'
 
 describe "DEBUG_ME environment variable initialization" do
 
@@ -66,6 +67,34 @@ describe "DEBUG_ME environment variable initialization" do
   it "sets to true when ENV['DEBUG_ME'] is any other value" do
     result = `DEBUG_ME=whatever ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
     _(result.strip).must_equal "true"
+  end
+
+  describe "requiring with warnings enabled" do
+    def require_debug_me_with_warnings(code = 'require "debug_me"')
+      lib = File.expand_path('../lib', __dir__)
+      env = { 'DEBUG_ME' => nil, 'RUBYOPT' => nil, 'RUBYLIB' => nil }
+      Open3.capture3(env, RbConfig.ruby, '-w', '--disable-gems', "-I#{lib}", '-e', code)
+    end
+
+    it "requires cleanly, with no warnings" do
+      _stdout, stderr, status = require_debug_me_with_warnings
+      _(stderr).must_be_empty
+      _(status.success?).must_equal true
+    end
+
+    it "keeps a $DEBUG_ME set to false before require" do
+      stdout, stderr, status = require_debug_me_with_warnings('$DEBUG_ME = false; require "debug_me"; p $DEBUG_ME')
+      _(stderr).must_be_empty
+      _(status.success?).must_equal true
+      _(stdout.strip).must_equal "false"
+    end
+
+    it "treats a $DEBUG_ME set to nil before require as unset" do
+      stdout, stderr, status = require_debug_me_with_warnings('$DEBUG_ME = nil; require "debug_me"; p $DEBUG_ME')
+      _(stderr).must_be_empty
+      _(status.success?).must_equal true
+      _(stdout.strip).must_equal "true"
+    end
   end
 
 end
