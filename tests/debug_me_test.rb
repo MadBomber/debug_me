@@ -38,6 +38,76 @@ describe DebugMe do
 
   end # describe "source header included" do
 
+  describe "bounded call stack capture" do
+    before do
+      @debugger = Object.new.extend(DebugMe)
+      @frames = ['header.rb:1', 'parent.rb:2', 'grandparent.rb:3', 'ancestor.rb:4']
+      @captures = []
+      frames, captures = @frames, @captures
+      @debugger.define_singleton_method(:caller) do |start, length|
+        captures << [start, length]
+        frames.first(length)
+      end
+    end
+
+    it "captures only the header frame for ordinary variable output" do
+      value = 42
+      output = @debugger.debug_me(file: nil, time: false) { :value }
+
+      _(@captures).must_equal [[1, 1]]
+      _(output).must_equal "DEBUG Source:  header.rb:1\nDEBUG value -=> 42\n"
+    end
+
+    it "does not capture a stack when the header is disabled" do
+      value = 42
+      output = @debugger.debug_me(file: nil, header: false, levels: 2) { :value }
+
+      _(@captures).must_be_empty
+      _(output).must_include 'value -=> 42'
+    end
+
+    it "captures only the requested levels and preserves their numbering" do
+      output = @debugger.debug_me(file: nil, time: false, levels: 2)
+
+      _(@captures).must_equal [[1, 1], [1, 3]]
+      _(output).must_equal "DEBUG Source:  header.rb:1\nDEBUG backtrace -=> #{[[0, @frames[1]], [1, @frames[2]]].pretty_inspect}"
+    end
+
+    it "lets levels supersede an explicit backtrace" do
+      output = @debugger.debug_me(file: nil, levels: 2) { :backtrace }
+
+      _(@captures).must_equal [[1, 1], [1, 3]]
+      _(output).wont_include @frames[3]
+    end
+
+    it "caps explicit backtraces and captures them only once" do
+      output = @debugger.debug_me(file: nil, header: false, time: false, levels: 2) { [:backtrace, 'backtrace'] }
+
+      _(@captures).must_equal [[1, DEBUG_ME_MAX_BACKTRACE + 1]]
+      _(output).must_equal "DEBUG backtrace -=> #{@frames.drop(1).pretty_inspect}" * 2
+    end
+
+    it "captures a bounded explicit backtrace alongside the header" do
+      output = @debugger.debug_me(file: nil, time: false) { :backtrace }
+
+      _(@captures).must_equal [[1, 1], [1, DEBUG_ME_MAX_BACKTRACE + 1]]
+      _(output).must_equal "DEBUG Source:  header.rb:1\nDEBUG backtrace -=> #{@frames.drop(1).pretty_inspect}"
+    end
+
+    it "preserves integer conversion and handles fewer frames than requested" do
+      output = @debugger.debug_me(file: nil, levels: 5.9)
+
+      _(@captures).must_equal [[1, 1], [1, 6]]
+      _(output).must_include @frames.last
+    end
+
+    it "does not include the calling frame in a real explicit backtrace" do
+      expected = caller(1, DEBUG_ME_MAX_BACKTRACE)
+      output = debug_me(file: nil, header: false, time: false) { :backtrace }
+
+      _(output).must_equal "DEBUG backtrace -=> #{expected.pretty_inspect}"
+    end
+  end
 
 
   describe "Add more from the call stack" do

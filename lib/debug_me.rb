@@ -52,14 +52,14 @@ module DebugMe
     s = ''
     s += Time.now.strftime(options[:strftime])+' ' if options[:time]
     s += "#{options[:tag]}"
-    bt = caller # where_from under 1.8.6 its a stack trace array under 1.8.7+ as a string
     bt_out = []
 
     if options[:header]
-      cf = bt.is_a?(Array) ? bt[0] : bt
+      cf = caller(1, 1).first
       out_string = sprintf("%s Source:  %s\n", skip+s, cf)
       if options[:levels] > 0
         levels = options[:levels].to_i
+        bt = caller(1, levels + 1)
         bt[1..levels].each_with_index do |cff, level |
           bt_out << [level, cff]
         end
@@ -87,11 +87,14 @@ module DebugMe
       end
 
       block_value.map!(&:to_s)
+      if bt_out.empty? && block_value.include?('backtrace')
+        backtrace = caller(1, DEBUG_ME_MAX_BACKTRACE + 1)[1..DEBUG_ME_MAX_BACKTRACE]
+      end
 
       block_value.each do |v|
 
         ev  = if 'backtrace' == v
-                bt_out.size > 0 ? bt_out : bt[1..DEBUG_ME_MAX_BACKTRACE]
+                bt_out.size > 0 ? bt_out : backtrace
               else
                 eval("defined?(#{v})",block.binding).nil? ? '<undefined>' : eval(v, block.binding)
               end
