@@ -73,7 +73,7 @@ describe "DEBUG_ME environment variable initialization" do
     def require_debug_me_with_warnings(code = 'require "debug_me"')
       lib = File.expand_path('../lib', __dir__)
       env = { 'DEBUG_ME' => nil, 'RUBYOPT' => nil, 'RUBYLIB' => nil }
-      Open3.capture3(env, RbConfig.ruby, '-w', "-I#{lib}", '-e', code)
+      Open3.capture3(env, RbConfig.ruby, '-w', '--disable-gems', "-I#{lib}", '-e', code)
     end
 
     it "requires cleanly, with no warnings" do
