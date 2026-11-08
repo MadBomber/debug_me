@@ -75,14 +75,22 @@ describe "DEBUG_ME environment variable initialization" do
       Open3.capture3({ 'DEBUG_ME' => nil }, RbConfig.ruby, '-w', "-I#{lib}", '-e', code)
     end
 
-    it "does not warn about an uninitialized $DEBUG_ME" do
-      _stdout, stderr, _status = require_debug_me_with_warnings
-      _(stderr).wont_match(/\$DEBUG_ME/)
+    it "requires cleanly, with no warnings" do
+      _stdout, stderr, status = require_debug_me_with_warnings
+      _(stderr).must_be_empty
+      _(status.success?).must_equal true
     end
 
     it "keeps a $DEBUG_ME set to false before require" do
-      stdout, _stderr, _status = require_debug_me_with_warnings('$DEBUG_ME = false; require "debug_me"; p $DEBUG_ME')
+      stdout, stderr, _status = require_debug_me_with_warnings('$DEBUG_ME = false; require "debug_me"; p $DEBUG_ME')
+      _(stderr).must_be_empty
       _(stdout.strip).must_equal "false"
+    end
+
+    it "treats a $DEBUG_ME set to nil before require as unset" do
+      stdout, stderr, _status = require_debug_me_with_warnings('$DEBUG_ME = nil; require "debug_me"; p $DEBUG_ME')
+      _(stderr).must_be_empty
+      _(stdout.strip).must_equal "true"
     end
   end
 
