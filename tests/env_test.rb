@@ -4,6 +4,7 @@
 
 require 'minitest/autorun'
 require 'open3'
+require 'tmpdir'
 
 describe "DEBUG_ME environment variable initialization" do
 
@@ -94,6 +95,15 @@ describe "DEBUG_ME environment variable initialization" do
       _(stderr).must_be_empty
       _(status.success?).must_equal true
       _(stdout.strip).must_equal "true"
+    end
+  end
+
+  it 'runs the main test file green and leaves no files when DEBUG_ME=false' do
+    test_file = File.expand_path('debug_me_test.rb', __dir__)
+    Dir.mktmpdir do |dir|
+      output, status = Open3.capture2e({ 'DEBUG_ME' => 'false' }, RbConfig.ruby, test_file, chdir: dir)
+      assert status.success?, output
+      _(Dir.entries(dir) - %w[. ..]).must_be_empty
     end
   end
 
