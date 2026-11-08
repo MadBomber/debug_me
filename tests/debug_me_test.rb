@@ -342,16 +342,6 @@ it 'prints the full backtrace once when levels is not set' do
 
   describe "$DEBUG_ME global flag" do
 
-    before do
-      # Save the original state
-      @original_debug_me = $DEBUG_ME
-    end
-
-    after do
-      # Restore the original state after each test
-      $DEBUG_ME = @original_debug_me
-    end
-
     it 'returns nil when $DEBUG_ME is false' do
       $DEBUG_ME = false
       a = 42
