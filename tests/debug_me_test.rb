@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'amazing_print'
 require 'logger'
 require 'pathname'
 
@@ -14,6 +13,12 @@ require_relative './world_view'
 require 'minitest/autorun'
 
 describe DebugMe do
+
+  it "does not depend on amazing_print" do
+    spec = Gem::Specification.load(File.expand_path('../debug_me.gemspec', __dir__))
+
+    refute_includes spec.dependencies.map(&:name), 'amazing_print'
+  end
 
   describe "source header included" do
 

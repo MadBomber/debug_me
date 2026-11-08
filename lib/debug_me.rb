@@ -52,11 +52,11 @@ module DebugMe
     s = ''
     s += Time.now.strftime(options[:strftime])+' ' if options[:time]
     s += "#{options[:tag]}"
-    bt = caller # where_from under 1.8.6 its a stack trace array under 1.8.7+ as a string
+    bt = caller
     bt_out = []
 
     if options[:header]
-      cf = bt.is_a?(Array) ? bt[0] : bt
+      cf = bt[0]
       out_string = sprintf("%s Source:  %s\n", skip+s, cf)
       if options[:levels] > 0
         levels = options[:levels].to_i
