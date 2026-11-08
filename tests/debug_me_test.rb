@@ -16,7 +16,12 @@ describe DebugMe do
 
   # These tests exercise debug_me's output, so turn it on even when the
   # shell has DEBUG_ME=false (which turns it off at require time).
-  before { $DEBUG_ME = true }
+  before do
+    @saved_debug_me = $DEBUG_ME
+    $DEBUG_ME = true
+  end
+
+  after { $DEBUG_ME = @saved_debug_me }
 
   describe "source header included" do
 
