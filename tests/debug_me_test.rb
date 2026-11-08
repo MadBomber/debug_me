@@ -6,10 +6,6 @@ require 'tmpdir'
 require_relative '../lib/debug_me'
 include DebugMe
 
-# These tests exercise debug_me's output, so turn it on even when the
-# shell has DEBUG_ME=false (which turns it off at require time).
-$DEBUG_ME = true
-
 require_relative './world_view'
 
 
@@ -17,6 +13,10 @@ require_relative './world_view'
 require 'minitest/autorun'
 
 describe DebugMe do
+
+  # These tests exercise debug_me's output, so turn it on even when the
+  # shell has DEBUG_ME=false (which turns it off at require time).
+  before { $DEBUG_ME = true }
 
   describe "source header included" do
 
