@@ -81,10 +81,16 @@ module DebugMe
         block_value = block_value.flatten.compact
       end
 
-      block_value.map!(&:to_s)
-
       block_value.each do |v|
 
+        # Only Symbols and Strings name something to evaluate;
+        # any other value is printed as it is, labeled by its class.
+        unless v.is_a?(Symbol) || v.is_a?(String)
+          out_string += "#{s} #{v.class} -=> #{v.pretty_inspect}"
+          next
+        end
+
+        v   = v.to_s
         ev  = if 'backtrace' == v
                 bt_out.size > 0 ? bt_out : bt[1..DEBUG_ME_MAX_BACKTRACE]
               else

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `debug_me(levels: N) { :backtrace }` printed the backtrace twice; it now prints once, where the block lists it
 - A String `levels:` value is now accepted: `debug_me(levels: "2") { :x }` no longer raises `ArgumentError`
 - Requiring `debug_me` with warnings on (`ruby -w`, `rake test`) no longer prints `warning: global variable '$DEBUG_ME' not initialized`
+- A block value that is not a Symbol or String is now printed as it is, labeled by its class name: `debug_me { obj }` no longer raises `SyntaxError` when `obj.to_s` is not a variable name
 
 ### Removed
 - The unused `amazing_print` development dependency, and a Ruby 1.8.6 branch for `caller` returning a String (Fixes #17)

@@ -113,6 +113,15 @@ debug_me {[
 
 ```
 
+Only Symbols and Strings are evaluated. Any other value the block returns,
+such as an object or a Pathname, is printed as it is, labeled by its class name:
+
+```ruby
+debug_me { [:my_variable, Pathname.pwd] }
+# DEBUG my_variable -=> 42
+# DEBUG Pathname -=> #<Pathname:/home/me/project>
+```
+
 ## Security Warning
 
 **IMPORTANT:** `debug_me` uses `eval()` to evaluate the symbols and strings you pass to it in the context of the caller. This provides powerful flexibility but comes with significant security implications:
