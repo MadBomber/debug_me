@@ -3,8 +3,10 @@
 require 'amazing_print'
 require 'logger'
 require 'pathname'
+require 'tmpdir'
 
 require_relative '../lib/debug_me'
+$DEBUG_ME = true
 include DebugMe
 
 require_relative './world_view'
@@ -325,7 +327,8 @@ describe DebugMe do
     end
 
     it 'works with standard ruby Logger class' do
-      logger_output_path = Pathname.pwd + 'logger_class_output.txt'
+      logger_output_dir = Dir.mktmpdir
+      logger_output_path = Pathname.new(logger_output_dir) + 'logger_class_output.txt'
       _(logger_output_path.exist?).must_equal false
 
       logger        = Logger.new(logger_output_path)
@@ -354,7 +357,9 @@ describe DebugMe do
       _(lines[1].include?('debug_me_test.rb')).must_equal          true
       _(lines[1].include?(out_string.chomp)).must_equal            true
 
-      logger_output_path.delete
+    ensure
+      logger.close if logger
+      FileUtils.remove_entry(logger_output_dir) if logger_output_dir
     end
 
   end
@@ -371,7 +376,7 @@ describe DebugMe do
       $DEBUG_ME = @original_debug_me
     end
 
-    it 'is true by default' do
+    it 'is enabled for the test suite' do
       _($DEBUG_ME).must_equal true
     end
 
