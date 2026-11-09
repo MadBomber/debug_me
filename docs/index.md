@@ -45,10 +45,13 @@ debug_me('INIT') { [:name, :version] }
 **Output:**
 
 ```
-DEBUG  [2025-01-06 12:30:45.123456]  example.rb:7
-   name -=> "Ruby"
-   version -=> 3.2
-   features -=> [:ractors, :fiber_scheduler]
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:8:in '<main>'
+2026-11-09 12:30:45.123456 DEBUG name -=> "Ruby"
+2026-11-09 12:30:45.123456 DEBUG version -=> 3.2
+2026-11-09 12:30:45.123456 DEBUG features -=> [:ractors, :fiber_scheduler]
+2026-11-09 12:30:45.123457 INIT Source:  example.rb:11:in '<main>'
+2026-11-09 12:30:45.123457 INIT name -=> "Ruby"
+2026-11-09 12:30:45.123457 INIT version -=> 3.2
 ```
 
 ## Why DebugMe?

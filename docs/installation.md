@@ -94,8 +94,8 @@ debug_me { :test_var }
 You should see output similar to:
 
 ```
-DEBUG  [2025-01-06 12:30:45.123456]  irb:3
-   test_var -=> "Hello, DebugMe!"
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:5:in '<main>'
+2026-11-09 12:30:45.123456 DEBUG test_var -=> "Hello, DebugMe!"
 ```
 
 ## Updating
