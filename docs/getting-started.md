@@ -52,8 +52,8 @@ debug_me { :name }
 **Output:**
 
 ```
-DEBUG  [2025-01-06 12:30:45.123456]  example.rb:5
-   name -=> "Alice"
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:4:in '<main>'
+2026-11-09 12:30:45.123456 DEBUG name -=> "Alice"
 ```
 
 ## Inspecting Variables
@@ -82,10 +82,10 @@ debug_me { [:x, :y, :z] }
 **Output:**
 
 ```
-DEBUG  [2025-01-06 12:30:45.123456]  example.rb:6
-   x -=> 10
-   y -=> 20
-   z -=> 30
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:5:in '<main>'
+2026-11-09 12:30:45.123456 DEBUG x -=> 10
+2026-11-09 12:30:45.123456 DEBUG y -=> 20
+2026-11-09 12:30:45.123456 DEBUG z -=> 30
 ```
 
 ### All Local Variables
@@ -144,10 +144,10 @@ debug_me { 'numbers.size' }
 **Output:**
 
 ```
-DEBUG  [2025-01-06 12:30:45.123456]  example.rb:3
-   numbers.sum -=> 15
-DEBUG  [2025-01-06 12:30:45.123457]  example.rb:4
-   numbers.size -=> 5
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:2:in '<main>'
+2026-11-09 12:30:45.123456 DEBUG numbers.sum -=> 15
+2026-11-09 12:30:45.123457 DEBUG Source:  example.rb:3:in '<main>'
+2026-11-09 12:30:45.123457 DEBUG numbers.size -=> 5
 ```
 
 ## Customizing Output
@@ -162,13 +162,14 @@ debug_me(tag: 'WARN') { :error_count }
 ### Without Header
 
 ```ruby
+value = 42
 debug_me(header: false) { :value }
 ```
 
 **Output:**
 
 ```
-   value -=> 42
+2026-11-09 12:30:45.123456 DEBUG value -=> 42
 ```
 
 ### Without Timestamp
