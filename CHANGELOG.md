@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - The gem package now contains only `lib/`, `README.md`, `LICENSE.txt`, and `CHANGELOG.md`
+- The gem now advertises its documentation site and uses an https homepage (issue #39)
 - The header and `levels:` now capture only the stack frames they need instead of the whole call stack
 - Minimum Ruby is now 3.2 (was 2.3); on older Rubies, pin `gem 'debug_me', '1.1.3'` (issue #17)
 
