@@ -24,7 +24,14 @@ describe "gem packaging" do
       FileUtils.cp_r(File.join(@root, 'lib'), directory)
       FileUtils.cp(@files.reject { |file| file.start_with?('lib/') }.map { |file| File.join(@root, file) }, directory)
 
+      # Run outside this checkout for real: `bundle exec` exports RUBYOPT,
+      # RUBYLIB, and BUNDLE_GEMFILE, which would re-activate the parent gem and
+      # load its version.rb, so loading the copied gemspec warns about an
+      # already-initialized constant. Clear them so the subprocess is clean.
+      clean_env = { 'RUBYOPT' => nil, 'RUBYLIB' => nil, 'BUNDLE_GEMFILE' => nil }
+
       stdout, stderr, status = Open3.capture3(
+        clean_env,
         RbConfig.ruby, '-e',
         'spec = Gem::Specification.load("debug_me.gemspec"); abort "gemspec failed to load" unless spec; puts spec.files.sort',
         chdir: directory
