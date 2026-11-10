@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'bundler'
 require 'fileutils'
 require 'open3'
 require 'rbconfig'
@@ -24,11 +25,13 @@ describe "gem packaging" do
       FileUtils.cp_r(File.join(@root, 'lib'), directory)
       FileUtils.cp(@files.reject { |file| file.start_with?('lib/') }.map { |file| File.join(@root, file) }, directory)
 
-      stdout, stderr, status = Open3.capture3(
-        RbConfig.ruby, '-e',
-        'spec = Gem::Specification.load("debug_me.gemspec"); abort "gemspec failed to load" unless spec; puts spec.files.sort',
-        chdir: directory
-      )
+      stdout, stderr, status = Bundler.with_unbundled_env do
+        Open3.capture3(
+          RbConfig.ruby, '-e',
+          'spec = Gem::Specification.load("debug_me.gemspec"); abort "gemspec failed to load" unless spec; puts spec.files.sort',
+          chdir: directory
+        )
+      end
 
       _(status.success?).must_equal true
       _(stderr).must_equal ''
