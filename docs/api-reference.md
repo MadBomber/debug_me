@@ -227,30 +227,42 @@ Maximum number of backtrace entries printed when the block returns `:backtrace` 
 
 ## Output Format
 
+Each line of debug_me output has the form:
+
+```
+TIMESTAMP TAG Source:  FILE:LINE:in 'RECEIVER#METHOD'
+TIMESTAMP TAG variable_name -=> value
+```
+
+The timestamp is an unbracketed `strftime('%Y-%m-%d %H:%M:%S.%6N')` value (omitted
+when `time: false`), `TAG` defaults to `DEBUG`, and the `Source:` header line is
+omitted when `header: false`.
+
 ### Standard Output
 
 ```
-TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
-   variable_name -=> value
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:4:in '<main>'
+2026-11-09 12:30:45.123456 DEBUG count -=> 5
 ```
 
 ### With Backtrace
 
+A backtrace (requested with `levels:` or by returning `:backtrace`) prints as a
+single `backtrace -=>` entry whose value is an array of `[index, "frame"]` pairs:
+
 ```
-TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
-   caller(0) -=>
-      file1.rb:10:in `method_a'
-      file2.rb:20:in `method_b'
-   variable_name -=> value
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:5:in 'Object#outer'
+2026-11-09 12:30:45.123456 DEBUG backtrace -=> [[0, "example.rb:7:in 'Object#middle'"], [1, "example.rb:8:in '<main>'"]]
+2026-11-09 12:30:45.123456 DEBUG value -=> "x"
 ```
 
 ### Multiple Variables
 
 ```
-TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
-   var1 -=> value1
-   var2 -=> value2
-   var3 -=> value3
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:4:in '<main>'
+2026-11-09 12:30:45.123456 DEBUG var1 -=> 1
+2026-11-09 12:30:45.123456 DEBUG var2 -=> 2
+2026-11-09 12:30:45.123456 DEBUG var3 -=> 3
 ```
 
 ---
