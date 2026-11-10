@@ -6,6 +6,12 @@ class ModuleCallContext
   autoload :UnloadedConstant, "#{__FILE__}.missing"
   @@class_variable = 'class'
 
+  BODY_OUTPUT = DebugMe.debug_me(file: nil, header: false, time: false) {}
+
+  def self.everything
+    DebugMe.debug_me(file: nil, header: false, time: false) {}
+  end
+
   def everything
     local_variable = 'local'
     @instance_variable = 'instance'
@@ -13,7 +19,39 @@ class ModuleCallContext
   end
 end
 
+module ModuleMethodContext
+  CONSTANT = 'module constant'
+  @@class_variable = 'module class'
+
+  def self.everything
+    DebugMe.debug_me(file: nil, header: false, time: false) {}
+  end
+end
+
 describe "module-level debug_me" do
+  it "discovers class variables and constants inside a class method" do
+    output = ModuleCallContext.everything
+
+    _(output).must_include '@@class_variable -=> "class"'
+    _(output).must_include 'CONSTANT -=> "constant"'
+    _(output).wont_include 'UnloadedConstant'
+    _(ModuleCallContext.autoload?(:UnloadedConstant)).wont_be_nil
+  end
+
+  it "discovers class variables and constants inside a class body" do
+    output = ModuleCallContext::BODY_OUTPUT
+
+    _(output).must_include '@@class_variable -=> "class"'
+    _(output).must_include 'CONSTANT -=> "constant"'
+  end
+
+  it "discovers class variables and constants inside a module method" do
+    output = ModuleMethodContext.everything
+
+    _(output).must_include '@@class_variable -=> "module class"'
+    _(output).must_include 'CONSTANT -=> "module constant"'
+  end
+
   it "works without including DebugMe" do
     _(ModuleCallContext.ancestors).wont_include DebugMe
     output = ModuleCallContext.new.everything

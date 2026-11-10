@@ -52,14 +52,14 @@ module DebugMe
     s = ''
     s += Time.now.strftime(options[:strftime])+' ' if options[:time]
     s += "#{options[:tag]}"
-    bt = caller
     bt_out = []
 
     if options[:header]
-      cf = bt[0]
+      cf = caller(1, 1).first
       out_string = sprintf("%s Source:  %s\n", skip+s, cf)
       if options[:levels] > 0
         levels = options[:levels].to_i
+        bt = caller(1, levels + 1)
         bt[1..levels].each_with_index do |cff, level |
           bt_out << [level, cff]
         end
@@ -76,7 +76,8 @@ module DebugMe
       end
 
       if block_value.empty?
-        context_class = eval('self.class', block.binding)
+        context = eval('self', block.binding)
+        context_class = context.is_a?(Module) ? context : context.class
         block_value += [eval('local_variables', block.binding)] if options[:lvar]
         block_value += [eval('instance_variables', block.binding)] if options[:ivar]
         block_value += [context_class.send('class_variables')] if options[:cvar]
@@ -87,11 +88,14 @@ module DebugMe
       end
 
       block_value.map!(&:to_s)
+      if bt_out.empty? && block_value.include?('backtrace')
+        backtrace = caller(1, DEBUG_ME_MAX_BACKTRACE + 1)[1..DEBUG_ME_MAX_BACKTRACE]
+      end
 
       block_value.each do |v|
 
         ev  = if 'backtrace' == v
-                bt_out.size > 0 ? bt_out : bt[1..DEBUG_ME_MAX_BACKTRACE]
+                bt_out.size > 0 ? bt_out : backtrace
               else
                 eval("defined?(#{v})",block.binding).nil? ? '<undefined>' : eval(v, block.binding)
               end
