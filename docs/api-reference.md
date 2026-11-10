@@ -18,11 +18,12 @@ After including, the `debug_me` method becomes available in the current scope.
 ## Method: debug_me
 
 ```ruby
-debug_me(options = {}, &block) → String | nil
-debug_me(tag, options = {}, &block) → String | nil
+debug_me(options = {}, **keyword_options, &block) → String | nil
+debug_me(tag, options = {}, **keyword_options, &block) → String | nil
 ```
 
 The primary debugging method. Outputs labeled variable values to the configured destination.
+Keyword options are merged with the positional options hash, and keyword values take precedence when both specify the same key.
 
 ### Parameters
 
@@ -30,6 +31,7 @@ The primary debugging method. Outputs labeled variable values to the configured 
 |-----------|------|-------------|
 | `tag` | String | (Optional) Shorthand for `tag:` option |
 | `options` | Hash | Configuration options (see below) |
+| `keyword_options` | Hash | Configuration options supplied as keywords; override matching keys in `options` |
 | `&block` | Block | Block yielding variable names to inspect |
 
 ### Shorthand Syntax
