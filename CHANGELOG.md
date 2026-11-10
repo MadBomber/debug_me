@@ -7,16 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `DebugMe.debug_me` can be called without `include DebugMe`; the block is evaluated in the caller's context
+
 ### Changed
+- The gem package now contains only `lib/`, `README.md`, `LICENSE.txt`, and `CHANGELOG.md`
+- The header and `levels:` now capture only the stack frames they need instead of the whole call stack
 - Minimum Ruby is now 3.2 (was 2.3); on older Rubies, pin `gem 'debug_me', '1.1.3'` (issue #17)
 
 ### Fixed
 - A String tag can now be followed by other options, as the docs describe: `debug_me('INFO', levels: 2) { :data }` no longer raises `ArgumentError`. Keyword options can also follow a positional options Hash, and win when both set the same key
-- Docs: removed the `DebugMe.debug_me` (no `include`) examples, which raise `NoMethodError`; the API reference now names `DebugMe::DEBUG_ME_VERSION` and gives `DEBUG_ME_MAX_BACKTRACE` as 10000
+- Docs: the API reference now names `DebugMe::DEBUG_ME_VERSION` and gives `DEBUG_ME_MAX_BACKTRACE` as 10000
 - `debug_me(levels: N) { :backtrace }` printed the backtrace twice; it now prints once, where the block lists it
 - A String `levels:` value is now accepted: `debug_me(levels: "2") { :x }` no longer raises `ArgumentError`
 - Requiring `debug_me` with warnings on (`ruby -w`, `rake test`) no longer prints `warning: global variable '$DEBUG_ME' not initialized`
 - A block value that is not a Symbol or String is now printed as it is, labeled by its class name: `debug_me { obj }` no longer raises `SyntaxError` when `obj.to_s` is not a variable name
+- With no variables listed, `cvar:` and `cconst:` now read from the calling class or module when the receiver is itself a class or module; constants that are still pending autoload are skipped
+- README examples corrected so each one is valid Ruby
 
 ### Removed
 - The unused `amazing_print` development dependency, and a Ruby 1.8.6 branch for `caller` returning a String (Fixes #17)

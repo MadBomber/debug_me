@@ -1,4 +1,6 @@
 require 'minitest/autorun'
+require 'open3'
+require 'rbconfig'
 require_relative '../lib/debug_me'
 
 class ModuleCallContext
@@ -52,14 +54,35 @@ describe "module-level debug_me" do
     _(output).must_include 'CONSTANT -=> "module constant"'
   end
 
-  it "works without including DebugMe" do
-    _(ModuleCallContext.ancestors).wont_include DebugMe
+  it "discovers the caller's variables from a module-level call" do
     output = ModuleCallContext.new.everything
 
     _(output).must_include 'local_variable -=> "local"'
     _(output).must_include '@instance_variable -=> "instance"'
     _(output).must_include '@@class_variable -=> "class"'
     _(output).must_include 'CONSTANT -=> "constant"'
+  end
+
+  # Other test files do a top-level include DebugMe, which puts DebugMe
+  # into Object when the suite shares one process; a subprocess is the
+  # only way to prove the call works with no include at all.
+  it "works in a process that never includes DebugMe" do
+    code = <<~CODE
+      $DEBUG_ME = true
+      require "debug_me"
+      class Plain
+        def call
+          local_variable = "local"
+          DebugMe.debug_me(file: nil, header: false, time: false) { :local_variable }
+        end
+      end
+      print Object.ancestors.include?(DebugMe), "|", Plain.new.call
+    CODE
+    lib = File.expand_path("../lib", __dir__)
+    stdout, stderr, status = Open3.capture3(RbConfig.ruby, "-I#{lib}", "-e", code)
+
+    assert status.success?, stderr
+    _(stdout).must_equal %Q{false|DEBUG local_variable -=> "local"\n}
   end
 
   it "evaluates explicitly requested variables in the block binding" do
