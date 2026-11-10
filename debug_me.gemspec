@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 ways of debugging in a complex application.  But,
 you know, I keep returning to this little method
 time after time.  I guess that marks me as a geezer.'
-  spec.homepage      = 'http://github.com/MadBomber/debug_me'
+  spec.homepage      = 'https://github.com/MadBomber/debug_me'
   spec.license       = 'MIT'
 
   spec.required_ruby_version = '>= 3.2.0'
@@ -18,6 +18,7 @@ time after time.  I guess that marks me as a geezer.'
   spec.metadata = {
     'homepage_uri'      => 'https://github.com/MadBomber/debug_me',
     'source_code_uri'   => 'https://github.com/MadBomber/debug_me',
+    'documentation_uri' => 'https://madbomber.github.io/debug_me/',
     'bug_tracker_uri'   => 'https://github.com/MadBomber/debug_me/issues',
     'changelog_uri'     => 'https://github.com/MadBomber/debug_me/blob/main/CHANGELOG.md'
   }
