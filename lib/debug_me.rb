@@ -75,16 +75,26 @@ module DebugMe
         block_value.unshift('backtrace')
       end
 
+      # Discovered class variables and constants, read from the receiver's
+      # class rather than by evaluating their names in the block's scope
+      discovered = {}
       if block_value.empty?
-        context = eval('self', block.binding)
-        context_class = context.is_a?(Module) ? context : context.class
-        block_value += [eval('local_variables', block.binding)] if options[:lvar]
-        block_value += [eval('instance_variables', block.binding)] if options[:ivar]
-        block_value += [context_class.send('class_variables')] if options[:cvar]
-        if options[:cconst]
-          block_value += [context_class.constants.reject { |name| context_class.autoload?(name) }]
+        context = block.binding.receiver
+        context_class = Kernel.instance_method(:class).bind_call(context)
+        context_class = context if context_class <= Module
+        block_value += block.binding.local_variables if options[:lvar]
+        block_value += Kernel.instance_method(:instance_variables).bind_call(context) if options[:ivar]
+        if options[:cvar]
+          context_class.class_variables.each do |name|
+            discovered[name] = context_class.class_variable_get(name)
+          end
         end
-        block_value = block_value.flatten.compact
+        if options[:cconst]
+          context_class.constants.each do |name|
+            discovered[name] = context_class.const_get(name) unless context_class.autoload?(name)
+          end
+        end
+        block_value += discovered.keys
       end
 
       if bt_out.empty? && block_value.any? { |v| v.to_s == 'backtrace' }
@@ -106,7 +116,9 @@ module DebugMe
         ev  = if 'backtrace' == v
                 bt_out.size > 0 ? bt_out : backtrace
               else
-                eval("defined?(#{v})",block.binding).nil? ? '<undefined>' : eval(v, block.binding)
+                discovered.fetch(v.to_sym) do
+                  eval("defined?(#{v})",block.binding).nil? ? '<undefined>' : eval(v, block.binding)
+                end
               end
         out_string += sprintf( "%s %s -=> %s", s,v,ev.pretty_inspect)
       end
