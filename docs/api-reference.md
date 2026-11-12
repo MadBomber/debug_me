@@ -247,13 +247,31 @@ omitted when `header: false`.
 
 ### With Backtrace
 
-A backtrace (requested with `levels:` or by returning `:backtrace`) prints as a
-single `backtrace -=>` entry whose value is an array of `[index, "frame"]` pairs:
+A backtrace prints as a single `backtrace -=>` entry. Its value depends on how
+it was requested: `levels:` gives an array of `[index, "frame"]` pairs, while
+returning `:backtrace` with no `levels:` gives an array of plain frame strings.
+
+```ruby
+require 'debug_me'
+include DebugMe
+
+def outer
+  value = "x"
+  debug_me(levels: 2) { :value }
+  debug_me { [:backtrace, :value] }
+end
+
+def middle = outer
+middle
+```
 
 ```
-2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:5:in 'Object#outer'
-2026-11-09 12:30:45.123456 DEBUG backtrace -=> [[0, "example.rb:7:in 'Object#middle'"], [1, "example.rb:8:in '<main>'"]]
-2026-11-09 12:30:45.123456 DEBUG value -=> "x"
+2026-11-12 02:26:47.300264 DEBUG Source:  example.rb:6:in 'Object#outer'
+2026-11-12 02:26:47.300264 DEBUG backtrace -=> [[0, "example.rb:10:in 'Object#middle'"], [1, "example.rb:11:in '<main>'"]]
+2026-11-12 02:26:47.300264 DEBUG value -=> "x"
+2026-11-12 02:26:47.300782 DEBUG Source:  example.rb:7:in 'Object#outer'
+2026-11-12 02:26:47.300782 DEBUG backtrace -=> ["example.rb:10:in 'Object#middle'", "example.rb:11:in '<main>'"]
+2026-11-12 02:26:47.300782 DEBUG value -=> "x"
 ```
 
 ### Multiple Variables
