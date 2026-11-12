@@ -3,6 +3,11 @@ require 'open3'
 require 'rbconfig'
 require_relative '../lib/debug_me'
 
+# BODY_OUTPUT runs at load time, so turn output on for the class bodies
+# even when the shell has DEBUG_ME=false.
+saved_debug_me = $DEBUG_ME
+$DEBUG_ME = true
+
 class ModuleCallContext
   CONSTANT = 'constant'
   autoload :UnloadedConstant, "#{__FILE__}.missing"
@@ -30,7 +35,18 @@ module ModuleMethodContext
   end
 end
 
+$DEBUG_ME = saved_debug_me
+
 describe "module-level debug_me" do
+  # These tests exercise debug_me's output, so turn it on even when the
+  # shell has DEBUG_ME=false (which turns it off at require time).
+  before do
+    @saved_debug_me = $DEBUG_ME
+    $DEBUG_ME = true
+  end
+
+  after { $DEBUG_ME = @saved_debug_me }
+
   it "discovers class variables and constants inside a class method" do
     output = ModuleCallContext.everything
 
@@ -79,7 +95,8 @@ describe "module-level debug_me" do
       print Object.ancestors.include?(DebugMe), "|", Plain.new.call
     CODE
     lib = File.expand_path("../lib", __dir__)
-    stdout, stderr, status = Open3.capture3(RbConfig.ruby, "-I#{lib}", "-e", code)
+    env = { "DEBUG_ME" => nil, "RUBYOPT" => nil, "RUBYLIB" => nil }
+    stdout, stderr, status = Open3.capture3(env, RbConfig.ruby, "-I#{lib}", "-e", code)
 
     assert status.success?, stderr
     _(stdout).must_equal %Q{false|DEBUG local_variable -=> "local"\n}
