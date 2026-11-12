@@ -187,6 +187,26 @@ it 'prints the full backtrace once when levels is not set' do
   end # describe "source header excluded" do
 
 
+  describe 'skip1 and skip2' do
+    before { @skipped = 1 }
+
+    it 'adds one blank line before output without a header' do
+      out_string = debug_me(file: nil, time: false, header: false, skip1: true) { :@skipped }
+      _(out_string).must_equal "\nDEBUG @skipped -=> 1\n"
+    end
+
+    it 'adds two blank lines before output without a header' do
+      out_string = debug_me(file: nil, time: false, header: false, skip2: true) { :@skipped }
+      _(out_string).must_equal "\n\nDEBUG @skipped -=> 1\n"
+    end
+
+    it 'puts the blank lines before the header' do
+      out_string = debug_me(file: nil, time: false, skip2: true) { :@skipped }
+      _(out_string).must_match(/\A\n\nDEBUG Source:  .+\nDEBUG @skipped -=> 1\n\z/)
+    end
+  end
+
+
   describe "String tag shorthand" do
 
     it "accepts other options after the String tag" do
