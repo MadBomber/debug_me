@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'logger'
+require 'stringio'
 require 'tmpdir'
 
 require_relative '../lib/debug_me'
@@ -456,9 +457,13 @@ it 'prints the full backtrace once when levels is not set' do
 
     it 'produces no output when $DEBUG_ME is false' do
       $DEBUG_ME = false
+      file = StringIO.new
+      log  = StringIO.new
       a = 42
-      result = debug_me(file: nil) { :a }
+      result = debug_me(file: file, logger: Logger.new(log)) { :a }
       _(result).must_be_nil
+      _(file.string).must_be_empty
+      _(log.string).must_be_empty
     end
 
     it 'works normally when $DEBUG_ME is true' do
@@ -515,42 +520,5 @@ it 'prints the full backtrace once when levels is not set' do
     end
 
   end # describe "$DEBUG_ME global flag" do
-
-  describe "ENV['DEBUG_ME'] environment variable" do
-
-    it 'initializes $DEBUG_ME from environment variable if set' do
-      # This test documents that $DEBUG_ME can be controlled via ENV['DEBUG_ME']
-      # The actual initialization happens when lib/debug_me.rb is loaded
-      # Users can set DEBUG_ME=false before requiring the gem to disable it
-
-      # Verify current state is set (either from ENV or default true)
-      _($DEBUG_ME).wont_be_nil
-
-      # Document that users can override at runtime
-      original = $DEBUG_ME
-      $DEBUG_ME = false
-      _($DEBUG_ME).must_equal false
-      $DEBUG_ME = original
-    end
-
-    it 'can be controlled by setting $DEBUG_ME directly at runtime' do
-      # Save original
-      original = $DEBUG_ME
-
-      # Test setting various values
-      $DEBUG_ME = false
-      _($DEBUG_ME).must_equal false
-
-      $DEBUG_ME = true
-      _($DEBUG_ME).must_equal true
-
-      $DEBUG_ME = nil
-      _($DEBUG_ME).must_be_nil
-
-      # Restore
-      $DEBUG_ME = original
-    end
-
-  end # describe "ENV['DEBUG_ME'] environment variable" do
 
 end # describe DebugMe do
