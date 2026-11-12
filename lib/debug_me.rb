@@ -42,7 +42,7 @@ module DebugMe
     skip        = ''
     skip        = "\n"    if options[:skip1]
     skip        = "\n\n"  if options[:skip2]
-    out_string  = ''
+    out_string  = skip
 
     f = options[:file]
     l = options[:logger]
@@ -53,7 +53,7 @@ module DebugMe
 
     if options[:header]
       cf = caller(1, 1).first
-      out_string = sprintf("%s Source:  %s\n", skip+s, cf)
+      out_string += "#{s} Source:  #{cf}\n"
       levels = options[:levels].to_i
       if levels > 0
         bt = caller(1, levels + 1)
