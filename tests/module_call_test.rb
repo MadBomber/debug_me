@@ -132,7 +132,6 @@ describe "module-level debug_me" do
   end
 
   it "does not evaluate the block when debugging is disabled" do
-    original = $DEBUG_ME
     $DEBUG_ME = false
     evaluated = false
 
@@ -140,7 +139,5 @@ describe "module-level debug_me" do
 
     _(output).must_be_nil
     _(evaluated).must_equal false
-  ensure
-    $DEBUG_ME = original
   end
 end
