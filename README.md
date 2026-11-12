@@ -21,9 +21,13 @@ Printing labeled variable values to STDOUT is one of the oldest and most fundame
 
 ## Quick Start
 
-```ruby
-gem install debug_me
+Full documentation: https://madbomber.github.io/debug_me/
 
+```bash
+gem install debug_me
+```
+
+```ruby
 require 'debug_me'
 include DebugMe
 
@@ -40,19 +44,19 @@ DebugMe::debug_me(){} works with local, instance and class variables.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add it to your application's Gemfile:
 
-```ruby
-bundle add 'debug_me'
+```bash
+bundle add debug_me
 ```
 
 Or install it yourself:
 
-```ruby
+```bash
 gem install debug_me
 ```
 
-## Examples Usage
+## Usage Examples
 
 ```ruby
 require 'debug_me'
@@ -88,7 +92,7 @@ debug_me('=== LOOK ===') {:@foo} # changes the tag, prints a header line and a s
 
 debug_me('=== LOOK ===') {:@@foo} # changes the tag, prints a header line and a specific class variable
 
-debug_me(ivar: false, cvar: false) {} # print only the local variables with the default tag and a header line
+debug_me(ivar: false, cvar: false, cconst: false) {} # print only the local variables with the default tag and a header line
 
 ```
 
@@ -99,7 +103,7 @@ you are not limited to just variables.  Consider these examples:
 ```ruby
 debug_me {[ 'some_array.size', 'SomeDatabaseModel.count' ]}
 
-# What a backtrace with your variables?
+# Want a backtrace with your variables?
 
 debug_me {[
   :my_variable,
@@ -345,7 +349,7 @@ debug_me(header: false){...}
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/debug_me/fork )
+1. Fork it ( https://github.com/MadBomber/debug_me/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
