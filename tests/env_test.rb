@@ -93,10 +93,13 @@ describe "DEBUG_ME environment variable initialization" do
     end
   end
 
-  it 'runs the main test file green and leaves no files when DEBUG_ME=false' do
-    test_file = File.expand_path('debug_me_test.rb', __dir__)
+  it 'runs the other test files green and leaves no files when DEBUG_ME=false' do
+    # gemspec_test never loads debug_me and globs relative to the cwd.
+    skipped = [__FILE__, 'gemspec_test.rb'].map { |file| File.expand_path(file, __dir__) }
+    test_files = Dir[File.join(__dir__, '*_test.rb')] - skipped
     Dir.mktmpdir do |dir|
-      output, status = Open3.capture2e({ 'DEBUG_ME' => 'false' }, RbConfig.ruby, test_file, chdir: dir)
+      output, status = Open3.capture2e({ 'DEBUG_ME' => 'false' }, RbConfig.ruby,
+                                       '-e', 'ARGV.each { |file| require file }', *test_files, chdir: dir)
       assert status.success?, output
       _(Dir.entries(dir) - %w[. ..]).must_be_empty
     end
