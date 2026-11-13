@@ -118,7 +118,8 @@ debug_me {[
 ```
 
 Only Symbols and Strings are evaluated. Any other value the block returns,
-such as an object or a Pathname, is printed as it is, labeled by its class name:
+such as an object or a Pathname, is printed as it is, labeled by its class
+name (a Class or Module by its own name):
 
 ```ruby
 debug_me { [:my_variable, Pathname.pwd] }
