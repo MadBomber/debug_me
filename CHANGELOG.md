@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - With no variables listed, `cvar:` and `cconst:` now read from the calling class or module when the receiver is itself a class or module; constants that are still pending autoload are skipped
 - README examples corrected so each one is valid Ruby
 - `skip1:` and `skip2:` now add their blank lines when `header: false`; before, they only did so with the header on
+- Only the Symbol `:backtrace` or the String `'backtrace'` asks for the call stack; any other block value whose `to_s` is `"backtrace"` (a `Pathname`, say) is printed as a value and no longer hides the `levels:` backtrace (issue #54)
 
 ### Removed
 - The unused `amazing_print` development dependency, and a Ruby 1.8.6 branch for `caller` returning a String (Fixes #17)
