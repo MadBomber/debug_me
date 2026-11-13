@@ -64,7 +64,7 @@ describe DebugMe do
       output = @debugger.debug_me(file: nil, time: false) { :value }
 
       _(@captures).must_equal [[1, 1]]
-      _(output).must_equal "DEBUG Source:  header.rb:1\nDEBUG value -=> 42\n"
+      _(output).must_equal "DEBUG Source:  header.rb:1\nDEBUG value -=> #{value}\n"
     end
 
     it "does not capture a stack when the header is disabled" do
@@ -72,7 +72,7 @@ describe DebugMe do
       output = @debugger.debug_me(file: nil, header: false, levels: 2) { :value }
 
       _(@captures).must_be_empty
-      _(output).must_include 'value -=> 42'
+      _(output).must_include "value -=> #{value}"
     end
 
     it "captures only the requested levels and preserves their numbering" do
@@ -230,13 +230,13 @@ it 'prints the full backtrace once when levels is not set' do
     it "accepts other options after the String tag" do
       answer = 42
       out_string = debug_me('MYTAG', file: nil, time: false, header: false) { :answer }
-      _(out_string).must_equal "MYTAG answer -=> 42\n"
+      _(out_string).must_equal "MYTAG answer -=> #{answer}\n"
     end
 
     it "lets keyword options supplement a positional options Hash" do
       answer = 42
       out_string = debug_me({ tag: 'MYTAG', file: nil }, time: false, header: false) { :answer }
-      _(out_string).must_equal "MYTAG answer -=> 42\n"
+      _(out_string).must_equal "MYTAG answer -=> #{answer}\n"
     end
 
   end # describe "String tag shorthand" do
@@ -248,6 +248,8 @@ it 'prints the full backtrace once when levels is not set' do
       a,b,c = 1,2,3
       out_string = debug_me(file:nil,header:false){:a}
       assert out_string.include? "a -=> #{a}"
+      refute out_string.include? "b -=> #{b}"
+      refute out_string.include? "c -=> #{c}"
       _(out_string.split("\n").size).must_equal 1
     end
 
@@ -487,7 +489,6 @@ it 'prints the full backtrace once when levels is not set' do
 
     it 'returns nil when $DEBUG_ME is false' do
       $DEBUG_ME = false
-      a = 42
       result = debug_me(file: nil, header: false) { :a }
       _(result).must_be_nil
     end
@@ -496,7 +497,6 @@ it 'prints the full backtrace once when levels is not set' do
       $DEBUG_ME = false
       file = StringIO.new
       log  = StringIO.new
-      a = 42
       result = debug_me(file: file, logger: Logger.new(log)) { :a }
       _(result).must_be_nil
       _(file.string).must_be_empty
@@ -508,7 +508,7 @@ it 'prints the full backtrace once when levels is not set' do
       a = 42
       result = debug_me(file: nil, header: false) { :a }
       _(result).wont_be_nil
-      assert result.include?("a -=> 42")
+      assert result.include?("a -=> #{a}")
     end
 
     it 'can be toggled on and off' do
@@ -517,7 +517,7 @@ it 'prints the full backtrace once when levels is not set' do
       a = 42
       result1 = debug_me(file: nil, header: false) { :a }
       _(result1).wont_be_nil
-      assert result1.include?("a -=> 42")
+      assert result1.include?("a -=> #{a}")
 
       # Turn it off
       $DEBUG_ME = false
@@ -528,7 +528,7 @@ it 'prints the full backtrace once when levels is not set' do
       $DEBUG_ME = true
       result3 = debug_me(file: nil, header: false) { :a }
       _(result3).wont_be_nil
-      assert result3.include?("a -=> 42")
+      assert result3.include?("a -=> #{a}")
     end
 
     it 'does not evaluate the block when disabled' do
@@ -553,7 +553,7 @@ it 'prints the full backtrace once when levels is not set' do
 
       _(result).wont_be_nil
       assert result.include?('@instance_var')
-      assert result.include?('local_var')
+      assert result.include?("local_var -=> #{local_var.inspect}")
     end
 
   end # describe "$DEBUG_ME global flag" do

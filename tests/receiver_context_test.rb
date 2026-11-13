@@ -30,6 +30,7 @@ end
 class ReceiverContextRaw < BasicObject
   def go
     local_variable = 'local'
+    local_variable.freeze # only discovery reads it; this keeps ruby -w quiet
     @instance_variable = 'instance'
     ::DebugMe.debug_me(file: nil, header: false, time: false) {}
   end
@@ -38,6 +39,7 @@ end
 class ReceiverContextWrap < SimpleDelegator
   def go
     local_variable = 'local'
+    local_variable.freeze # only discovery reads it; this keeps ruby -w quiet
     ::DebugMe.debug_me(file: nil, header: false, time: false, cconst: false) {}
   end
 end
