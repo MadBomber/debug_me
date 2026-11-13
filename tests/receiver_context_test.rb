@@ -44,6 +44,48 @@ class ReceiverContextWrap < SimpleDelegator
   end
 end
 
+
+# Includes DebugMe, so DebugMe::DEBUG_ME_VERSION is among its constants
+class ReceiverContextIncluder
+  include DebugMe
+  LIMIT = 3
+
+  def show = debug_me(file: nil, header: false, time: false, lvar: false, ivar: false) {}
+end
+
+
+# Defines its own DEBUG_ME_VERSION, which must still be printed
+class ReceiverContextOwnVersion
+  include DebugMe
+  DEBUG_ME_VERSION = 'mine'.freeze
+
+  def show = debug_me(file: nil, header: false, time: false, lvar: false, ivar: false) {}
+end
+
+
+# Prepends DebugMe, yet its own DEBUG_ME_VERSION is what const_get returns
+class ReceiverContextPrepender
+  prepend DebugMe
+  DEBUG_ME_VERSION = 'mine'.freeze
+
+  def show = debug_me(file: nil, header: false, time: false, lvar: false, ivar: false) {}
+end
+
+
+# Gets DebugMe through a module it includes
+module ReceiverContextHelpers
+  include DebugMe
+end
+
+
+# Includes a module that includes DebugMe
+class ReceiverContextNested
+  include ReceiverContextHelpers
+  LIMIT = 4
+
+  def show = debug_me(file: nil, header: false, time: false, lvar: false, ivar: false) {}
+end
+
 describe "empty-block discovery reads from the block's receiver" do
   # These tests exercise debug_me's output, so turn it on even when the
   # shell has DEBUG_ME=false (which turns it off at require time).
@@ -84,5 +126,40 @@ describe "empty-block discovery reads from the block's receiver" do
 
     _(output).must_include 'local_variable -=> "local"'
     _(output).wont_include '<undefined>'
+  end
+
+  it 'skips the constants a class gets from including DebugMe' do
+    _(ReceiverContextIncluder.new.show).must_equal "DEBUG LIMIT -=> 3\n"
+  end
+
+  it 'skips them when DebugMe arrives through another included module' do
+    _(ReceiverContextNested.new.show).must_equal "DEBUG LIMIT -=> 4\n"
+  end
+
+  it 'still prints a constant the class defines with the same name' do
+    _(ReceiverContextOwnVersion.new.show).must_equal "DEBUG DEBUG_ME_VERSION -=> \"mine\"\n"
+  end
+
+  it 'still prints its own constant when the class prepends DebugMe' do
+    _(ReceiverContextPrepender.new.show).must_equal "DEBUG DEBUG_ME_VERSION -=> \"mine\"\n"
+  end
+end
+
+describe 'DebugMe.own_constant?' do
+  it "is true for DebugMe's constant reached through include" do
+    _(DebugMe.own_constant?(ReceiverContextIncluder, :DEBUG_ME_VERSION)).must_equal true
+  end
+
+  it 'is false for a same-named constant the class defines' do
+    _(DebugMe.own_constant?(ReceiverContextOwnVersion, :DEBUG_ME_VERSION)).must_equal false
+    _(DebugMe.own_constant?(ReceiverContextPrepender, :DEBUG_ME_VERSION)).must_equal false
+  end
+
+  it 'is false inside DebugMe itself, where the constants are its own' do
+    _(DebugMe.own_constant?(DebugMe, :DEBUG_ME_VERSION)).must_equal false
+  end
+
+  it 'is false for a name DebugMe does not define' do
+    _(DebugMe.own_constant?(ReceiverContextIncluder, :LIMIT)).must_equal false
   end
 end
