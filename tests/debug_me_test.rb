@@ -339,15 +339,15 @@ it 'prints the full backtrace once when levels is not set' do
 
   describe "works with CONSTANTS" do
 
+    A,B,C = 1,2,3
+
     it "supports a single CONSTANT" do
-      A,B,C = 1,2,3
       out_string = debug_me(file:nil,header:false){:A}
       assert out_string.include? "A -=> #{A}"
       _(out_string.split("\n").size).must_equal 1
     end
 
     it "supports multiple CONSTANTS" do
-      A,B,C = 1,2,3
       out_string = debug_me(file:nil,header:false){[:A, :B, :C]}
       assert out_string.include? "A -=> #{A}"
       assert out_string.include? "B -=> #{B}"
