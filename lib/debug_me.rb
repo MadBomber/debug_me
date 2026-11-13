@@ -76,8 +76,23 @@ module DebugMe
     end
 
     if block_given? || bt_out.size > 0
+      # A BasicObject that does not forward through method_missing lacks
+      # is_a?, class and pretty_inspect, so Kernel supplies them
+      bare = lambda do |v|
+        next false if v in Kernel
+
+        klass = Kernel.instance_method(:class).bind_call(v)
+        klass.instance_method(:method_missing).owner == BasicObject
+      end
       # Only the Symbol or String "backtrace" asks for the call stack
-      backtrace_marker = ->(v) { (v.is_a?(Symbol) || v.is_a?(String)) && v.to_s == 'backtrace' }
+      backtrace_marker = lambda do |v|
+        !bare.call(v) && (v.is_a?(Symbol) || v.is_a?(String)) && v.to_s == 'backtrace'
+      end
+      pretty = lambda do |v|
+        next v.pretty_inspect unless bare.call(v)
+
+        "#{defined?(v.inspect) ? v.inspect : Kernel.instance_method(:to_s).bind_call(v)}\n"
+      end
       block_value = []
       if block_given?
         [block.call].flatten.compact.each do |v|
@@ -119,9 +134,15 @@ module DebugMe
 
       block_value.each do |v|
 
-        # Only Symbols and Strings name something to evaluate;
-        # any other value is printed as it is, labeled by its class
-        # (or by its own name when it is a Class or Module).
+        # A bare BasicObject is printed as it is, labeled by its class.
+        if bare.call(v)
+          out_string += "#{s} #{Kernel.instance_method(:class).bind_call(v)} -=> #{pretty.call(v)}"
+          next
+        end
+
+        # Only Symbols and Strings (or a proxy that answers is_a? for one)
+        # name something to evaluate; any other value is printed as it is,
+        # labeled by its class (or by its own name when it is a Class or Module).
         unless v.is_a?(Symbol) || v.is_a?(String)
           label = v.is_a?(Module) ? v : v.class
           out_string += "#{s} #{label} -=> #{v.pretty_inspect}"
@@ -136,7 +157,7 @@ module DebugMe
                   eval("defined?(#{v})",block.binding).nil? ? '<undefined>' : eval(v, block.binding)
                 end
               end
-        out_string += sprintf( "%s %s -=> %s", s,v,ev.pretty_inspect)
+        out_string += sprintf( "%s %s -=> %s", s,v,pretty.call(ev))
       end
 
     end ## if block_given?

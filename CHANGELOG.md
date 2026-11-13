@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `DebugMe.debug_me` can be called without `include DebugMe`; the block is evaluated in the caller's context
+- A documentation site at https://madbomber.github.io/debug_me/
 
 ### Changed
 - The gem package now contains only `lib/`, `README.md`, `LICENSE.txt`, and `CHANGELOG.md`
@@ -19,16 +20,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - With no variables listed, constants and class variables are now read from the receiver's class, so `class_exec` and `Class.new(Base) { ... }` blocks no longer print them as `<undefined>`; discovery also works when `self` is a `BasicObject` or a `Delegator` (issues #44, #45)
 - With no variables listed, a class that does `include DebugMe` no longer prints `DEBUG_ME_VERSION`; a constant the class defines itself with that name is still printed (issue #59)
+- With no variables listed, constants and class variables are now read from the receiver's class, or from the receiver itself when it is a class or module; constants still pending autoload are left out rather than loaded. `class_exec` and `Class.new(Base) { ... }` blocks no longer print them as `<undefined>`, and discovery also works when `self` is a `BasicObject` or a `Delegator` (issues #44, #45)
 - A String tag can now be followed by other options, as the docs describe: `debug_me('INFO', levels: 2) { :data }` no longer raises `ArgumentError`. Keyword options can also follow a positional options Hash, and win when both set the same key
 - Docs: the API reference now names `DebugMe::DEBUG_ME_VERSION` and gives `DEBUG_ME_MAX_BACKTRACE` as 10000
 - `debug_me(levels: N) { :backtrace }` printed the backtrace twice; it now prints once, where the block lists it
 - A String `levels:` value is now accepted: `debug_me(levels: "2") { :x }` no longer raises `ArgumentError`
 - Requiring `debug_me` with warnings on (`ruby -w`, `rake test`) no longer prints `warning: global variable '$DEBUG_ME' not initialized`
-- A block value that is not a Symbol or String is now printed as it is, labeled by its class name: `debug_me { obj }` no longer raises `SyntaxError` when `obj.to_s` is not a variable name
-- With no variables listed, `cvar:` and `cconst:` now read from the calling class or module when the receiver is itself a class or module; constants that are still pending autoload are skipped
+- A block value that is not a Symbol or String is now printed as it is, labeled by its class name (a Class or Module by its own name): `debug_me { obj }` no longer raises `SyntaxError` when `obj.to_s` is not a variable name
 - README examples corrected so each one is valid Ruby
+- Docs: sample output on the documentation site now matches what `debug_me` prints, including `levels:` backtraces as `[index, frame]` pairs and a returned `:backtrace` as plain frame strings (PRs #38, #41, #47)
 - `skip1:` and `skip2:` now add their blank lines when `header: false`; before, they only did so with the header on
 - Only the Symbol `:backtrace` or the String `'backtrace'` asks for the call stack; any other block value whose `to_s` is `"backtrace"` (a `Pathname`, say) is printed as a value and no longer hides the `levels:` backtrace (issue #54)
+- A `BasicObject` value is now printed instead of raising `NoMethodError`, whether the block returns it, a Symbol names it, or an empty block discovers it in an instance variable
 
 ### Removed
 - The unused `amazing_print` development dependency, and a Ruby 1.8.6 branch for `caller` returning a String (Fixes #17)
