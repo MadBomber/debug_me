@@ -110,6 +110,23 @@ describe DebugMe do
       _(output).must_include @frames.last
     end
 
+    it "does not treat a non-String value whose to_s is backtrace as the marker" do
+      marker = Object.new
+      def marker.to_s = 'backtrace'
+      output = @debugger.debug_me(file: nil, header: false, time: false) { marker }
+
+      _(@captures).must_be_empty
+      _(output).wont_include 'DEBUG backtrace -=>'
+    end
+
+    it "keeps the levels backtrace when a non-String value's to_s is backtrace" do
+      marker = Object.new
+      def marker.to_s = 'backtrace'
+      output = @debugger.debug_me(file: nil, time: false, levels: 1) { marker }
+
+      _(output).must_include "DEBUG backtrace -=> #{[[0, @frames[1]]].pretty_inspect}"
+    end
+
     it "does not include the calling frame in a real explicit backtrace" do
       expected = caller(1, DEBUG_ME_MAX_BACKTRACE)
       output = debug_me(file: nil, header: false, time: false) { :backtrace }

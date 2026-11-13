@@ -64,6 +64,8 @@ module DebugMe
     end
 
     if block_given? || bt_out.size > 0
+      # Only the Symbol or String "backtrace" asks for the call stack
+      backtrace_marker = ->(v) { (v.is_a?(Symbol) || v.is_a?(String)) && v.to_s == 'backtrace' }
       block_value = []
       if block_given?
         [block.call].flatten.compact.each do |v|
@@ -71,7 +73,7 @@ module DebugMe
         end
       end
       # levels adds the backtrace first, unless the block already lists it
-      if bt_out.size > 0 && block_value.none? { |v| v.to_s == 'backtrace' }
+      if bt_out.size > 0 && block_value.none?(&backtrace_marker)
         block_value.unshift('backtrace')
       end
 
@@ -97,7 +99,7 @@ module DebugMe
         block_value += discovered.keys
       end
 
-      if bt_out.empty? && block_value.any? { |v| v.to_s == 'backtrace' }
+      if bt_out.empty? && block_value.any?(&backtrace_marker)
         backtrace = caller(1, DEBUG_ME_MAX_BACKTRACE + 1)[1..DEBUG_ME_MAX_BACKTRACE]
       end
 
