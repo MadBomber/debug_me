@@ -33,6 +33,18 @@ DEBUG_ME_MAX_BACKTRACE = 10000
 module DebugMe
   extend self
 
+  # Internal, used by empty-block discovery: true when klass resolves name
+  # to a constant defined in DebugMe itself, such as DEBUG_ME_VERSION reached
+  # through include DebugMe; false inside DebugMe itself. The const_defined?
+  # guard matters: without it, DebugMe.const_source_location would find a
+  # top-level constant through Object and match it.
+  def self.own_constant?(klass, name)
+    !klass.equal?(DebugMe) &&
+      DebugMe.const_defined?(name, false) &&
+      klass.const_source_location(name) == DebugMe.const_source_location(name)
+  end
+
+
   def debug_me(options = {}, **keyword_options, &block)
     return unless $DEBUG_ME
 
@@ -93,6 +105,8 @@ module DebugMe
         end
         if options[:cconst]
           context_class.constants.each do |name|
+            next if DebugMe.own_constant?(context_class, name)
+
             discovered[name] = context_class.const_get(name) unless context_class.autoload?(name)
           end
         end

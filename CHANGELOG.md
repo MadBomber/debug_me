@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - With no variables listed, constants and class variables are now read from the receiver's class, so `class_exec` and `Class.new(Base) { ... }` blocks no longer print them as `<undefined>`; discovery also works when `self` is a `BasicObject` or a `Delegator` (issues #44, #45)
+- With no variables listed, a class that does `include DebugMe` no longer prints `DEBUG_ME_VERSION`; a constant the class defines itself with that name is still printed (issue #59)
 - A String tag can now be followed by other options, as the docs describe: `debug_me('INFO', levels: 2) { :data }` no longer raises `ArgumentError`. Keyword options can also follow a positional options Hash, and win when both set the same key
 - Docs: the API reference now names `DebugMe::DEBUG_ME_VERSION` and gives `DEBUG_ME_MAX_BACKTRACE` as 10000
 - `debug_me(levels: N) { :backtrace }` printed the backtrace twice; it now prints once, where the block lists it
