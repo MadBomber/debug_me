@@ -80,6 +80,8 @@ The block should yield one of:
 
 Arrays are flattened and `nil` values are skipped. Arrays may mix value types: `debug_me { [:name, Pathname.pwd] }` prints `name -=> "Alice"` and `Pathname -=> #<Pathname:...>`.
 
+A Symbol or String that names nothing defined in the caller's scope prints the String `"<undefined>"` as its value and does not raise: `debug_me { :nope }` prints `DEBUG nope -=> "<undefined>"`. A typo in a name therefore fails quietly.
+
 ### Return Value
 
 Returns the output string if `$DEBUG_ME` is `true`, otherwise returns `nil`.
