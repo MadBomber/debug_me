@@ -104,14 +104,17 @@ module DebugMe
         block_value.unshift('backtrace')
       end
 
-      # Discovered class variables and constants, read from the receiver's
-      # class rather than by evaluating their names in the block's scope
+      # Discovered locals, class variables and constants, read directly
+      # (locals from the block's binding, the rest from the receiver's class)
+      # rather than by evaluating their names in the block's scope
       discovered = {}
       if block_value.empty?
         context = block.binding.receiver
         context_class = Kernel.instance_method(:class).bind_call(context)
         context_class = context if context_class <= Module
-        block_value += block.binding.local_variables if options[:lvar]
+        locals = options[:lvar] ? block.binding.local_variables : []
+        locals.each { |name| discovered[name] = block.binding.local_variable_get(name) }
+        block_value += locals
         block_value += Kernel.instance_method(:instance_variables).bind_call(context) if options[:ivar]
         if options[:cvar]
           context_class.class_variables.each do |name|
@@ -125,10 +128,11 @@ module DebugMe
             discovered[name] = context_class.const_get(name) unless context_class.autoload?(name)
           end
         end
-        block_value += discovered.keys
+        block_value += discovered.keys - locals
       end
 
-      if bt_out.empty? && block_value.any?(&backtrace_marker)
+      # A discovered local named backtrace is a value, not the marker
+      if bt_out.empty? && block_value.any? { |v| backtrace_marker.call(v) && !discovered.key?(v.to_sym) }
         backtrace = caller(1, DEBUG_ME_MAX_BACKTRACE + 1)[1..DEBUG_ME_MAX_BACKTRACE]
       end
 
@@ -150,10 +154,10 @@ module DebugMe
         end
 
         v   = v.to_s
-        ev  = if 'backtrace' == v
-                bt_out.size > 0 ? bt_out : backtrace
-              else
-                discovered.fetch(v.to_sym) do
+        ev  = discovered.fetch(v.to_sym) do
+                if 'backtrace' == v
+                  bt_out.size > 0 ? bt_out : backtrace
+                else
                   eval("defined?(#{v})",block.binding).nil? ? '<undefined>' : eval(v, block.binding)
                 end
               end
