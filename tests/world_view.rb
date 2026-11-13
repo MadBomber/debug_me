@@ -27,7 +27,7 @@ class WorldView
   def five;   six;    end
 
   def six
-    debug_me(tag:'How did I get here?', levels: 5)
+    debug_me(file: nil, tag:'How did I get here?', levels: 5)
   end
 
   def test_single_class_var
