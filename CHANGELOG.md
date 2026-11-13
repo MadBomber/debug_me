@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README examples corrected so each one is valid Ruby
 - `skip1:` and `skip2:` now add their blank lines when `header: false`; before, they only did so with the header on
 - Only the Symbol `:backtrace` or the String `'backtrace'` asks for the call stack; any other block value whose `to_s` is `"backtrace"` (a `Pathname`, say) is printed as a value and no longer hides the `levels:` backtrace (issue #54)
+- A `BasicObject` value is now printed instead of raising `NoMethodError`, whether the block returns it, a Symbol names it, or an empty block discovers it in an instance variable
 
 ### Removed
 - The unused `amazing_print` development dependency, and a Ruby 1.8.6 branch for `caller` returning a String (Fixes #17)
