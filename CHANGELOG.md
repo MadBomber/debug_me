@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Minimum Ruby is now 3.2 (was 2.3); on older Rubies, pin `gem 'debug_me', '1.1.3'` (issue #17)
 
 ### Fixed
+- With no variables listed, a local variable named `backtrace` now prints its own value instead of the call stack; an explicit `{ :backtrace }` still prints the call stack (issue #58)
 - With no variables listed, constants and class variables are now read from the receiver's class, so `class_exec` and `Class.new(Base) { ... }` blocks no longer print them as `<undefined>`; discovery also works when `self` is a `BasicObject` or a `Delegator` (issues #44, #45)
 - With no variables listed, a class that does `include DebugMe` no longer prints `DEBUG_ME_VERSION`; a constant the class defines itself with that name is still printed (issue #59)
 - With no variables listed, constants and class variables are now read from the receiver's class, or from the receiver itself when it is a class or module; constants still pending autoload are left out rather than loaded. `class_exec` and `Class.new(Base) { ... }` blocks no longer print them as `<undefined>`, and discovery also works when `self` is a `BasicObject` or a `Delegator` (issues #44, #45)
