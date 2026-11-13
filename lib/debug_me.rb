@@ -15,7 +15,7 @@ DebugMeDefaultOptions = {
   time:   true,     # Include a time-stamp in front of the tag
   strftime:  '%Y-%m-%d %H:%M:%S.%6N', # timestamp format
   header: true,     # Print a header string before printing the variables
-  levels: 0,        # Number of additional backtrack entries to display
+  levels: 0,        # Number of additional backtrace entries to display
   skip1:  false,    # skip 1 lines between different outputs
   skip2:  false,    # skip 2 lines between different outputs
   lvar:   true,     # Include local variables

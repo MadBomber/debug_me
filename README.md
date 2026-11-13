@@ -127,6 +127,15 @@ debug_me { [:my_variable, Pathname.pwd] }
 # DEBUG Pathname -=> #<Pathname:/home/me/project>
 ```
 
+A Symbol or String that names nothing defined in the caller's scope does not
+raise. Its value prints as the String `"<undefined>"`, so a typo in a name
+fails quietly:
+
+```ruby
+debug_me { :nope }
+# DEBUG nope -=> "<undefined>"
+```
+
 ## Security Warning
 
 **IMPORTANT:** `debug_me` uses `eval()` to evaluate the symbols and strings you pass to it in the context of the caller. This provides powerful flexibility but comes with significant security implications:
@@ -251,7 +260,7 @@ DebugMeDefaultOptions = {
   time:   true,     # Include a time-stamp in front of the tag
   strftime:  '%Y-%m-%d %H:%M:%S.%6N', # timestamp format
   header: true,     # Print a header string before printing the variables
-  levels: 0,        # Number of additional backtrack entries to display
+  levels: 0,        # Number of additional backtrace entries to display
   skip1:  false,    # skip 1 blank line in front of a new output block
   skip2:  false,    # skip 2 blank lines in front of a new output block
   lvar:   true,     # Include local variables
