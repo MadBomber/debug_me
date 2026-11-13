@@ -40,8 +40,8 @@ describe "README examples" do
     result = object.log_me('default', options) { :value }
 
     assert_includes result, 'custom Source:'
-    assert_includes result, 'custom value -=> 42'
-    assert_includes custom_output.string, 'custom value -=> 42'
+    assert_includes result, "custom value -=> #{value}"
+    assert_includes custom_output.string, "custom value -=> #{value}"
     assert_empty default_output.string
     assert_equal original_options, options
 

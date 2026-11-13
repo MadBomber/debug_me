@@ -21,6 +21,7 @@ class ModuleCallContext
 
   def everything
     local_variable = 'local'
+    local_variable.freeze # only discovery reads it; this keeps ruby -w quiet
     @instance_variable = 'instance'
     DebugMe::debug_me(file: nil, header: false, time: false) {}
   end
@@ -106,7 +107,7 @@ describe "module-level debug_me" do
     value = 42
     output = DebugMe.debug_me(file: nil, header: false, time: false) { :value }
 
-    _(output).must_equal "DEBUG value -=> 42\n"
+    _(output).must_equal "DEBUG value -=> #{value}\n"
   end
 
   it "does not trigger constant autoloads during automatic discovery" do
@@ -128,7 +129,7 @@ describe "module-level debug_me" do
     value = 42
     output = object.debug_me(file: nil, header: false, time: false) { :value }
 
-    _(output).must_equal "DEBUG value -=> 42\n"
+    _(output).must_equal "DEBUG value -=> #{value}\n"
   end
 
   it "does not evaluate the block when debugging is disabled" do
