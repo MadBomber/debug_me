@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require_relative '../lib/debug_me'
+require_relative 'debug_me_on'
 
 # A local named backtrace is common in rescue code (backtrace = e.backtrace)
 class BacktraceLocalHolder
@@ -17,12 +18,7 @@ class BacktraceLocalHolder
 end
 
 describe 'a local variable named backtrace' do
-  before do
-    @saved_debug_me = $DEBUG_ME
-    $DEBUG_ME = true
-  end
-
-  after { $DEBUG_ME = @saved_debug_me }
+  include DebugMeOn
 
   it 'prints its value in an empty-block dump' do
     _(BacktraceLocalHolder.new.show).must_equal "DEBUG backtrace -=> #{%w[my data].pretty_inspect}"

@@ -2,20 +2,12 @@
 
 require 'minitest/autorun'
 require_relative '../lib/debug_me'
+require_relative 'debug_me_on'
 
 describe 'debug_me timestamp' do
-  # These tests exercise debug_me's output, so turn it on even when the
-  # shell has DEBUG_ME=false (which turns it off at require time).
-  # $DEBUG_ME is the gem's on/off switch, so the global is unavoidable.
-  # rubocop:disable Style/GlobalVars
-  before do
-    @saved_debug_me = $DEBUG_ME
-    $DEBUG_ME = true
-    @value = 1
-  end
+  include DebugMeOn
 
-  after { $DEBUG_ME = @saved_debug_me }
-  # rubocop:enable Style/GlobalVars
+  before { @value = 1 }
 
   it 'formats the timestamp with the strftime option' do
     output = DebugMe.debug_me(file: nil, header: false, strftime: '%%STAMP') { :@value }

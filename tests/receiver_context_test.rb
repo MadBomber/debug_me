@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 require 'delegate'
 require_relative '../lib/debug_me'
+require_relative 'debug_me_on'
 
 module ReceiverContextMixin
   LIMIT = 5
@@ -87,14 +88,7 @@ class ReceiverContextNested
 end
 
 describe "empty-block discovery reads from the block's receiver" do
-  # These tests exercise debug_me's output, so turn it on even when the
-  # shell has DEBUG_ME=false (which turns it off at require time).
-  before do
-    @saved_debug_me = $DEBUG_ME
-    $DEBUG_ME = true
-  end
-
-  after { $DEBUG_ME = @saved_debug_me }
+  include DebugMeOn
 
   it 'reads constants and class variables from the receiver inside class_exec' do
     output = ReceiverContextBox.class_exec { DebugMe.debug_me(file: nil, header: false, time: false) {} }

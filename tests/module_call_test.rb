@@ -2,6 +2,7 @@ require 'minitest/autorun'
 require 'open3'
 require 'rbconfig'
 require_relative '../lib/debug_me'
+require_relative 'debug_me_on'
 
 # BODY_OUTPUT runs at load time, so turn output on for the class bodies
 # even when the shell has DEBUG_ME=false.
@@ -39,14 +40,7 @@ end
 $DEBUG_ME = saved_debug_me
 
 describe "module-level debug_me" do
-  # These tests exercise debug_me's output, so turn it on even when the
-  # shell has DEBUG_ME=false (which turns it off at require time).
-  before do
-    @saved_debug_me = $DEBUG_ME
-    $DEBUG_ME = true
-  end
-
-  after { $DEBUG_ME = @saved_debug_me }
+  include DebugMeOn
 
   it "discovers class variables and constants inside a class method" do
     output = ModuleCallContext.everything

@@ -3,6 +3,7 @@
 require 'minitest/autorun'
 require 'delegate'
 require_relative '../lib/debug_me'
+require_relative 'debug_me_on'
 
 # Holds a BasicObject in an ivar for empty-block discovery
 class BasicObjectValueHolder
@@ -36,14 +37,7 @@ class BasicObjectValueHolder
 end
 
 describe 'a BasicObject value' do
-  # These tests exercise debug_me's output, so turn it on even when the
-  # shell has DEBUG_ME=false (which turns it off at require time).
-  before do
-    @saved_debug_me = $DEBUG_ME
-    $DEBUG_ME = true
-  end
-
-  after { $DEBUG_ME = @saved_debug_me }
+  include DebugMeOn
 
   it 'is printed when the block returns it' do
     raw = BasicObject.new
