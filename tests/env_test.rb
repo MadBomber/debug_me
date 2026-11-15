@@ -65,6 +65,20 @@ describe "DEBUG_ME environment variable initialization" do
     _(debug_me_flag('whatever')).must_equal "true"
   end
 
+  it "ignores whitespace around a falsy ENV['DEBUG_ME']" do
+    [' false', "false\n", "no\n", '  0  ', "\toff"].each do |value|
+      _(debug_me_flag(value)).must_equal "false", "for #{value.inspect}"
+    end
+  end
+
+  it "sets to false when ENV['DEBUG_ME'] is only whitespace" do
+    _(debug_me_flag('   ')).must_equal "false"
+  end
+
+  it "ignores whitespace around a truthy ENV['DEBUG_ME']" do
+    _(debug_me_flag(' true ')).must_equal "true"
+  end
+
   describe "requiring with warnings enabled" do
     def require_debug_me_with_warnings(code = 'require "debug_me"')
       lib = File.expand_path('../lib', __dir__)

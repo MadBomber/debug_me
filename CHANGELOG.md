@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Minimum Ruby is now 3.2 (was 2.3); on older Rubies, pin `gem 'debug_me', '1.1.3'` (issue #17)
 
 ### Fixed
+- The `DEBUG_ME` env value ignores surrounding whitespace: `DEBUG_ME=" false"` or `"false\n"` now turns output off instead of leaving it on; a whitespace-only value counts as empty
 - Docs: the contributing guide no longer points to a PR template the repo does not have, and its test skeleton now uses the `describe`/`it` spec style the suite uses (issue #73)
 - Docs: the README and API reference now say that a name that is not defined prints `"<undefined>"` instead of raising; "backtrack" typo corrected to "backtrace" (issue #67)
 - With no variables listed, a local variable named `backtrace` now prints its own value instead of the call stack; an explicit `{ :backtrace }` still prints the call stack (issue #58)
