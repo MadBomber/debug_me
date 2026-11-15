@@ -26,7 +26,6 @@ time after time.  I guess that marks me as a geezer.'
   spec.files         = Dir['lib/**/*.rb'] + %w[README.md LICENSE.txt CHANGELOG.md]
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'logger'
   spec.add_development_dependency 'minitest', '~> 5.0'
