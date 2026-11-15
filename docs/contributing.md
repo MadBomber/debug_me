@@ -134,15 +134,13 @@ Ideas for contributions:
 
 ### Test Structure
 
-Tests are located in the `tests/` directory and use Minitest's spec style (`describe` / `it`):
+Tests are located in the `tests/` directory and use Minitest's spec style (`describe` / `it`). Name a new file `tests/<topic>_test.rb`; `rake test` only runs files matching `tests/*_test.rb`. `tests/timestamp_test.rb` is a complete example:
 
 ```ruby
 require 'minitest/autorun'
 require_relative '../lib/debug_me'
 
 describe 'your feature' do
-  include DebugMe
-
   # Turn debug_me on even when the shell has DEBUG_ME=false
   before do
     @saved_debug_me = $DEBUG_ME
@@ -153,7 +151,7 @@ describe 'your feature' do
 
   it 'describes the behavior' do
     @value = 42
-    output = debug_me(file: nil, header: false, time: false) { :@value }
+    output = DebugMe.debug_me(file: nil, header: false, time: false) { :@value }
 
     _(output).must_equal "DEBUG @value -=> 42\n"
   end
