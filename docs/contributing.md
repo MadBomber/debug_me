@@ -78,7 +78,7 @@ git push origin feature/your-feature-name
 ```
 
 2. Open a Pull Request on GitHub
-3. Fill out the PR template with:
+3. In the PR description, cover:
    - Description of changes
    - Motivation for the change
    - Any breaking changes
@@ -134,26 +134,35 @@ Ideas for contributions:
 
 ### Test Structure
 
-Tests are located in the `tests/` directory using Minitest:
+Tests are located in the `tests/` directory and use Minitest's spec style (`describe` / `it`):
 
 ```ruby
 require 'minitest/autorun'
 require_relative '../lib/debug_me'
 
-class DebugMeTest < Minitest::Test
+describe 'your feature' do
   include DebugMe
 
-  def test_feature
-    # Arrange
-    # Act
-    # Assert
+  # Turn debug_me on even when the shell has DEBUG_ME=false
+  before do
+    @saved_debug_me = $DEBUG_ME
+    $DEBUG_ME = true
+  end
+
+  after { $DEBUG_ME = @saved_debug_me }
+
+  it 'describes the behavior' do
+    @value = 42
+    output = debug_me(file: nil, header: false, time: false) { :@value }
+
+    _(output).must_equal "DEBUG @value -=> 42\n"
   end
 end
 ```
 
 ### Writing Good Tests
 
-- Test one behavior per test method
+- Test one behavior per `it` block
 - Use descriptive test names
 - Include edge cases
 - Test both success and failure scenarios
