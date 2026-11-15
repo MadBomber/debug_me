@@ -79,7 +79,7 @@ git push origin feature/your-feature-name
 
 2. Open a Pull Request on GitHub
 3. In the PR description, cover:
-   - Description of changes
+   - What changed
    - Motivation for the change
    - Any breaking changes
    - Test coverage
@@ -137,6 +137,8 @@ Ideas for contributions:
 Tests are located in the `tests/` directory and use Minitest's spec style (`describe` / `it`). Name a new file `tests/<topic>_test.rb`; `rake test` only runs files matching `tests/*_test.rb`. `tests/timestamp_test.rb` is a complete example:
 
 ```ruby
+# frozen_string_literal: true
+
 require 'minitest/autorun'
 require_relative '../lib/debug_me'
 
@@ -161,7 +163,7 @@ end
 ### Writing Good Tests
 
 - Test one behavior per `it` block
-- Use descriptive test names
+- Give each `describe` and `it` a descriptive name
 - Include edge cases
 - Test both success and failure scenarios
 
