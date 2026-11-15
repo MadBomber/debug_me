@@ -8,6 +8,7 @@ require_relative '../lib/debug_me'
 include DebugMe
 
 require_relative './world_view'
+require_relative './debug_me_on'
 
 
 
@@ -15,14 +16,7 @@ require 'minitest/autorun'
 
 describe DebugMe do
 
-  # These tests exercise debug_me's output, so turn it on even when the
-  # shell has DEBUG_ME=false (which turns it off at require time).
-  before do
-    @saved_debug_me = $DEBUG_ME
-    $DEBUG_ME = true
-  end
-
-  after { $DEBUG_ME = @saved_debug_me }
+  include DebugMeOn
 
   describe "source header included" do
 

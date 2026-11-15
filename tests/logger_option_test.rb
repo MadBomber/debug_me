@@ -3,16 +3,10 @@
 require 'minitest/autorun'
 require 'stringio'
 require_relative '../lib/debug_me'
+require_relative 'debug_me_on'
 
 describe 'debug_me logger: option' do
-  # These tests exercise debug_me's output, so turn it on even when the
-  # shell has DEBUG_ME=false (which turns it off at require time).
-  before do
-    @saved_debug_me = $DEBUG_ME
-    $DEBUG_ME = true
-  end
-
-  after { $DEBUG_ME = @saved_debug_me }
+  include DebugMeOn
 
   # A logger must respond_to? :debug; anything else is skipped.
   it 'skips a logger that does not respond to #debug' do

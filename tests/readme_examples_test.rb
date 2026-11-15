@@ -3,15 +3,14 @@ require 'ripper'
 require 'logger'
 require 'stringio'
 require_relative '../lib/debug_me'
+require_relative 'debug_me_on'
 
 describe "README examples" do
+  include DebugMeOn
+
   before do
-    @saved_debug_me = $DEBUG_ME
-    $DEBUG_ME = true
     @readme = File.read(File.expand_path('../README.md', __dir__))
   end
-
-  after { $DEBUG_ME = @saved_debug_me }
 
   it "parses the backtrace and quoted expression examples" do
     snippets = @readme.scan(/```ruby\n(.*?)```/m).flatten
