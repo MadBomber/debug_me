@@ -2,7 +2,7 @@ require 'pp'
 require_relative 'debug_me/version'
 
 # Initialize $DEBUG_ME from environment variable or default to true
-# Supports common boolean representations: true/false, yes/no, 1/0, on/off
+# false, no, 0, off (any case) or empty turn output off; any other value leaves it on
 if ENV.key?('DEBUG_ME')
   env_value = ENV['DEBUG_ME'].to_s.downcase
   $DEBUG_ME = !['false', 'no', '0', 'off', ''].include?(env_value)
@@ -16,8 +16,8 @@ DebugMeDefaultOptions = {
   strftime:  '%Y-%m-%d %H:%M:%S.%6N', # timestamp format
   header: true,     # Print a header string before printing the variables
   levels: 0,        # Number of additional backtrace entries to display
-  skip1:  false,    # skip 1 lines between different outputs
-  skip2:  false,    # skip 2 lines between different outputs
+  skip1:  false,    # skip 1 blank line in front of a new output block
+  skip2:  false,    # skip 2 blank lines in front of a new output block
   lvar:   true,     # Include local variables
   ivar:   true,     # Include instance variables in the output
   cvar:   true,     # Include class variables in the output
