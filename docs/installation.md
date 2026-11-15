@@ -31,24 +31,24 @@ bundle install
 
 ## Development Installation
 
-For development purposes, you may want to install with development dependencies:
+To install the gem only in development, put it in Bundler's `development` group:
 
 ```ruby
 # Gemfile
 gem 'debug_me', group: :development
 ```
 
-This ensures the gem is only loaded in development environments.
+Bundler then skips the gem wherever the `development` group is excluded, so any code that calls `debug_me` or requires the gem must not run there.
 
 ## Rails Integration
 
-For Rails applications, add to your `Gemfile`:
+For Rails applications, add to your `Gemfile` outside any group, so the gem loads in every environment, including production:
 
 ```ruby
-group :development, :test do
-  gem 'debug_me'
-end
+gem 'debug_me'
 ```
+
+The initializer below requires the gem unconditionally and turns output off in production, so `debug_me` calls left in application code stay harmless there.
 
 Create an initializer at `config/initializers/debug_me.rb`:
 
