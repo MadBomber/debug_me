@@ -122,7 +122,7 @@ describe DebugMe do
     end
 
     it "does not include the calling frame in a real explicit backtrace" do
-      expected = caller(1, DEBUG_ME_MAX_BACKTRACE)
+      expected = caller(1)
       output = debug_me(file: nil, header: false, time: false) { :backtrace }
 
       _(output).must_equal "DEBUG backtrace -=> #{expected.pretty_inspect}"
