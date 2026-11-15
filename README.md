@@ -173,6 +173,8 @@ DEBUG_ME=false bundle exec rails server
 - **Falsy** (disables output): `false`, `no`, `0`, `off`, or empty string
 - **Not set**: Defaults to `true` (enabled)
 
+Case and surrounding whitespace are ignored: `" False "` counts as `false`.
+
 ### Runtime Control
 
 You can also control `$DEBUG_ME` programmatically at runtime:
