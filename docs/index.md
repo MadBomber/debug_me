@@ -9,7 +9,7 @@
 
 <h2>A Classic Debugging Technique That Never Gets Old</h2>
 <p>Printing labeled variable values to STDOUT is one of the oldest and most fundamental debugging techniques in computer science. From the earliest days of programming, developers have relied on simple output statements to understand what their code is doing. While modern debuggers offer sophisticated features like breakpoints and step-through execution, there's something elegantly simple and universally effective about printing variables to see their values in real-time.
-<p>**DebugMe** embraces this time-tested approach, making it effortless to inspect local, instance, and class variables with clearly labeled output. Sometimes the old ways are the best ways.
+<p><strong>DebugMe</strong> embraces this time-tested approach, making it effortless to inspect local, instance, and class variables with clearly labeled output. Sometimes the old ways are the best ways.
 </td>
 </tr>
 </table>

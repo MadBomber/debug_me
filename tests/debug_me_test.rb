@@ -122,7 +122,7 @@ describe DebugMe do
     end
 
     it "does not include the calling frame in a real explicit backtrace" do
-      expected = caller(1, DEBUG_ME_MAX_BACKTRACE)
+      expected = caller(1)
       output = debug_me(file: nil, header: false, time: false) { :backtrace }
 
       _(output).must_equal "DEBUG backtrace -=> #{expected.pretty_inspect}"
@@ -430,6 +430,12 @@ it 'prints the full backtrace once when levels is not set' do
     it 'labels a Class or Module by its name' do
       out_string = debug_me(file: nil, time: false, header: false) { [Pathname, Comparable] }
       _(out_string).must_equal "DEBUG Pathname -=> Pathname\nDEBUG Comparable -=> Comparable\n"
+    end
+
+    it 'prints nothing for a block returning [] or [nil]' do
+      @c = 3
+      _(debug_me(file: nil, time: false, header: false) { [] }).must_equal ''
+      _(debug_me(file: nil, time: false, header: false) { [nil] }).must_equal ''
     end
 
     it 'still reports an undefined Symbol or String name' do
