@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - A block returning `[]` or `[nil]` now prints nothing instead of every variable in scope; only a block returning `nil`, such as `{}`, lists them all (#84)
+- Tests: the `:backtrace` test now expects the whole call stack instead of reusing `DEBUG_ME_MAX_BACKTRACE`, so lowering the cap fails the suite (#81)
 - The `DEBUG_ME` env value ignores surrounding whitespace: `DEBUG_ME=" false"` or `"false\n"` now turns output off instead of leaving it on; a whitespace-only value counts as empty
 - Docs: the contributing guide no longer points to a PR template the repo does not have, and its test skeleton now uses the `describe`/`it` spec style the suite uses (issue #73)
 - Docs: the README and API reference now say that a name that is not defined prints `"<undefined>"` instead of raising; "backtrack" typo corrected to "backtrace" (issue #67)
