@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Minimum Ruby is now 3.2 (was 2.3); on older Rubies, pin `gem 'debug_me', '1.1.3'` (issue #17)
 
 ### Fixed
+- Docs: the documentation home page now shows **DebugMe** in bold instead of literal asterisks (#83)
 - A block returning `[]` or `[nil]` now prints nothing instead of every variable in scope; only a block returning `nil`, such as `{}`, lists them all (#84)
 - Tests: the `:backtrace` test now expects the whole call stack instead of reusing `DEBUG_ME_MAX_BACKTRACE`, so lowering the cap fails the suite (#81)
 - The `DEBUG_ME` env value ignores surrounding whitespace: `DEBUG_ME=" false"` or `"false\n"` now turns output off instead of leaving it on; a whitespace-only value counts as empty
