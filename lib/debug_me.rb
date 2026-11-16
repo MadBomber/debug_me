@@ -94,8 +94,10 @@ module DebugMe
         "#{defined?(v.inspect) ? v.inspect : Kernel.instance_method(:to_s).bind_call(v)}\n"
       end
       block_value = []
+      raw_value = nil
       if block_given?
-        [block.call].flatten.compact.each do |v|
+        raw_value = block.call
+        [raw_value].flatten.compact.each do |v|
           block_value << v
         end
       end
@@ -106,9 +108,10 @@ module DebugMe
 
       # Discovered locals, class variables and constants, read directly
       # (locals from the block's binding, the rest from the receiver's class)
-      # rather than by evaluating their names in the block's scope
+      # rather than by evaluating their names in the block's scope.
+      # Only a block that returns nil (such as {}) asks for them; [] or [nil] does not
       discovered = {}
-      if block_value.empty?
+      if block_value.empty? && nil.equal?(raw_value)
         context = block.binding.receiver
         context_class = Kernel.instance_method(:class).bind_call(context)
         context_class = context if context_class <= Module
