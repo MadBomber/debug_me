@@ -432,6 +432,12 @@ it 'prints the full backtrace once when levels is not set' do
       _(out_string).must_equal "DEBUG Pathname -=> Pathname\nDEBUG Comparable -=> Comparable\n"
     end
 
+    it 'prints nothing for a block returning [] or [nil]' do
+      @c = 3
+      _(debug_me(file: nil, time: false, header: false) { [] }).must_equal ''
+      _(debug_me(file: nil, time: false, header: false) { [nil] }).must_equal ''
+    end
+
     it 'still reports an undefined Symbol or String name' do
       out_string = debug_me(file: nil, time: false, header: false) { [:no_such_var, 'no_such_var'] }
       _(out_string).must_equal "DEBUG no_such_var -=> \"<undefined>\"\n" * 2
