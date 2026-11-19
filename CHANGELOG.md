@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `DebugMe.debug_me` can be called without `include DebugMe`; the block is evaluated in the caller's context
+- A documentation site at https://madbomber.github.io/debug_me/
+
+### Changed
+- The gemspec no longer lists `bundler` as a development dependency; it ships with every supported Ruby
+- The gem package now contains only `lib/`, `README.md`, `LICENSE.txt`, and `CHANGELOG.md`
+- The gem now advertises its documentation site and uses an https homepage (issue #39)
+- The header and `levels:` now capture only the stack frames they need instead of the whole call stack
+- Minimum Ruby is now 3.2 (was 2.3); on older Rubies, pin `gem 'debug_me', '1.1.3'` (issue #17)
+
+### Fixed
+- Docs: the Rails setup in the installation guide now puts the gem in the default Gemfile group, so production boots when it skips the development and test groups; the "Development Installation" wording no longer calls a Bundler group "development dependencies" (#82)
+- Docs: the documentation home page now shows **DebugMe** in bold instead of literal asterisks (#83)
+- A block returning `[]` or `[nil]` now prints nothing instead of every variable in scope; only a block returning `nil`, such as `{}`, lists them all (#84)
+- Tests: the `:backtrace` test now expects the whole call stack instead of reusing `DEBUG_ME_MAX_BACKTRACE`, so lowering the cap fails the suite (#81)
+- The `DEBUG_ME` env value ignores surrounding whitespace: `DEBUG_ME=" false"` or `"false\n"` now turns output off instead of leaving it on; a whitespace-only value counts as empty
+- Docs: the contributing guide no longer points to a PR template the repo does not have, and its test skeleton now uses the `describe`/`it` spec style the suite uses (issue #73)
+- Docs: the README and API reference now say that a name that is not defined prints `"<undefined>"` instead of raising; "backtrack" typo corrected to "backtrace" (issue #67)
+- With no variables listed, a local variable named `backtrace` now prints its own value instead of the call stack; an explicit `{ :backtrace }` still prints the call stack (issue #58)
+- With no variables listed, a class that does `include DebugMe` no longer prints `DEBUG_ME_VERSION`; a constant the class defines itself with that name is still printed (issue #59)
+- With no variables listed, constants and class variables are now read from the receiver's class, or from the receiver itself when it is a class or module; constants still pending autoload are left out rather than loaded. `class_exec` and `Class.new(Base) { ... }` blocks no longer print them as `<undefined>`, and discovery also works when `self` is a `BasicObject` or a `Delegator` (issues #44, #45)
+- A String tag can now be followed by other options, as the docs describe: `debug_me('INFO', levels: 2) { :data }` no longer raises `ArgumentError`. Keyword options can also follow a positional options Hash, and win when both set the same key
+- Docs: the API reference now names `DebugMe::DEBUG_ME_VERSION` and gives `DEBUG_ME_MAX_BACKTRACE` as 10000
+- `debug_me(levels: N) { :backtrace }` printed the backtrace twice; it now prints once, where the block lists it
+- A String `levels:` value is now accepted: `debug_me(levels: "2") { :x }` no longer raises `ArgumentError`
+- Requiring `debug_me` with warnings on (`ruby -w`, `rake test`) no longer prints `warning: global variable '$DEBUG_ME' not initialized`
+- A block value that is not a Symbol or String is now printed as it is, labeled by its class name (a Class or Module by its own name): `debug_me { obj }` no longer raises `SyntaxError` when `obj.to_s` is not a variable name
+- README examples corrected so each one is valid Ruby
+- Docs: sample output on the documentation site now matches what `debug_me` prints, including `levels:` backtraces as `[index, frame]` pairs and a returned `:backtrace` as plain frame strings (PRs #38, #41, #47)
+- `skip1:` and `skip2:` now add their blank lines when `header: false`; before, they only did so with the header on
+- Only the Symbol `:backtrace` or the String `'backtrace'` asks for the call stack; any other block value whose `to_s` is `"backtrace"` (a `Pathname`, say) is printed as a value and no longer hides the `levels:` backtrace (issue #54)
+- A `BasicObject` value is now printed instead of raising `NoMethodError`, whether the block returns it, a Symbol names it, or an empty block discovers it in an instance variable
+
+### Removed
+- The unused `amazing_print` development dependency, and a Ruby 1.8.6 branch for `caller` returning a String (Fixes #17)
+
 ## [1.1.2] - 2025-01-13
 
 ### Changed

@@ -3,69 +3,120 @@
 # This must be run as a separate process to test initialization
 
 require 'minitest/autorun'
+require 'open3'
+require 'rbconfig'
+require 'tmpdir'
 
 describe "DEBUG_ME environment variable initialization" do
 
+  # Load the library fresh in a subprocess so initialization is clean, and
+  # return the resulting $DEBUG_ME value from stdout only. A cleared env keeps
+  # the parent's DEBUG_ME/RUBYOPT/RUBYLIB from leaking in, and reading stdout
+  # (never merged stderr) keeps parent-env noise out of the asserted value.
+  # Pass nil for debug_me_value to leave DEBUG_ME unset.
+  def debug_me_flag(debug_me_value)
+    lib = File.expand_path('../lib', __dir__)
+    env = { 'DEBUG_ME' => debug_me_value, 'RUBYOPT' => nil, 'RUBYLIB' => nil }
+    stdout, _stderr, _status = Open3.capture3(env, RbConfig.ruby, "-I#{lib}", '-e', 'require "debug_me"; p $DEBUG_ME')
+    stdout.strip
+  end
+
   it "defaults to true when ENV['DEBUG_ME'] is not set" do
-    # Remove the env var if it exists
-    env_value = ENV.delete('DEBUG_ME')
-
-    # Load the library fresh (in a subprocess to get clean initialization)
-    result = `ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "true"
-
-    # Restore if it was set
-    ENV['DEBUG_ME'] = env_value if env_value
+    _(debug_me_flag(nil)).must_equal "true"
   end
 
   it "sets to false when ENV['DEBUG_ME'] is 'false'" do
-    result = `DEBUG_ME=false ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "false"
+    _(debug_me_flag('false')).must_equal "false"
   end
 
   it "sets to false when ENV['DEBUG_ME'] is 'no'" do
-    result = `DEBUG_ME=no ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "false"
+    _(debug_me_flag('no')).must_equal "false"
   end
 
   it "sets to false when ENV['DEBUG_ME'] is '0'" do
-    result = `DEBUG_ME=0 ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "false"
+    _(debug_me_flag('0')).must_equal "false"
   end
 
   it "sets to false when ENV['DEBUG_ME'] is 'off'" do
-    result = `DEBUG_ME=off ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "false"
+    _(debug_me_flag('off')).must_equal "false"
   end
 
   it "sets to false when ENV['DEBUG_ME'] is empty string" do
-    result = `DEBUG_ME= ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "false"
+    _(debug_me_flag('')).must_equal "false"
   end
 
   it "sets to true when ENV['DEBUG_ME'] is 'true'" do
-    result = `DEBUG_ME=true ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "true"
+    _(debug_me_flag('true')).must_equal "true"
   end
 
   it "sets to true when ENV['DEBUG_ME'] is 'yes'" do
-    result = `DEBUG_ME=yes ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "true"
+    _(debug_me_flag('yes')).must_equal "true"
   end
 
   it "sets to true when ENV['DEBUG_ME'] is '1'" do
-    result = `DEBUG_ME=1 ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "true"
+    _(debug_me_flag('1')).must_equal "true"
   end
 
   it "sets to true when ENV['DEBUG_ME'] is 'on'" do
-    result = `DEBUG_ME=on ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "true"
+    _(debug_me_flag('on')).must_equal "true"
   end
 
   it "sets to true when ENV['DEBUG_ME'] is any other value" do
-    result = `DEBUG_ME=whatever ruby -I./lib -e 'require "debug_me"; p $DEBUG_ME' 2>&1`
-    _(result.strip).must_equal "true"
+    _(debug_me_flag('whatever')).must_equal "true"
+  end
+
+  it "ignores whitespace around a falsy ENV['DEBUG_ME']" do
+    [' false', "false\n", "no\n", '  0  ', "\toff"].each do |value|
+      _(debug_me_flag(value)).must_equal "false", "for #{value.inspect}"
+    end
+  end
+
+  it "sets to false when ENV['DEBUG_ME'] is only whitespace" do
+    _(debug_me_flag('   ')).must_equal "false"
+  end
+
+  it "ignores whitespace around a truthy ENV['DEBUG_ME']" do
+    _(debug_me_flag(' true ')).must_equal "true"
+  end
+
+  describe "requiring with warnings enabled" do
+    def require_debug_me_with_warnings(code = 'require "debug_me"')
+      lib = File.expand_path('../lib', __dir__)
+      env = { 'DEBUG_ME' => nil, 'RUBYOPT' => nil, 'RUBYLIB' => nil }
+      Open3.capture3(env, RbConfig.ruby, '-w', '--disable-gems', "-I#{lib}", '-e', code)
+    end
+
+    it "requires cleanly, with no warnings" do
+      _stdout, stderr, status = require_debug_me_with_warnings
+      _(stderr).must_be_empty
+      _(status.success?).must_equal true
+    end
+
+    it "keeps a $DEBUG_ME set to false before require" do
+      stdout, stderr, status = require_debug_me_with_warnings('$DEBUG_ME = false; require "debug_me"; p $DEBUG_ME')
+      _(stderr).must_be_empty
+      _(status.success?).must_equal true
+      _(stdout.strip).must_equal "false"
+    end
+
+    it "treats a $DEBUG_ME set to nil before require as unset" do
+      stdout, stderr, status = require_debug_me_with_warnings('$DEBUG_ME = nil; require "debug_me"; p $DEBUG_ME')
+      _(stderr).must_be_empty
+      _(status.success?).must_equal true
+      _(stdout.strip).must_equal "true"
+    end
+  end
+
+  it 'runs the other test files green and leaves no files when DEBUG_ME=false' do
+    # gemspec_test never loads debug_me and globs relative to the cwd.
+    skipped = [__FILE__, 'gemspec_test.rb'].map { |file| File.expand_path(file, __dir__) }
+    test_files = Dir[File.join(__dir__, '*_test.rb')] - skipped
+    Dir.mktmpdir do |dir|
+      output, status = Open3.capture2e({ 'DEBUG_ME' => 'false' }, RbConfig.ruby,
+                                       '-e', 'ARGV.each { |file| require file }', *test_files, chdir: dir)
+      assert status.success?, output
+      _(Dir.entries(dir) - %w[. ..]).must_be_empty
+    end
   end
 
 end

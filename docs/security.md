@@ -19,6 +19,8 @@ debug_me { user_input }  # DANGEROUS!
 
 DebugMe uses `eval()` to evaluate the string in the caller's binding. If `user_input` contains malicious code, it will be executed.
 
+Only Symbol and String values are evaluated; other values are printed as they are.
+
 ### Attack Example
 
 ```ruby
@@ -121,9 +123,9 @@ debug_me { variable_from_user }
 ### 2. Wrap in Development Check
 
 ```ruby
-def safe_debug(options = {}, &block)
+def safe_debug(options = {}, **keyword_options, &block)
   return unless Rails.env.development?
-  debug_me(options, &block)
+  debug_me(options, **keyword_options, &block)
 end
 ```
 

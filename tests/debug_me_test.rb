@@ -1,19 +1,22 @@
 #!/usr/bin/env ruby
 
-require 'amazing_print'
 require 'logger'
-require 'pathname'
+require 'stringio'
+require 'tmpdir'
 
 require_relative '../lib/debug_me'
 include DebugMe
 
 require_relative './world_view'
+require_relative './debug_me_on'
 
 
 
 require 'minitest/autorun'
 
 describe DebugMe do
+
+  include DebugMeOn
 
   describe "source header included" do
 
@@ -38,6 +41,93 @@ describe DebugMe do
 
   end # describe "source header included" do
 
+  describe "bounded call stack capture" do
+    before do
+      @debugger = Object.new.extend(DebugMe)
+      @frames = ['header.rb:1', 'parent.rb:2', 'grandparent.rb:3', 'ancestor.rb:4']
+      @captures = []
+      frames, captures = @frames, @captures
+      @debugger.define_singleton_method(:caller) do |start, length|
+        captures << [start, length]
+        frames.first(length)
+      end
+    end
+
+    it "captures only the header frame for ordinary variable output" do
+      value = 42
+      output = @debugger.debug_me(file: nil, time: false) { :value }
+
+      _(@captures).must_equal [[1, 1]]
+      _(output).must_equal "DEBUG Source:  header.rb:1\nDEBUG value -=> #{value}\n"
+    end
+
+    it "does not capture a stack when the header is disabled" do
+      value = 42
+      output = @debugger.debug_me(file: nil, header: false, levels: 2) { :value }
+
+      _(@captures).must_be_empty
+      _(output).must_include "value -=> #{value}"
+    end
+
+    it "captures only the requested levels and preserves their numbering" do
+      output = @debugger.debug_me(file: nil, time: false, levels: 2)
+
+      _(@captures).must_equal [[1, 1], [1, 3]]
+      _(output).must_equal "DEBUG Source:  header.rb:1\nDEBUG backtrace -=> #{[[0, @frames[1]], [1, @frames[2]]].pretty_inspect}"
+    end
+
+    it "lets levels supersede an explicit backtrace" do
+      output = @debugger.debug_me(file: nil, levels: 2) { :backtrace }
+
+      _(@captures).must_equal [[1, 1], [1, 3]]
+      _(output).wont_include @frames[3]
+    end
+
+    it "caps explicit backtraces and captures them only once" do
+      output = @debugger.debug_me(file: nil, header: false, time: false, levels: 2) { [:backtrace, 'backtrace'] }
+
+      _(@captures).must_equal [[1, DEBUG_ME_MAX_BACKTRACE + 1]]
+      _(output).must_equal "DEBUG backtrace -=> #{@frames.drop(1).pretty_inspect}" * 2
+    end
+
+    it "captures a bounded explicit backtrace alongside the header" do
+      output = @debugger.debug_me(file: nil, time: false) { :backtrace }
+
+      _(@captures).must_equal [[1, 1], [1, DEBUG_ME_MAX_BACKTRACE + 1]]
+      _(output).must_equal "DEBUG Source:  header.rb:1\nDEBUG backtrace -=> #{@frames.drop(1).pretty_inspect}"
+    end
+
+    it "preserves integer conversion and handles fewer frames than requested" do
+      output = @debugger.debug_me(file: nil, levels: 5.9)
+
+      _(@captures).must_equal [[1, 1], [1, 6]]
+      _(output).must_include @frames.last
+    end
+
+    it "does not treat a non-String value whose to_s is backtrace as the marker" do
+      marker = Object.new
+      def marker.to_s = 'backtrace'
+      output = @debugger.debug_me(file: nil, header: false, time: false) { marker }
+
+      _(@captures).must_be_empty
+      _(output).wont_include 'DEBUG backtrace -=>'
+    end
+
+    it "keeps the levels backtrace when a non-String value's to_s is backtrace" do
+      marker = Object.new
+      def marker.to_s = 'backtrace'
+      output = @debugger.debug_me(file: nil, time: false, levels: 1) { marker }
+
+      _(output).must_include "DEBUG backtrace -=> #{[[0, @frames[1]]].pretty_inspect}"
+    end
+
+    it "does not include the calling frame in a real explicit backtrace" do
+      expected = caller(1)
+      output = debug_me(file: nil, header: false, time: false) { :backtrace }
+
+      _(output).must_equal "DEBUG backtrace -=> #{expected.pretty_inspect}"
+    end
+  end
 
 
   describe "Add more from the call stack" do
@@ -63,6 +153,36 @@ describe DebugMe do
       assert result.include?("two")
       assert result.include?("one")
     end
+
+    it 'prints the backtrace once when levels is set and the block asks for :backtrace' do
+      @answer = 42
+      result = debug_me(file: nil, levels: 1) { [:@answer, :backtrace] }
+      assert_equal 1, result.scan(' backtrace -=> ').size
+      # the levels-limited form ([[level, frame]]) is the one kept
+      assert_includes result, ' backtrace -=> [[0,'
+      assert_includes result, ' @answer -=> 42'
+      # it stays where the block listed it
+      assert_operator result.index(' @answer -=> '), :<, result.index(' backtrace -=> ')
+    end
+
+it 'puts the levels backtrace first when the block does not list it' do
+  @answer = 42
+  result = debug_me(file: nil, levels: 1) { :@answer }
+  assert_operator result.index(' backtrace -=> [[0,'), :<, result.index(' @answer -=> ')
+end
+
+    it 'accepts a String levels value' do
+      result = debug_me(file: nil, levels: '2') { :x }
+      assert_includes result, ' backtrace -=> [[0,'
+      assert_includes result, ' [1,'
+      refute_includes result, ' [2,'
+    end
+
+it 'prints the full backtrace once when levels is not set' do
+      result = debug_me(file: nil) { :backtrace }
+      assert_equal 1, result.scan(' backtrace -=> ').size
+      refute_includes result, ' backtrace -=> [[0,'
+    end
   end
 
 
@@ -78,12 +198,52 @@ describe DebugMe do
 
   end # describe "source header excluded" do
 
+
+  describe 'skip1 and skip2' do
+    before { @skipped = 1 }
+
+    it 'adds one blank line before output without a header' do
+      out_string = debug_me(file: nil, time: false, header: false, skip1: true) { :@skipped }
+      _(out_string).must_equal "\nDEBUG @skipped -=> 1\n"
+    end
+
+    it 'adds two blank lines before output without a header' do
+      out_string = debug_me(file: nil, time: false, header: false, skip2: true) { :@skipped }
+      _(out_string).must_equal "\n\nDEBUG @skipped -=> 1\n"
+    end
+
+    it 'puts the blank lines before the header' do
+      out_string = debug_me(file: nil, time: false, skip2: true) { :@skipped }
+      _(out_string).must_match(/\A\n\nDEBUG Source:  .+\nDEBUG @skipped -=> 1\n\z/)
+    end
+  end
+
+
+  describe "String tag shorthand" do
+
+    it "accepts other options after the String tag" do
+      answer = 42
+      out_string = debug_me('MYTAG', file: nil, time: false, header: false) { :answer }
+      _(out_string).must_equal "MYTAG answer -=> #{answer}\n"
+    end
+
+    it "lets keyword options supplement a positional options Hash" do
+      answer = 42
+      out_string = debug_me({ tag: 'MYTAG', file: nil }, time: false, header: false) { :answer }
+      _(out_string).must_equal "MYTAG answer -=> #{answer}\n"
+    end
+
+  end # describe "String tag shorthand" do
+
+
   describe "works with local variable" do
 
     it "supports a single variable" do
       a,b,c = 1,2,3
       out_string = debug_me(file:nil,header:false){:a}
       assert out_string.include? "a -=> #{a}"
+      refute out_string.include? "b -=> #{b}"
+      refute out_string.include? "c -=> #{c}"
       _(out_string.split("\n").size).must_equal 1
     end
 
@@ -192,15 +352,15 @@ describe DebugMe do
 
   describe "works with CONSTANTS" do
 
+    A,B,C = 1,2,3
+
     it "supports a single CONSTANT" do
-      A,B,C = 1,2,3
       out_string = debug_me(file:nil,header:false){:A}
       assert out_string.include? "A -=> #{A}"
       _(out_string.split("\n").size).must_equal 1
     end
 
     it "supports multiple CONSTANTS" do
-      A,B,C = 1,2,3
       out_string = debug_me(file:nil,header:false){[:A, :B, :C]}
       assert out_string.include? "A -=> #{A}"
       assert out_string.include? "B -=> #{B}"
@@ -248,6 +408,42 @@ describe DebugMe do
 
   end # describe "works with class CONSTANTS" do
 
+  describe 'non-String block values' do
+    it 'prints a plain Object labeled by its class' do
+      obj = Object.new
+      out_string = debug_me(file: nil, time: false, header: false) { obj }
+      _(out_string).must_equal "DEBUG Object -=> #{obj.pretty_inspect}"
+    end
+
+    it 'prints a value whose to_s is not a variable name' do
+      path = Pathname.new('/tmp/some file.txt')
+      out_string = debug_me(file: nil, time: false, header: false) { path }
+      _(out_string).must_equal "DEBUG Pathname -=> #{path.pretty_inspect}"
+    end
+
+    it 'prints non-String values beside Symbols and Strings in an array' do
+      @b = 2
+      out_string = debug_me(file: nil, time: false, header: false) { [:@b, '@b + 1', 3.5] }
+      _(out_string).must_equal "DEBUG @b -=> 2\nDEBUG @b + 1 -=> 3\nDEBUG Float -=> 3.5\n"
+    end
+
+    it 'labels a Class or Module by its name' do
+      out_string = debug_me(file: nil, time: false, header: false) { [Pathname, Comparable] }
+      _(out_string).must_equal "DEBUG Pathname -=> Pathname\nDEBUG Comparable -=> Comparable\n"
+    end
+
+    it 'prints nothing for a block returning [] or [nil]' do
+      @c = 3
+      _(debug_me(file: nil, time: false, header: false) { [] }).must_equal ''
+      _(debug_me(file: nil, time: false, header: false) { [nil] }).must_equal ''
+    end
+
+    it 'still reports an undefined Symbol or String name' do
+      out_string = debug_me(file: nil, time: false, header: false) { [:no_such_var, 'no_such_var'] }
+      _(out_string).must_equal "DEBUG no_such_var -=> \"<undefined>\"\n" * 2
+    end
+  end
+
   describe "works with a Logger class" do
 
     it 'default logger class is nil' do
@@ -255,68 +451,56 @@ describe DebugMe do
     end
 
     it 'works with standard ruby Logger class' do
-      logger_output_path = Pathname.pwd + 'logger_class_output.txt'
-      _(logger_output_path.exist?).must_equal false
+      Dir.mktmpdir do |dir|
+        logger_output_path = File.join(dir, 'logger_class_output.txt')
 
-      logger        = Logger.new(logger_output_path)
-      logger.level  = Logger::DEBUG
+        logger        = Logger.new(logger_output_path)
+        logger.level  = Logger::DEBUG
 
-      out_string    = debug_me(
-                                logger: logger,         # Use instance of Ruby's Logger
-                                time:   false,          # turn off debug_me's timestamp
-                                file:   nil,            # don't write to STDOUT the default
-                                tag:    'Hello World'   # say hello
-                              )
-      # Generates an entry like this:
+        out_string    = debug_me(
+                                  logger: logger,         # Use instance of Ruby's Logger
+                                  time:   false,          # turn off debug_me's timestamp
+                                  file:   nil,            # don't write to STDOUT the default
+                                  tag:    'Hello World'   # say hello
+                                )
+        logger.close
+        # Generates an entry like this:
 =begin
-      # Logfile created on 2020-04-27 16:16:38 -0500 by logger.rb/v1.4.2
-      D, [2020-04-27T16:16:38.580889 #54662] DEBUG -- : Hello World Source: debug_me_test.rb:244:in `block (3 levels) in <main>'
+        # Logfile created on 2020-04-27 16:16:38 -0500 by logger.rb/v1.4.2
+        D, [2020-04-27T16:16:38.580889 #54662] DEBUG -- : Hello World Source: debug_me_test.rb:244:in `block (3 levels) in <main>'
 =end
 
-      lines   = logger_output_path.read.split("\n")
+        lines   = File.read(logger_output_path).split("\n")
 
-      _(lines.size).must_equal 2
+        _(lines.size).must_equal 2
 
-      _(lines[0].start_with?('# Logfile created on')).must_equal   true
-      _(lines[1].start_with?('D, [')).must_equal                   true
-      _(lines[1].include?('DEBUG')).must_equal                     true
-      _(lines[1].include?('Hello World')).must_equal               true
-      _(lines[1].include?('debug_me_test.rb')).must_equal          true
-      _(lines[1].include?(out_string.chomp)).must_equal            true
-
-      logger_output_path.delete
+        _(lines[0].start_with?('# Logfile created on')).must_equal   true
+        _(lines[1].start_with?('D, [')).must_equal                   true
+        _(lines[1].include?('DEBUG')).must_equal                     true
+        _(lines[1].include?('Hello World')).must_equal               true
+        _(lines[1].include?('debug_me_test.rb')).must_equal          true
+        _(lines[1].include?(out_string.chomp)).must_equal            true
+      end
     end
 
   end
 
   describe "$DEBUG_ME global flag" do
 
-    before do
-      # Save the original state
-      @original_debug_me = $DEBUG_ME
-    end
-
-    after do
-      # Restore the original state after each test
-      $DEBUG_ME = @original_debug_me
-    end
-
-    it 'is true by default' do
-      _($DEBUG_ME).must_equal true
-    end
-
     it 'returns nil when $DEBUG_ME is false' do
       $DEBUG_ME = false
-      a = 42
       result = debug_me(file: nil, header: false) { :a }
       _(result).must_be_nil
     end
 
     it 'produces no output when $DEBUG_ME is false' do
       $DEBUG_ME = false
-      a = 42
-      result = debug_me(file: nil) { :a }
+      file = StringIO.new
+      log  = StringIO.new
+      result = debug_me(file: file, logger: Logger.new(log)) { :a }
       _(result).must_be_nil
+      _(file.string).must_be_empty
+      _(log.string).must_be_empty
     end
 
     it 'works normally when $DEBUG_ME is true' do
@@ -324,7 +508,7 @@ describe DebugMe do
       a = 42
       result = debug_me(file: nil, header: false) { :a }
       _(result).wont_be_nil
-      assert result.include?("a -=> 42")
+      assert result.include?("a -=> #{a}")
     end
 
     it 'can be toggled on and off' do
@@ -333,7 +517,7 @@ describe DebugMe do
       a = 42
       result1 = debug_me(file: nil, header: false) { :a }
       _(result1).wont_be_nil
-      assert result1.include?("a -=> 42")
+      assert result1.include?("a -=> #{a}")
 
       # Turn it off
       $DEBUG_ME = false
@@ -344,7 +528,7 @@ describe DebugMe do
       $DEBUG_ME = true
       result3 = debug_me(file: nil, header: false) { :a }
       _(result3).wont_be_nil
-      assert result3.include?("a -=> 42")
+      assert result3.include?("a -=> #{a}")
     end
 
     it 'does not evaluate the block when disabled' do
@@ -369,46 +553,9 @@ describe DebugMe do
 
       _(result).wont_be_nil
       assert result.include?('@instance_var')
-      assert result.include?('local_var')
+      assert result.include?("local_var -=> #{local_var.inspect}")
     end
 
   end # describe "$DEBUG_ME global flag" do
-
-  describe "ENV['DEBUG_ME'] environment variable" do
-
-    it 'initializes $DEBUG_ME from environment variable if set' do
-      # This test documents that $DEBUG_ME can be controlled via ENV['DEBUG_ME']
-      # The actual initialization happens when lib/debug_me.rb is loaded
-      # Users can set DEBUG_ME=false before requiring the gem to disable it
-
-      # Verify current state is set (either from ENV or default true)
-      _($DEBUG_ME).wont_be_nil
-
-      # Document that users can override at runtime
-      original = $DEBUG_ME
-      $DEBUG_ME = false
-      _($DEBUG_ME).must_equal false
-      $DEBUG_ME = original
-    end
-
-    it 'can be controlled by setting $DEBUG_ME directly at runtime' do
-      # Save original
-      original = $DEBUG_ME
-
-      # Test setting various values
-      $DEBUG_ME = false
-      _($DEBUG_ME).must_equal false
-
-      $DEBUG_ME = true
-      _($DEBUG_ME).must_equal true
-
-      $DEBUG_ME = nil
-      _($DEBUG_ME).must_be_nil
-
-      # Restore
-      $DEBUG_ME = original
-    end
-
-  end # describe "ENV['DEBUG_ME'] environment variable" do
 
 end # describe DebugMe do

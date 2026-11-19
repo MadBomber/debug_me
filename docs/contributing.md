@@ -6,7 +6,7 @@ Thank you for your interest in contributing to DebugMe! This guide will help you
 
 ### Prerequisites
 
-- Ruby >= 2.3.0
+- Ruby >= 3.2.0
 - Git
 - Bundler
 
@@ -78,8 +78,8 @@ git push origin feature/your-feature-name
 ```
 
 2. Open a Pull Request on GitHub
-3. Fill out the PR template with:
-   - Description of changes
+3. In the PR description, cover:
+   - What changed
    - Motivation for the change
    - Any breaking changes
    - Test coverage
@@ -134,27 +134,36 @@ Ideas for contributions:
 
 ### Test Structure
 
-Tests are located in the `tests/` directory using Minitest:
+Tests are located in the `tests/` directory and use Minitest's spec style (`describe` / `it`). Name a new file `tests/<topic>_test.rb`; `rake test` only runs files matching `tests/*_test.rb`. `tests/timestamp_test.rb` is a complete example:
 
 ```ruby
+# frozen_string_literal: true
+
 require 'minitest/autorun'
 require_relative '../lib/debug_me'
 
-class DebugMeTest < Minitest::Test
-  include DebugMe
+describe 'your feature' do
+  # Turn debug_me on even when the shell has DEBUG_ME=false
+  before do
+    @saved_debug_me = $DEBUG_ME
+    $DEBUG_ME = true
+  end
 
-  def test_feature
-    # Arrange
-    # Act
-    # Assert
+  after { $DEBUG_ME = @saved_debug_me }
+
+  it 'describes the behavior' do
+    @value = 42
+    output = DebugMe.debug_me(file: nil, header: false, time: false) { :@value }
+
+    _(output).must_equal "DEBUG @value -=> 42\n"
   end
 end
 ```
 
 ### Writing Good Tests
 
-- Test one behavior per test method
-- Use descriptive test names
+- Test one behavior per `it` block
+- Give each `describe` and `it` a descriptive name
 - Include edge cases
 - Test both success and failure scenarios
 

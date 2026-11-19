@@ -19,7 +19,7 @@ After including, the `debug_me` method becomes available in the current scope.
 
 ```ruby
 debug_me(options = {}, &block) → String | nil
-debug_me(tag, options = {}, &block) → String | nil
+debug_me(tag, **options, &block) → String | nil
 ```
 
 The primary debugging method. Outputs labeled variable values to the configured destination.
@@ -29,7 +29,7 @@ The primary debugging method. Outputs labeled variable values to the configured 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `tag` | String | (Optional) Shorthand for `tag:` option |
-| `options` | Hash | Configuration options (see below) |
+| `options` | Hash | Configuration options (see below). After a `tag`, pass them as keywords, or splat a Hash with `**` |
 | `&block` | Block | Block yielding variable names to inspect |
 
 ### Shorthand Syntax
@@ -76,6 +76,11 @@ The block should yield one of:
 | String | `{ 'expression' }` | Expression to evaluate |
 | Array of Strings | `{ ['expr1', 'expr2'] }` | Multiple expressions |
 | Empty | `{}` | All variables in scope |
+| Any other value | `{ obj }` | Printed as it is, labeled by its class name (a Class or Module by its own name) |
+
+Arrays are flattened and `nil` values are skipped. Arrays may mix value types: `debug_me { [:name, Pathname.pwd] }` prints `name -=> "Alice"` and `Pathname -=> #<Pathname:...>`.
+
+A Symbol or String that names nothing defined in the caller's scope prints the String `"<undefined>"` as its value and does not raise: `debug_me { :nope }` prints `DEBUG nope -=> "<undefined>"`. A typo in a name therefore fails quietly.
 
 ### Return Value
 
@@ -218,36 +223,66 @@ DebugMeDefaultOptions[:time] = false
 DEBUG_ME_MAX_BACKTRACE → Integer
 ```
 
-Maximum number of backtrace levels that can be displayed. Default: `15`
+Maximum number of backtrace entries printed when the block returns `:backtrace` and no `levels` backtrace was collected (`levels: 0` or `header: false`). It does not cap the `levels` option. Value: `10000`
 
 ---
 
 ## Output Format
 
+Each line of debug_me output has the form:
+
+```
+TIMESTAMP TAG Source:  FILE:LINE:in 'RECEIVER#METHOD'
+TIMESTAMP TAG variable_name -=> value
+```
+
+The timestamp is an unbracketed `strftime('%Y-%m-%d %H:%M:%S.%6N')` value (omitted
+when `time: false`), `TAG` defaults to `DEBUG`, and the `Source:` header line is
+omitted when `header: false`.
+
 ### Standard Output
 
 ```
-TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
-   variable_name -=> value
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:4:in '<main>'
+2026-11-09 12:30:45.123456 DEBUG count -=> 5
 ```
 
 ### With Backtrace
 
+A backtrace prints as a single `backtrace -=>` entry. Its value depends on how
+it was requested: `levels:` gives an array of `[index, "frame"]` pairs, while
+returning `:backtrace` with no `levels:` gives an array of plain frame strings.
+
+```ruby
+require 'debug_me'
+include DebugMe
+
+def outer
+  value = "x"
+  debug_me(levels: 2) { :value }
+  debug_me { [:backtrace, :value] }
+end
+
+def middle = outer
+middle
 ```
-TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
-   caller(0) -=>
-      file1.rb:10:in `method_a'
-      file2.rb:20:in `method_b'
-   variable_name -=> value
+
+```
+2026-11-12 02:26:47.300264 DEBUG Source:  example.rb:6:in 'Object#outer'
+2026-11-12 02:26:47.300264 DEBUG backtrace -=> [[0, "example.rb:10:in 'Object#middle'"], [1, "example.rb:11:in '<main>'"]]
+2026-11-12 02:26:47.300264 DEBUG value -=> "x"
+2026-11-12 02:26:47.300782 DEBUG Source:  example.rb:7:in 'Object#outer'
+2026-11-12 02:26:47.300782 DEBUG backtrace -=> ["example.rb:10:in 'Object#middle'", "example.rb:11:in '<main>'"]
+2026-11-12 02:26:47.300782 DEBUG value -=> "x"
 ```
 
 ### Multiple Variables
 
 ```
-TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
-   var1 -=> value1
-   var2 -=> value2
-   var3 -=> value3
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:4:in '<main>'
+2026-11-09 12:30:45.123456 DEBUG var1 -=> 1
+2026-11-09 12:30:45.123456 DEBUG var2 -=> 2
+2026-11-09 12:30:45.123456 DEBUG var3 -=> 3
 ```
 
 ---
@@ -256,5 +291,5 @@ TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
 
 ```ruby
 require 'debug_me/version'
-DebugMe::VERSION  # => "1.1.4"
+DebugMe::DEBUG_ME_VERSION  # => "1.1.4"
 ```

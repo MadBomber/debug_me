@@ -4,26 +4,15 @@ DebugMe provides extensive configuration options through the `DebugMeDefaultOpti
 
 ## Including the Module
 
-The `debug_me` method is defined in the `DebugMe` module. How you include it determines the method's availability:
+The `debug_me` method is an instance method of the `DebugMe` module, available inside classes that include the module (or objects that `extend` it). It can also be called without any `include` as `DebugMe.debug_me`; the block is still evaluated in the caller's context, so local, instance, and class variables and constants come from where the call is made.
 
-### Without Including
+### Include at the Top Level (Object)
 
-Without including the module, use the fully-qualified method name:
-
-```ruby
-require 'debug_me'
-
-DebugMe.debug_me { :my_variable }
-DebugMe.debug_me('INFO', levels: 2) { :data }
-```
-
-### Include at Kernel Level (Global)
-
-Include in `Kernel` to make `debug_me` available everywhere in your application:
+Include at the top level to add `DebugMe` to `Object`, making `debug_me` available throughout your application:
 
 ```ruby
 require 'debug_me'
-include DebugMe  # At top level, this includes into Object/Kernel
+include DebugMe  # At top level, this includes DebugMe into Object
 
 # Now available globally
 debug_me { :anywhere }
@@ -61,7 +50,7 @@ class PaymentProcessor
 end
 
 class OtherClass
-  # debug_me not available here unless using DebugMe.debug_me
+  # debug_me is not available here
 end
 ```
 
@@ -163,10 +152,10 @@ The label prepended to each debug output line.
 
 ```ruby
 debug_me(tag: 'INFO') { :status }
-# INFO  [2025-01-06 12:30:45.123456]  example.rb:1
+# 2026-11-09 12:30:45.123456 INFO Source:  example.rb:1:in '<main>'
 
 debug_me(tag: '>>> CHECK') { :value }
-# >>> CHECK  [2025-01-06 12:30:45.123456]  example.rb:1
+# 2026-11-09 12:30:45.123456 >>> CHECK Source:  example.rb:1:in '<main>'
 ```
 
 !!! tip "Shorthand Syntax"
@@ -187,8 +176,8 @@ Whether to include a timestamp in the output.
 
 ```ruby
 debug_me(time: false) { :data }
-# DEBUG  example.rb:1
-#    data -=> "value"
+# DEBUG Source:  example.rb:1:in '<main>'
+# DEBUG data -=> "value"
 ```
 
 #### `strftime` (String)
@@ -197,10 +186,10 @@ Format string for timestamps (uses Ruby's `strftime`).
 
 ```ruby
 debug_me(strftime: '%H:%M:%S') { :now }
-# DEBUG  [12:30:45]  example.rb:1
+# 12:30:45 DEBUG Source:  example.rb:1:in '<main>'
 
 debug_me(strftime: '%Y-%m-%d') { :today }
-# DEBUG  [2025-01-06]  example.rb:1
+# 2026-11-09 DEBUG Source:  example.rb:1:in '<main>'
 ```
 
 #### `header` (Boolean)
@@ -209,7 +198,7 @@ Whether to print the header line with source location.
 
 ```ruby
 debug_me(header: false) { :value }
-#    value -=> 42
+# 2026-11-09 12:30:45.123456 DEBUG value -=> 42
 ```
 
 #### `levels` (Integer)
@@ -218,12 +207,11 @@ Number of backtrace levels to include in output.
 
 ```ruby
 debug_me(levels: 3) { :data }
-# DEBUG  [2025-01-06 12:30:45.123456]  example.rb:1
-#    caller(0) -=>
-#       example.rb:1:in `method_a'
-#       example.rb:10:in `method_b'
-#       example.rb:20:in `method_c'
-#    data -=> "value"
+# 2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:5:in 'Object#method_a'
+# 2026-11-09 12:30:45.123456 DEBUG backtrace -=> [[0, "example.rb:7:in 'Object#method_b'"],
+#  [1, "example.rb:8:in 'Object#method_c'"],
+#  [2, "example.rb:9:in '<main>'"]]
+# 2026-11-09 12:30:45.123456 DEBUG data -=> "value"
 ```
 
 #### `skip1` / `skip2` (Boolean)
@@ -233,11 +221,11 @@ Add blank lines before output for visual separation.
 ```ruby
 debug_me(skip1: true) { :step1 }
 # (one blank line)
-# DEBUG  [...]  example.rb:1
+# 2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:1:in '<main>'
 
 debug_me(skip2: true) { :step2 }
 # (two blank lines)
-# DEBUG  [...]  example.rb:1
+# 2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:1:in '<main>'
 ```
 
 ### Variable Selection

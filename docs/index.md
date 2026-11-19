@@ -9,7 +9,7 @@
 
 <h2>A Classic Debugging Technique That Never Gets Old</h2>
 <p>Printing labeled variable values to STDOUT is one of the oldest and most fundamental debugging techniques in computer science. From the earliest days of programming, developers have relied on simple output statements to understand what their code is doing. While modern debuggers offer sophisticated features like breakpoints and step-through execution, there's something elegantly simple and universally effective about printing variables to see their values in real-time.
-<p>**DebugMe** embraces this time-tested approach, making it effortless to inspect local, instance, and class variables with clearly labeled output. Sometimes the old ways are the best ways.
+<p><strong>DebugMe</strong> embraces this time-tested approach, making it effortless to inspect local, instance, and class variables with clearly labeled output. Sometimes the old ways are the best ways.
 </td>
 </tr>
 </table>
@@ -45,10 +45,13 @@ debug_me('INIT') { [:name, :version] }
 **Output:**
 
 ```
-DEBUG  [2025-01-06 12:30:45.123456]  example.rb:7
-   name -=> "Ruby"
-   version -=> 3.2
-   features -=> [:ractors, :fiber_scheduler]
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:8:in '<main>'
+2026-11-09 12:30:45.123456 DEBUG name -=> "Ruby"
+2026-11-09 12:30:45.123456 DEBUG version -=> 3.2
+2026-11-09 12:30:45.123456 DEBUG features -=> [:ractors, :fiber_scheduler]
+2026-11-09 12:30:45.123457 INIT Source:  example.rb:11:in '<main>'
+2026-11-09 12:30:45.123457 INIT name -=> "Ruby"
+2026-11-09 12:30:45.123457 INIT version -=> 3.2
 ```
 
 ## Why DebugMe?
@@ -76,7 +79,7 @@ gem 'debug_me'
 
 ## Requirements
 
-- Ruby >= 2.3.0
+- Ruby >= 3.2.0
 - No external dependencies
 
 ## License

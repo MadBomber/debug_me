@@ -28,10 +28,10 @@ end
 **Output:**
 
 ```
-DEBUG  [2025-01-06 12:30:45.123456]  order.rb:6
-   subtotal -=> 100.0
-   tax -=> 8.0
-   total -=> 108.0
+2026-11-09 12:30:45.123456 DEBUG Source:  order.rb:6:in 'Object#calculate_total'
+2026-11-09 12:30:45.123456 DEBUG subtotal -=> 100.0
+2026-11-09 12:30:45.123456 DEBUG tax -=> 8.0
+2026-11-09 12:30:45.123456 DEBUG total -=> 108.0
 ```
 
 ### Inspecting All Variables
@@ -158,6 +158,7 @@ end
 
 ```ruby
 def method_a
+  location = "here"
   debug_me(levels: 5) { :location }
 end
 
@@ -175,13 +176,11 @@ method_c
 **Output:**
 
 ```
-DEBUG  [2025-01-06 12:30:45.123456]  example.rb:2
-   caller(0) -=>
-      example.rb:2:in `method_a'
-      example.rb:6:in `method_b'
-      example.rb:10:in `method_c'
-      example.rb:13:in `<main>'
-   location -=> "here"
+2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:3:in 'Object#method_a'
+2026-11-09 12:30:45.123456 DEBUG backtrace -=> [[0, "example.rb:7:in 'Object#method_b'"],
+ [1, "example.rb:11:in 'Object#method_c'"],
+ [2, "example.rb:14:in '<main>'"]]
+2026-11-09 12:30:45.123456 DEBUG location -=> "here"
 ```
 
 ## Logger Integration
@@ -237,13 +236,14 @@ debug_log.close
 
 ```ruby
 # Just variable values, no header or timestamp
+value = 42
 debug_me(header: false, time: false, tag: '') { :value }
 ```
 
 **Output:**
 
 ```
-   value -=> 42
+ value -=> 42
 ```
 
 ### Verbose Output

@@ -21,9 +21,13 @@ Printing labeled variable values to STDOUT is one of the oldest and most fundame
 
 ## Quick Start
 
-```ruby
-gem install debug_me
+Full documentation: https://madbomber.github.io/debug_me/
 
+```bash
+gem install debug_me
+```
+
+```ruby
 require 'debug_me'
 include DebugMe
 
@@ -40,19 +44,19 @@ DebugMe::debug_me(){} works with local, instance and class variables.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add it to your application's Gemfile:
 
-```ruby
-bundle add 'debug_me'
+```bash
+bundle add debug_me
 ```
 
 Or install it yourself:
 
-```ruby
+```bash
 gem install debug_me
 ```
 
-## Examples Usage
+## Usage Examples
 
 ```ruby
 require 'debug_me'
@@ -61,10 +65,11 @@ include DebugMe
 debug_me # Prints only the header banner consisting of tag, method name, file name and line number
 
 debug_me('INFO') # Also prints only the header but with a different tag
+debug_me('INFO', levels: 2) # A String tag can be followed by other options
 
 debug_me(levels: 5) # Along with the header, show the call stack back this many levels
 debug_me{:backtrace}          # show the entire call stack
-debug_me{[ :backtrace ]} will # show the entire call stack
+debug_me{[ :backtrace ]} # will show the entire call stack
 debug_me(levels: 5){[ :backtrace ]} # will only show the first 5 levels of the backtrace - ie. the levels parameter supersedes :backtrace
 
 debug_me {} # prints the default header and __ALL__ variables
@@ -87,7 +92,7 @@ debug_me('=== LOOK ===') {:@foo} # changes the tag, prints a header line and a s
 
 debug_me('=== LOOK ===') {:@@foo} # changes the tag, prints a header line and a specific class variable
 
-debug_me(ivar: false, cvar: false) {} # print only the local variables with the default tag and a header line
+debug_me(ivar: false, cvar: false, cconst: false) {} # print only the local variables with the default tag and a header line
 
 ```
 
@@ -98,11 +103,11 @@ you are not limited to just variables.  Consider these examples:
 ```ruby
 debug_me {[ 'some_array.size', 'SomeDatabaseModel.count' ]}
 
-# What a backtrace with your variables?
+# Want a backtrace with your variables?
 
 debug_me {[
   :my_variable,
-  'some_hash.keys.reject{|k| k.to_s.start_with?('A')}',
+  'some_hash.keys.reject{|k| k.to_s.start_with?("A")}',
   'caller' ]}  # yes, caller is a kernel method that will give a backtrace
 
 # You can also get into trouble so be careful.  The symbols and strings
@@ -110,6 +115,25 @@ debug_me {[
 # command or line of code can be given.  SO DO NOT try to use
 # something silly like debug_me{ 'system("rm -fr /")'}
 
+```
+
+Only Symbols and Strings are evaluated. Any other value the block returns,
+such as an object or a Pathname, is printed as it is, labeled by its class
+name (a Class or Module by its own name):
+
+```ruby
+debug_me { [:my_variable, Pathname.pwd] }
+# DEBUG my_variable -=> 42
+# DEBUG Pathname -=> #<Pathname:/home/me/project>
+```
+
+A Symbol or String that names nothing defined in the caller's scope does not
+raise. Its value prints as the String `"<undefined>"`, so a typo in a name
+fails quietly:
+
+```ruby
+debug_me { :nope }
+# DEBUG nope -=> "<undefined>"
 ```
 
 ## Security Warning
@@ -148,6 +172,8 @@ DEBUG_ME=false bundle exec rails server
 - **Truthy** (enables output): `true`, `yes`, `1`, `on`, or any other value
 - **Falsy** (disables output): `false`, `no`, `0`, `off`, or empty string
 - **Not set**: Defaults to `true` (enabled)
+
+Case and surrounding whitespace are ignored: `" False "` counts as `false`.
 
 ### Runtime Control
 
@@ -236,7 +262,7 @@ DebugMeDefaultOptions = {
   time:   true,     # Include a time-stamp in front of the tag
   strftime:  '%Y-%m-%d %H:%M:%S.%6N', # timestamp format
   header: true,     # Print a header string before printing the variables
-  levels: 0,        # Number of additional backtrack entries to display
+  levels: 0,        # Number of additional backtrace entries to display
   skip1:  false,    # skip 1 blank line in front of a new output block
   skip2:  false,    # skip 2 blank lines in front of a new output block
   lvar:   true,     # Include local variables
@@ -281,8 +307,8 @@ require 'debug_me'
 
 module DebugMe
   def log_me(message, options={}, &block)
-    options = {logger: Rails.logger, time: false, header: false, tag: message}
-    block_given? ? debug_me(options, block) : debug_me(options)
+    options = {logger: Rails.logger, time: false, header: false, tag: message}.merge(options)
+    debug_me(options, &block)
   end
 end
 
@@ -335,7 +361,7 @@ debug_me(header: false){...}
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/debug_me/fork )
+1. Fork it ( https://github.com/MadBomber/debug_me/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
