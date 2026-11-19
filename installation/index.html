@@ -1074,9 +1074,10 @@
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
 <h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Ruby &gt;= 2.3.0</li>
+<li>Ruby &gt;= 3.2.0</li>
 <li>No external dependencies</li>
 </ul>
+<p>On Ruby older than 3.2, use 1.1.3: <code>gem install debug_me -v 1.1.3</code>, or <code>gem 'debug_me', '1.1.3'</code> in a Gemfile.</p>
 <h2 id="installing-via-rubygems">Installing via RubyGems<a class="headerlink" href="#installing-via-rubygems" title="Permanent link">&para;</a></h2>
 <p>Install directly from RubyGems:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gem<span class="w"> </span>install<span class="w"> </span>debug_me
@@ -1089,17 +1090,16 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bundle<span class="w"> </span>install
 </span></code></pre></div>
 <h2 id="development-installation">Development Installation<a class="headerlink" href="#development-installation" title="Permanent link">&para;</a></h2>
-<p>For development purposes, you may want to install with development dependencies:</p>
+<p>To install the gem only in development, put it in Bundler's <code>development</code> group:</p>
 <div class="language-ruby highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Gemfile</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">gem</span><span class="w"> </span><span class="s1">'debug_me'</span><span class="p">,</span><span class="w"> </span><span class="ss">group</span><span class="p">:</span><span class="w"> </span><span class="ss">:development</span>
 </span></code></pre></div>
-<p>This ensures the gem is only loaded in development environments.</p>
+<p>Bundler then skips the gem wherever the <code>development</code> group is excluded, so any code that calls <code>debug_me</code> or requires the gem must not run there.</p>
 <h2 id="rails-integration">Rails Integration<a class="headerlink" href="#rails-integration" title="Permanent link">&para;</a></h2>
-<p>For Rails applications, add to your <code>Gemfile</code>:</p>
-<div class="language-ruby highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">group</span><span class="w"> </span><span class="ss">:development</span><span class="p">,</span><span class="w"> </span><span class="ss">:test</span><span class="w"> </span><span class="k">do</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="n">gem</span><span class="w"> </span><span class="s1">'debug_me'</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">end</span>
+<p>For Rails applications, add to your <code>Gemfile</code> outside any group, so the gem loads in every environment, including production:</p>
+<div class="language-ruby highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">gem</span><span class="w"> </span><span class="s1">'debug_me'</span>
 </span></code></pre></div>
+<p>The initializer below requires the gem unconditionally and turns output off in production, so <code>debug_me</code> calls left in application code stay harmless there.</p>
 <p>Create an initializer at <code>config/initializers/debug_me.rb</code>:</p>
 <div class="language-ruby highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">require</span><span class="w"> </span><span class="s1">'debug_me'</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
@@ -1124,7 +1124,6 @@
 <li><strong>Controllers only</strong>: Include in <code>ApplicationController</code></li>
 <li><strong>Models only</strong>: Include in <code>ApplicationRecord</code></li>
 <li><strong>Specific classes</strong>: Include only where needed</li>
-<li><strong>No include</strong>: Use <code>DebugMe.debug_me { :var }</code> anywhere</li>
 </ul>
 <p>See <a href="../configuration/#including-the-module">Configuration</a> for detailed examples.</p>
 </div>
@@ -1137,8 +1136,8 @@
 </span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:test_var</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
 <p>You should see output similar to:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>DEBUG  [2025-01-06 12:30:45.123456]  irb:3
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>   test_var -=&gt; "Hello, DebugMe!"
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:5:in '&lt;main&gt;'
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>2026-11-09 12:30:45.123456 DEBUG test_var -=&gt; "Hello, DebugMe!"
 </span></code></pre></div>
 <h2 id="updating">Updating<a class="headerlink" href="#updating" title="Permanent link">&para;</a></h2>
 <p>To update to the latest version:</p>

@@ -1464,7 +1464,7 @@
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
 <h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Ruby &gt;= 2.3.0</li>
+<li>Ruby &gt;= 3.2.0</li>
 <li>Git</li>
 <li>Bundler</li>
 </ul>
@@ -1525,8 +1525,8 @@
 </span></code></pre></div>
 <ol>
 <li>Open a Pull Request on GitHub</li>
-<li>Fill out the PR template with:</li>
-<li>Description of changes</li>
+<li>In the PR description, cover:</li>
+<li>What changed</li>
 <li>Motivation for the change</li>
 <li>Any breaking changes</li>
 <li>Test coverage</li>
@@ -1574,24 +1574,33 @@
 </ul>
 <h2 id="testing-guidelines">Testing Guidelines<a class="headerlink" href="#testing-guidelines" title="Permanent link">&para;</a></h2>
 <h3 id="test-structure">Test Structure<a class="headerlink" href="#test-structure" title="Permanent link">&para;</a></h3>
-<p>Tests are located in the <code>tests/</code> directory using Minitest:</p>
-<div class="language-ruby highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">require</span><span class="w"> </span><span class="s1">'minitest/autorun'</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">require_relative</span><span class="w"> </span><span class="s1">'../lib/debug_me'</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">DebugMeTest</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="no">Minitest</span><span class="o">::</span><span class="no">Test</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="kp">include</span><span class="w"> </span><span class="no">DebugMe</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="k">def</span><span class="w"> </span><span class="nf">test_feature</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="c1"># Arrange</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="c1"># Act</span>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="c1"># Assert</span>
+<p>Tests are located in the <code>tests/</code> directory and use Minitest's spec style (<code>describe</code> / <code>it</code>). Name a new file <code>tests/&lt;topic&gt;_test.rb</code>; <code>rake test</code> only runs files matching <code>tests/*_test.rb</code>. <code>tests/timestamp_test.rb</code> is a complete example:</p>
+<div class="language-ruby highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># frozen_string_literal: true</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nb">require</span><span class="w"> </span><span class="s1">'minitest/autorun'</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">require_relative</span><span class="w"> </span><span class="s1">'../lib/debug_me'</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">describe</span><span class="w"> </span><span class="s1">'your feature'</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="c1"># Turn debug_me on even when the shell has DEBUG_ME=false</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="n">before</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="vi">@saved_debug_me</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="vg">$DEBUG_ME</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="vg">$DEBUG_ME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kp">true</span>
 </span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span><span class="k">end</span>
-</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="k">end</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">  </span><span class="n">after</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="vg">$DEBUG_ME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="vi">@saved_debug_me</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">  </span><span class="n">it</span><span class="w"> </span><span class="s1">'describes the behavior'</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">    </span><span class="vi">@value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">    </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">DebugMe</span><span class="o">.</span><span class="n">debug_me</span><span class="p">(</span><span class="ss">file</span><span class="p">:</span><span class="w"> </span><span class="kp">nil</span><span class="p">,</span><span class="w"> </span><span class="ss">header</span><span class="p">:</span><span class="w"> </span><span class="kp">false</span><span class="p">,</span><span class="w"> </span><span class="ss">time</span><span class="p">:</span><span class="w"> </span><span class="kp">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:@value</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">    </span><span class="n">_</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">must_equal</span><span class="w"> </span><span class="s2">"DEBUG @value -=&gt; 42</span><span class="se">\n</span><span class="s2">"</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">  </span><span class="k">end</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="k">end</span>
 </span></code></pre></div>
 <h3 id="writing-good-tests">Writing Good Tests<a class="headerlink" href="#writing-good-tests" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Test one behavior per test method</li>
-<li>Use descriptive test names</li>
+<li>Test one behavior per <code>it</code> block</li>
+<li>Give each <code>describe</code> and <code>it</code> a descriptive name</li>
 <li>Include edge cases</li>
 <li>Test both success and failure scenarios</li>
 </ul>

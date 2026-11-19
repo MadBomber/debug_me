@@ -1527,11 +1527,10 @@
 <p>After including, the <code>debug_me</code> method becomes available in the current scope.</p>
 <hr />
 <h2 id="method-debug_me">Method: debug_me<a class="headerlink" href="#method-debug_me" title="Permanent link">&para;</a></h2>
-<div class="language-ruby highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">debug_me</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="o">**</span><span class="n">keyword_options</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kp">nil</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">debug_me</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="o">**</span><span class="n">keyword_options</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kp">nil</span>
+<div class="language-ruby highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">debug_me</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kp">nil</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">debug_me</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kp">nil</span>
 </span></code></pre></div>
-<p>The primary debugging method. Outputs labeled variable values to the configured destination.
-Keyword options are merged with the positional options hash, and keyword values take precedence when both specify the same key.</p>
+<p>The primary debugging method. Outputs labeled variable values to the configured destination.</p>
 <h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1550,12 +1549,7 @@ Keyword options are merged with the positional options hash, and keyword values 
 <tr>
 <td><code>options</code></td>
 <td>Hash</td>
-<td>Configuration options (see below)</td>
-</tr>
-<tr>
-<td><code>keyword_options</code></td>
-<td>Hash</td>
-<td>Configuration options supplied as keywords; override matching keys in <code>options</code></td>
+<td>Configuration options (see below). After a <code>tag</code>, pass them as keywords, or splat a Hash with <code>**</code></td>
 </tr>
 <tr>
 <td><code>&amp;block</code></td>
@@ -1702,8 +1696,15 @@ Keyword options are merged with the positional options hash, and keyword values 
 <td><code>{}</code></td>
 <td>All variables in scope</td>
 </tr>
+<tr>
+<td>Any other value</td>
+<td><code>{ obj }</code></td>
+<td>Printed as it is, labeled by its class name (a Class or Module by its own name)</td>
+</tr>
 </tbody>
 </table>
+<p>Arrays are flattened and <code>nil</code> values are skipped. Arrays may mix value types: <code>debug_me { [:name, Pathname.pwd] }</code> prints <code>name -=&gt; "Alice"</code> and <code>Pathname -=&gt; #&lt;Pathname:...&gt;</code>.</p>
+<p>A Symbol or String that names nothing defined in the caller's scope prints the String <code>"&lt;undefined&gt;"</code> as its value and does not raise: <code>debug_me { :nope }</code> prints <code>DEBUG nope -=&gt; "&lt;undefined&gt;"</code>. A typo in a name therefore fails quietly.</p>
 <h3 id="return-value">Return Value<a class="headerlink" href="#return-value" title="Permanent link">&para;</a></h3>
 <p>Returns the output string if <code>$DEBUG_ME</code> is <code>true</code>, otherwise returns <code>nil</code>.</p>
 <h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
@@ -1840,30 +1841,53 @@ Keyword options are merged with the positional options hash, and keyword values 
 <h2 id="constant-debug_me_max_backtrace">Constant: DEBUG_ME_MAX_BACKTRACE<a class="headerlink" href="#constant-debug_me_max_backtrace" title="Permanent link">&para;</a></h2>
 <div class="language-ruby highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="no">DEBUG_ME_MAX_BACKTRACE</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="nb">Integer</span>
 </span></code></pre></div>
-<p>Maximum number of backtrace levels that can be displayed. Default: <code>15</code></p>
+<p>Maximum number of backtrace entries printed when the block returns <code>:backtrace</code> and no <code>levels</code> backtrace was collected (<code>levels: 0</code> or <code>header: false</code>). It does not cap the <code>levels</code> option. Value: <code>10000</code></p>
 <hr />
 <h2 id="output-format">Output Format<a class="headerlink" href="#output-format" title="Permanent link">&para;</a></h2>
+<p>Each line of debug_me output has the form:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>TIMESTAMP TAG Source:  FILE:LINE:in 'RECEIVER#METHOD'
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>TIMESTAMP TAG variable_name -=&gt; value
+</span></code></pre></div>
+<p>The timestamp is an unbracketed <code>strftime('%Y-%m-%d %H:%M:%S.%6N')</code> value (omitted
+when <code>time: false</code>), <code>TAG</code> defaults to <code>DEBUG</code>, and the <code>Source:</code> header line is
+omitted when <code>header: false</code>.</p>
 <h3 id="standard-output">Standard Output<a class="headerlink" href="#standard-output" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>   variable_name -=&gt; value
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:4:in '&lt;main&gt;'
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>2026-11-09 12:30:45.123456 DEBUG count -=&gt; 5
 </span></code></pre></div>
 <h3 id="with-backtrace">With Backtrace<a class="headerlink" href="#with-backtrace" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>   caller(0) -=&gt;
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>      file1.rb:10:in `method_a'
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>      file2.rb:20:in `method_b'
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>   variable_name -=&gt; value
+<p>A backtrace prints as a single <code>backtrace -=&gt;</code> entry. Its value depends on how
+it was requested: <code>levels:</code> gives an array of <code>[index, "frame"]</code> pairs, while
+returning <code>:backtrace</code> with no <code>levels:</code> gives an array of plain frame strings.</p>
+<div class="language-ruby highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">require</span><span class="w"> </span><span class="s1">'debug_me'</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kp">include</span><span class="w"> </span><span class="no">DebugMe</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">outer</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"x"</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">  </span><span class="n">debug_me</span><span class="p">(</span><span class="ss">levels</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="ss">:value</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="n">debug_me</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">[</span><span class="ss">:backtrace</span><span class="p">,</span><span class="w"> </span><span class="ss">:value</span><span class="o">]</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="k">end</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">middle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">outer</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="n">middle</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>2026-11-12 02:26:47.300264 DEBUG Source:  example.rb:6:in 'Object#outer'
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>2026-11-12 02:26:47.300264 DEBUG backtrace -=&gt; [[0, "example.rb:10:in 'Object#middle'"], [1, "example.rb:11:in '&lt;main&gt;'"]]
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>2026-11-12 02:26:47.300264 DEBUG value -=&gt; "x"
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>2026-11-12 02:26:47.300782 DEBUG Source:  example.rb:7:in 'Object#outer'
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>2026-11-12 02:26:47.300782 DEBUG backtrace -=&gt; ["example.rb:10:in 'Object#middle'", "example.rb:11:in '&lt;main&gt;'"]
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>2026-11-12 02:26:47.300782 DEBUG value -=&gt; "x"
 </span></code></pre></div>
 <h3 id="multiple-variables">Multiple Variables<a class="headerlink" href="#multiple-variables" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>TAG  [TIMESTAMP]  SOURCE_FILE:LINE_NUMBER
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>   var1 -=&gt; value1
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>   var2 -=&gt; value2
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>   var3 -=&gt; value3
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:4:in '&lt;main&gt;'
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>2026-11-09 12:30:45.123456 DEBUG var1 -=&gt; 1
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>2026-11-09 12:30:45.123456 DEBUG var2 -=&gt; 2
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>2026-11-09 12:30:45.123456 DEBUG var3 -=&gt; 3
 </span></code></pre></div>
 <hr />
 <h2 id="version-information">Version Information<a class="headerlink" href="#version-information" title="Permanent link">&para;</a></h2>
-<div class="language-ruby highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">require</span><span class="w"> </span><span class="s1">'debug_me/version'</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="no">DebugMe</span><span class="o">::</span><span class="no">VERSION</span><span class="w">  </span><span class="c1"># =&gt; "1.1.4"</span>
+<div class="language-ruby highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">require</span><span class="w"> </span><span class="s1">'debug_me/version'</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="no">DebugMe</span><span class="o">::</span><span class="no">DEBUG_ME_VERSION</span><span class="w">  </span><span class="c1"># =&gt; "1.1.4"</span>
 </span></code></pre></div>
 
 

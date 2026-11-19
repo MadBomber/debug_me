@@ -1015,7 +1015,7 @@
 
 <h2>A Classic Debugging Technique That Never Gets Old</h2>
 <p>Printing labeled variable values to STDOUT is one of the oldest and most fundamental debugging techniques in computer science. From the earliest days of programming, developers have relied on simple output statements to understand what their code is doing. While modern debuggers offer sophisticated features like breakpoints and step-through execution, there's something elegantly simple and universally effective about printing variables to see their values in real-time.
-<p>**DebugMe** embraces this time-tested approach, making it effortless to inspect local, instance, and class variables with clearly labeled output. Sometimes the old ways are the best ways.
+<p><strong>DebugMe</strong> embraces this time-tested approach, making it effortless to inspect local, instance, and class variables with clearly labeled output. Sometimes the old ways are the best ways.
 </td>
 </tr>
 </table>
@@ -1045,10 +1045,13 @@
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># Equivalent to: debug_me(tag: 'INIT') { [:name, :version] }</span>
 </span></code></pre></div>
 <p><strong>Output:</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>DEBUG  [2025-01-06 12:30:45.123456]  example.rb:7
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>   name -=&gt; "Ruby"
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>   version -=&gt; 3.2
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>   features -=&gt; [:ractors, :fiber_scheduler]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>2026-11-09 12:30:45.123456 DEBUG Source:  example.rb:8:in '&lt;main&gt;'
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>2026-11-09 12:30:45.123456 DEBUG name -=&gt; "Ruby"
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>2026-11-09 12:30:45.123456 DEBUG version -=&gt; 3.2
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>2026-11-09 12:30:45.123456 DEBUG features -=&gt; [:ractors, :fiber_scheduler]
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>2026-11-09 12:30:45.123457 INIT Source:  example.rb:11:in '&lt;main&gt;'
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>2026-11-09 12:30:45.123457 INIT name -=&gt; "Ruby"
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>2026-11-09 12:30:45.123457 INIT version -=&gt; 3.2
 </span></code></pre></div>
 <h2 id="why-debugme">Why DebugMe?<a class="headerlink" href="#why-debugme" title="Permanent link">&para;</a></h2>
 <table>
@@ -1107,7 +1110,7 @@
 </span></code></pre></div>
 <h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Ruby &gt;= 2.3.0</li>
+<li>Ruby &gt;= 3.2.0</li>
 <li>No external dependencies</li>
 </ul>
 <h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
